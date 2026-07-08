@@ -141,7 +141,9 @@ class RolloutConfig(BaseConfig):
     log_prob_max_token_len_per_gpu: int = 16384
     log_prob_top_k: int = 256
     top_k_strategy: str = "only_stu"  # "only_stu", "only_tch", "intersection", or "union"
-    reward_weight_mode: str = "student_p"  # "student_p", "teacher_p", or "none"
+    reward_weight_mode: str = "student_p"  # "student_p", "teacher_p", "none", "js_router", "js_add_fkl", or "reweight_student_p"
+    js_threshold: str = "0.1"  # Threshold for js_router/js_add_fkl. Two formats: absolute "0.1" (per-token JS > 0.1 -> teacher_p); percentile "10%" (top 10% tokens by JS -> teacher_p).
+    fkl_coef: float = 1.0  # Additive FKL strength for reward_weight_mode='js_add_fkl': rm = rm_rkl + fkl_coef * router_mask * p_t.
     teacher_temperature: float = 1.0  # Temperature for teacher logits (default 1.0, no scaling)
 
     disable_log_stats: bool = True

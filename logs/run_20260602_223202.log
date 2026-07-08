@@ -1,0 +1,116 @@
++ echo ==========================================
+==========================================
++ echo 'Log file: logs/run_20260602_223202.log'
+Log file: logs/run_20260602_223202.log
+++ date
++ echo 'Start time: Tue Jun  2 22:32:02 CST 2026'
+Start time: Tue Jun  2 22:32:02 CST 2026
++ echo ==========================================
+==========================================
++ ray stop --force
+1/1 stopped.1/94 stopped.2/94 stopped.3/94 stopped.4/94 stopped.5/94 stopped.6/94 stopped.7/94 stopped.8/94 stopped.9/94 stopped.10/94 stopped.11/94 stopped.12/94 stopped.13/94 stopped.14/94 stopped.15/94 stopped.16/94 stopped.17/94 stopped.18/94 stopped.19/94 stopped.20/94 stopped.21/94 stopped.22/94 stopped.23/94 stopped.24/94 stopped.25/94 stopped.26/94 stopped.27/94 stopped.28/94 stopped.29/94 stopped.30/94 stopped.31/94 stopped.32/94 stopped.33/94 stopped.34/94 stopped.35/94 stopped.36/94 stopped.37/94 stopped.38/94 stopped.39/94 stopped.40/94 stopped.41/94 stopped.42/94 stopped.43/94 stopped.44/94 stopped.45/94 stopped.46/94 stopped.47/94 stopped.48/94 stopped.49/94 stopped.50/94 stopped.51/94 stopped.52/94 stopped.53/94 stopped.54/94 stopped.55/94 stopped.56/94 stopped.57/94 stopped.58/94 stopped.59/94 stopped.60/94 stopped.61/94 stopped.62/94 stopped.63/94 stopped.64/94 stopped.65/94 stopped.66/94 stopped.67/94 stopped.68/94 stopped.69/94 stopped.70/94 stopped.71/94 stopped.72/94 stopped.73/94 stopped.74/94 stopped.75/94 stopped.76/94 stopped.77/94 stopped.78/94 stopped.79/94 stopped.80/94 stopped.81/94 stopped.82/94 stopped.83/94 stopped.84/94 stopped.85/94 stopped.86/94 stopped.87/94 stopped.88/94 stopped.89/94 stopped.90/94 stopped.91/94 stopped.92/94 stopped.93/94 stopped.94/94 stopped.1/1 stopped.[32mStopped all 96 Ray processes.[39m
++ export RAY_memory_usage_threshold=0.99
++ RAY_memory_usage_threshold=0.99
++ export CUDA_LAUNCH_BLOCKING=1
++ CUDA_LAUNCH_BLOCKING=1
++ export PYTHONUNBUFFERED=1
++ PYTHONUNBUFFERED=1
++ export PROJECT_NAME=OnPolicyDistillation
++ PROJECT_NAME=OnPolicyDistillation
++ export TORCH_NCCL_BLOCKING_WAIT=1
++ TORCH_NCCL_BLOCKING_WAIT=1
++ export NCCL_TIMEOUT=7200
++ NCCL_TIMEOUT=7200
++ export TORCH_DISTRIBUTED_DEBUG=INFO
++ TORCH_DISTRIBUTED_DEBUG=INFO
++ export ADV_ESTIMATOR=token_reward_direct
++ ADV_ESTIMATOR=token_reward_direct
++ export GRPO_OUTCOME_WEIGHT=1.0
++ GRPO_OUTCOME_WEIGHT=1.0
++ export MAX_PROMPT_LENGTH=1024
++ MAX_PROMPT_LENGTH=1024
++ export MAX_RESP_LENGTH=7168
++ MAX_RESP_LENGTH=7168
++ export MAX_VAL_RESP_LENGTH=7168
++ MAX_VAL_RESP_LENGTH=7168
++ export MAX_MODEL_LEN=8192
++ MAX_MODEL_LEN=8192
++ export MINI_BATCH_SIZE=64
++ MINI_BATCH_SIZE=64
++ export TEMPERATURE=1.0
++ TEMPERATURE=1.0
++ export TEACHER_TEMPERATURE=1.0
++ TEACHER_TEMPERATURE=1.0
++ export REPETITION_PENALTY=1.0
++ REPETITION_PENALTY=1.0
++ export N_RESPONSES=4
++ N_RESPONSES=4
++ export LOG_PROB_TOP_K=16
++ LOG_PROB_TOP_K=16
++ export TOP_K_STRATEGY=only_stu
++ TOP_K_STRATEGY=only_stu
++ export REWARD_WEIGHT_MODE=student_p
++ REWARD_WEIGHT_MODE=student_p
++ export USE_KL=False
++ USE_KL=False
++ export ENABLE_FORMAT_REWARD=False
++ ENABLE_FORMAT_REWARD=False
++ export MODEL_DTYPE=fp32
++ MODEL_DTYPE=fp32
++ export IS_PLOT=True
++ IS_PLOT=True
++ export LOSS_AGG_MODE=token-mean
++ LOSS_AGG_MODE=token-mean
++ export TRAIN_DATASET=datasets/dapo-math-17k-processed.parquet
++ TRAIN_DATASET=datasets/dapo-math-17k-processed.parquet
++ export TRAIN_DATASET_NAME=DAPO-Math-17k
++ TRAIN_DATASET_NAME=DAPO-Math-17k
++ export TEST_DATA_DIR=datasets/test_data
++ TEST_DATA_DIR=datasets/test_data
++ TEST_DATASET='[datasets/test_data/AIME24/test.parquet]'
++ export ACTOR_MODEL_PATH=models/Qwen3-1.7B-Base
++ ACTOR_MODEL_PATH=models/Qwen3-1.7B-Base
+++ basename models/Qwen3-1.7B-Base
++ export ACTOR_MODEL_NAME=Qwen3-1.7B-Base
++ ACTOR_MODEL_NAME=Qwen3-1.7B-Base
++ export REWARD_MODEL_PATH=models/Qwen3-4B
++ REWARD_MODEL_PATH=models/Qwen3-4B
+++ basename models/Qwen3-4B
++ export REWARD_MODEL_NAME=Qwen3-4B
++ REWARD_MODEL_NAME=Qwen3-4B
++ export PROJECT_PATH=checkpoint
++ PROJECT_PATH=checkpoint
++ export PARALLEL_SIZE=1
++ PARALLEL_SIZE=1
+++ date +%Y-%m-%d_%H-%M-%S
++ export CKPT_PATH=checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_stu-rw_student_p-2026-06-02_22-32-08
++ CKPT_PATH=checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_stu-rw_student_p-2026-06-02_22-32-08
+++ uuidgen
+on_policy_distillation.sh: line 137: uuidgen: command not found
++ export OUTLINES_CACHE_DIR=/root/.cache/outlines/
++ OUTLINES_CACHE_DIR=/root/.cache/outlines/
++ export NCCL_DEBUG=WARN
++ NCCL_DEBUG=WARN
++ export TOKENIZERS_PARALLELISM=true
++ TOKENIZERS_PARALLELISM=true
++ export LD_PRELOAD=/mmu_cd_ssd/pengtiantian/envs/ptt_verl_opd/lib/glibc_compat.so
++ LD_PRELOAD=/mmu_cd_ssd/pengtiantian/envs/ptt_verl_opd/lib/glibc_compat.so
++ export SWANLAB_LOG_DIR=checkpoint/swanlab_log
++ SWANLAB_LOG_DIR=checkpoint/swanlab_log
++ export HYDRA_FULL_ERROR=1
++ HYDRA_FULL_ERROR=1
+++ date +%Y-%m-%d_%H-%M-%S
++ export EXPERIMENT_NAME=token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_stu-rw_student_p-2026-06-02_22-32-08
++ EXPERIMENT_NAME=token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_stu-rw_student_p-2026-06-02_22-32-08
++ KL_ARGS=
++ '[' False = True ']'
++ KL_ARGS=actor_rollout_ref.actor.use_kl_loss=False
++ LR_ARGS=
++ '[' '' = cosine ']'
++ PPO_MAX_TOKEN_LEN_PER_GPU=32768
++ echo 'PPO_MAX_TOKEN_LEN_PER_GPU: 32768'
+PPO_MAX_TOKEN_LEN_PER_GPU: 32768
++ ray start --head
+Usage stats collection is enabled. To disable this, add `--disable-usage-stats` to the command that starts the cluster, or run the following command: `ray disable-usage-stats` before starting the cluster. See https://docs.ray.io/en/master/cluster/usage-stats.html for more details.
+
+[37mLocal node IP[39m: [1m10.82.124.140[22m

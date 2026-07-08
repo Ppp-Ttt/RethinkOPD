@@ -4,6 +4,7 @@ import json
 import pandas as pd
 from pathlib import Path
 import re
+import math
 import argparse # Added
 # vllm import moved to conditional execution to save resources if disabled
 
@@ -33,16 +34,18 @@ Here is your task. Simply reply with either CORRECT, INCORRECT, or INVALID. Don'
 Judging the correctness of the candidate's answer:
 """
 
-NAME     = "Qwen3-4B-Non-Thinking-RL-Math" 
-EVAL_DIR = Path(f"justrl_eval_outputs/{NAME}")
+# NAME     = "Qwen3-4B-Non-Thinking-RL-Math" 
+EVAL_DIR = Path(f"/mmu_cd_ssd/pengtiantian/projects/OPD/eval_output/Qwen3-1.7B-Base-OPD")
 OUTPUT_FILE = EVAL_DIR / "grading_results.json"
 MODEL_NAME = "../../model/CompassVerifier-3B"
+
+K_VALUES = [1,2,3,4,5,6,8,10,12,14,16,20,24,28,32,40,48,56,64,80,96,112,128,160,192,224,256,320,384,448,512]
 
 # Global variables to be initialized if needed
 vllm_model = None
 model_tokenizer = None
 sampling_params = None
-length_tokenizer = AutoTokenizer.from_pretrained("../../model/Qwen3-1.7B", local_files_only=True)
+length_tokenizer = AutoTokenizer.from_pretrained("/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-1.7B", local_files_only=True)
 
 def get_len(seq):
     if length_tokenizer:
@@ -60,6 +63,16 @@ def get_diverse_score(sequences, n=4):
             total_ngrams += 1
     return len(distinct_ngrams) / total_ngrams if total_ngrams > 0 else 0
 
+def estimate_pass_at_k(n: int, c: int, k: int) -> float:
+    """Unbiased pass@k estimator (Chen et al., 2021): 1 - C(n-c, k) / C(n, k).
+    Computed via the product form to avoid large factorial overflow."""
+    if n < k:
+        raise ValueError(f"k={k} cannot exceed n={n}")
+    if n - c < k:
+        return 1.0
+    # Product form: prod_{i=0}^{k-1} (n-c-i)/(n-i)
+    return 1.0 - math.prod((n - c - i) / (n - i) for i in range(k))
+
 def process_jsonl_file(file_name):
     results = []
     with open(file_name) as f:
@@ -72,6 +85,8 @@ def process_jsonl_file(file_name):
             response = data["response"]
             results[id]["gt"] = gt
             results[id]["responses"].append(response)
+            results[id]["question"] = data.get("prompt", "")
+
     return results
 
 def parse_hyperparameters_from_filename(filename):
@@ -107,6 +122,7 @@ def grade_file(file_path, use_model_verifier=True):
         "solve_all": 0,
         "avg_output_length": 0,
         "format_error_rollouts": 0,
+        "pass_at_k": {},
     }
 
     diverse = []
@@ -205,6 +221,21 @@ def grade_file(file_path, use_model_verifier=True):
     results["solve_all"] = solve_all
     results["avg_output_length"] = sum(response_lengths) / len(response_lengths) if response_lengths else 0
     results["format_error_rollouts"] = without_boxed
+
+    # Compute unbiased pass@k for all k <= num_pred (Chen et al., 2021)
+    per_problem_correct = [
+        sum(final_scores[i:i + num_pred])
+        for i in range(0, len(final_scores), num_pred)
+    ]
+    num_problems = len(per_problem_correct)
+    pass_at_k_scores = {}
+    for k in K_VALUES:
+        if k <= num_pred:
+            pass_at_k_scores[f"pass@{k}"] = (
+                sum(estimate_pass_at_k(num_pred, c, k) for c in per_problem_correct)
+                / num_problems
+            )
+    results["pass_at_k"] = pass_at_k_scores
 
     return results
 

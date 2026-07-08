@@ -1,45 +1,4 @@
-﻿<div align="center">
-
-# Rethinking On-Policy Distillation of Large Language Models:<br>Phenomenology, Mechanism, and Recipe
-
-[![Paper](https://img.shields.io/badge/paper-A42C25?style=for-the-badge&logo=arxiv&logoColor=white)](https://arxiv.org/abs/2604.13016)  [![Github](https://img.shields.io/badge/OPD-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/thunlp/OPD)  [![Rethinking OPD](https://img.shields.io/badge/Rethinking--OPD-fcd022?style=for-the-badge&logo=huggingface&logoColor=000&labelColor)](https://huggingface.co/collections/lllyx/rethinking-opd)  [![Twitter](https://img.shields.io/badge/Twitter-%23000000.svg?style=for-the-badge&logo=x&logoColor=white)](https://x.com/HBX_hbx/status/2044464414829777354)
-
-</div>
-
-<div align="center" style="font-family: Arial, sans-serif;">
-  <p>
-    <a href="#news" style="text-decoration: none; font-weight: bold;">🎉 News</a> •
-    <a href="#overview" style="text-decoration: none; font-weight: bold;">📖 Overview</a> •
-    <a href="#getting-started" style="text-decoration: none; font-weight: bold;">✨ Getting Started</a>
-  </p>
-  <p>
-    <a href="#contact" style="text-decoration: none; font-weight: bold;">📨 Contact</a> •
-    <a href="#citation" style="text-decoration: none; font-weight: bold;">🎈 Citation</a> •
-    <a href="#star-history" style="text-decoration: none; font-weight: bold;">⭐ Star History</a>
-  </p>
-</div>
-
----
-
-## 🎉News
-
-- **[2026-05-27]** Our [paper](https://arxiv.org/pdf/2604.13016) has been accepted to ICML 2026 FoGen Workshop, see you in Seoul!
-- **[2026-05-26]** Our top-k OPD overlap diagnostics have been merged into [verl](https://github.com/verl-project/verl/pull/6469), adding `distillation/overlap_ratio` and `distillation/overlap_token_advantage` metrics following our token-level analysis.
-- **[2026-04-15]** We investigate the dynamics and mechanisms of on-policy distillation (OPD) of LLMs, and propose practical strategies to recover failing OPD. Check it out: [Paper](https://arxiv.org/pdf/2604.13016).
-
-## 📖Overview
-
-![1776212644959](figs/opd_teaser.png)
-
-On-policy distillation (OPD) has become a core technique in the post-training of large language models, yet its training dynamics remain poorly understood.
-This paper provides a systematic investigation of OPD dynamics and mechanisms.
-We first identify that two conditions govern whether OPD succeeds or fails: (i) the student and teacher should share compatible thinking patterns; and (ii) even with consistent thinking patterns and higher scores, the teacher must offer genuinely new capabilities beyond what the student has seen during training.
-We validate these findings through weak-to-strong reverse distillation, showing that same-family 1.5B and 7B teachers are distributionally indistinguishable from the student’s perspective.
-Probing into the token-level mechanism, we show that successful OPD is characterized by progressive alignment on high-probability tokens at student-visited states, a small shared token set that concentrates most of the probability mass (97\%--99\%).
-We further propose two practical strategies to recover failing OPD: off-policy cold start and teacher-aligned prompt selection.
-Finally, we show that OPD's apparent free lunch of dense token-level reward comes at a cost, raising the question of whether OPD can scale to long-horizon distillation.
-
-## ✨Getting Started
+﻿## ✨Getting Started
 
 ### Environment Setup
 
@@ -177,31 +136,3 @@ python grade.py --enable_model_verifier
 ```
 
 *All experiments were conducted on 8 x NVIDIA A800 80GB GPUs.*
-
-## 📨Contact
-
-- Bingxiang He: hebx24@mails.tsinghua.edu.cn
-- Ning Ding: dingning@mail.tsinghua.edu.cn
-
-## 🎈Citation
-
-If you find this work helpful, please cite us:
-
-```bibtex
-@article{li2026rethinking,
-  title={Rethinking on-policy distillation of large language models: Phenomenology, mechanism, and recipe},
-  author={Li, Yaxuan and Zuo, Yuxin and He, Bingxiang and Zhang, Jinqian and Xiao, Chaojun and Qian, Cheng and Yu, Tianyu and Gao, Huan-ang and Yang, Wenkai and Liu, Zhiyuan and others},
-  journal={arXiv preprint arXiv:2604.13016},
-  year={2026}
-}
-```
-
-## ⭐Star History
-
-<a href="https://www.star-history.com/#thunlp/OPD&Date">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=thunlp/OPD&type=date&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=thunlp/OPD&type=date" />
-    <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=thunlp/OPD&type=date" />
-  </picture>
-</a>

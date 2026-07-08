@@ -1,0 +1,978 @@
+Script started on 2026-06-08 10:40:53+08:00 [TERM="screen" TTY="/dev/pts/43" COLUMNS="191" LINES="44"]
+(base) root@rack-wlf2-ge26-2:/mmu_cd_ssd/likai11# ls
+ [0m[01;35m1.png[0m                                                                           cdp_transport_info.json                                      [01;34mlogs[0m
+ [01;35m195839.png[0m                                                                      [01;34mcid_attributes[0m                                               [01;34mminiconda3[0m
+ [01;35m23775794021339.png[0m                                                              [01;34mckpt[0m                                                         [01;34mmodel_zoo[0m
+'=0.23.0'                                                                        client_test_multiprocess_idp.py                              [01;34mnlp_ssd_bak[0m
+'=4.51.0'                                                                        conda.sh                                                     nohup.out
+ [01;35mITEM_IMAGE-3510725058-760c705f414948cdbbaf2b44432b9094.jpg[0m                      [01;34mcuda[0m                                                         [01;34mothers[0m
+ [01;35mITEM_IMAGE-4205095096-b2f3e3baeeca4c5e81f6783a852b8d47.jpg_layout.png_1.png[0m     cuda_12.1.0_530.30.02_linux.run                              [01;34moutputs[0m
+ ITEM_IMAGE-4205095096-b2f3e3baeeca4c5e81f6783a852b8d47.jpg_layout.png_1.png.1   cuda_12.1.0_530.30.02_linux.run.1                            photo_cdp_brand_and_opinion_flush.py
+ [01;35mITEM_IMAGE-4637985282-ac91585264934cc59cf93af8fc5bc464.jpg[0m                      [01;34mdata_back[0m                                                    [01;34mpyenv[0m
+ [01;35mITEM_IMAGE-506419136-f5d939c8d2944496909eb3f0d67a8dfc.jpg[0m                       delete.sh                                                    [01;32mrbytes[0m
+ [01;35mITEM_IMAGE-525092165-32e4739ec1944f44a246f14b2d994ec9.jpg[0m                       delete1.sh                                                   [01;34mrun_p2p_64[0m
+ [01;35mITEM_IMAGE-86989499-4c0ae6a8d17f49d99d08d823c387eb4c.jpg[0m                        [01;32mdevctl[0m                                                       [01;34msample_output[0m
+ [01;34mLLM[0m                                                                             dress_val_ref_multi_view.jsonl.part_00.json.mllm_res.json    [01;34msaves[0m
+ [01;34mMLLM[0m                                                                            [01;34mend2end[0m                                                      [01;34mserver[0m
+ [01;34m__pycache__[0m                                                                     http_env.sh                                                  [01;34msoftware[0m
+ [01;34mbash_env[0m                                                                        http_env_no.sh                                               [01;34msoftware.bak[0m
+ [01;34mbiaozhu[0m                                                                         [01;35mitem-389421501-a3a91ef2c80245babcec32e96fb5335f.jpg[0m          [01;34mspu_emb[0m
+ [01;34mbijia_top[0m                                                                       item_eval.jsonl.cut1000.part8_00.mllm_res.json               [01;34mtest[0m
+ [01;34mblank[0m                                                                           [01;35mitem_image-1175169600-7a0877f241474dd8a30dbed9d4b294bd.jpg[0m   test.log
+ [01;34mbrand[0m                                                                           [01;35mitem_image-693815225-d2ec73fa507341efb764568b859fc01a.jpg[0m    [01;34mtmp[0m
+ [01;34mbrand-understanding[0m                                                             [01;34mjava[0m                                                         tmp.py
+ [01;31mbrand-understanding.tar.gz[0m                                                      [01;34mkess[0m                                                         upload_model.sh
+ cate28_to_cdp_afterflush.py                                                     [01;34mkml-vscode[0m                                                   [01;34mutils[0m
+ [01;34mcate_map[0m                                                                        lcrec_cot_bw_param_256.npz                                   val_ref_multi_view.jsonl.head500.mllm_res.json
+ cc.py                                                                           [01;34mllamafactory[0m                                                 val_ref_multi_view.jsonl.mllm_res.json
+ cdp_cate_renew.py                                                               log                                                          [01;34mwandb[0m
+ [01;34mcdp_industry_v2[0m                                                                 log_whq                                                     [01;34m'~'[0m
+(base) root@rack-wlf2-ge26-2:/mmu_cd_ssd/likai11# cd ../pengtiantian/projects/OPD
+(base) root@rack-wlf2-ge26-2:/mmu_cd_ssd/pengtiantian/projects/OPD# cd ../..
+(base) root@rack-wlf2-ge26-2:/mmu_cd_ssd/pengtiantian# conda activate envs/ptt_verl_opd
+(ptt_verl_opd) root@rack-wlf2-ge26-2:/mmu_cd_ssd/pengtiantian# cd projects/OPD/scripts/
+(ptt_verl_opd) root@rack-wlf2-ge26-2:/mmu_cd_ssd/pengtiantian/projects/OPD/scripts# ls
+[0m[01;34minfer[0m  [01;34mtools[0m  [01;34mval[0m
+(ptt_verl_opd) root@rack-wlf2-ge26-2:/mmu_cd_ssd/pengtiantian/projects/OPD/scripts# cd o[Ktools/
+(ptt_verl_opd) root@rack-wlf2-ge26-2:/mmu_cd_ssd/pengtiantian/projects/OPD/scripts/tools# bash model_merge.sh 
+/mmu_cd_ssd/pengtiantian/envs/ptt_verl_opd/lib/python3.12/site-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+config: ModelMergerConfig(operation='merge', backend='fsdp', target_dir='/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL', hf_upload_path=None, private=False, test_hf_dir=None, tie_word_embedding=False, trust_remote_code=False, is_value_model=False, local_dir='/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/actor', hf_model_config_path='/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/actor/huggingface', hf_upload=False, use_cpu_initialization=False)
+Got device mesh tensor([0, 1, 2, 3, 4, 5, 6, 7], dtype=torch.int32), mesh_dim_names ('fsdp',)
+Processing model shards with 8 (8,) in total
+Loading 8 FSDP shards:   0%|                                                                                                                                             | 0/8 [00:00<?, ?it/s]Loading 8 FSDP shards:  12%|████████████████▋                                                                                                                    | 1/8 [00:02<00:18,  2.59s/it]Loading 8 FSDP shards: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 8/8 [00:02<00:00,  3.03it/s]
+`torch_dtype` is deprecated! Use `dtype` instead!
+Saving model to /mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL
+Saving tokenizer to /mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL
+(ptt_verl_opd) root@rack-wlf2-ge26-2:/mmu_cd_ssd/pengtiantian/projects/OPD/scripts/tools# cd ../ev[K[Kval/eval/
+(ptt_verl_opd) root@rack-wlf2-ge26-2:/mmu_cd_ssd/pengtiantian/projects/OPD/scripts/val/eval# python gen_vllm_grade.
+python: can't open file '/mmu_cd_ssd/pengtiantian/projects/OPD/scripts/val/eval/gen_vllm_grade.': [Errno 2] No such file or directory
+(ptt_verl_opd) root@rack-wlf2-ge26-2:/mmu_cd_ssd/pengtiantian/projects/OPD/scripts/val/eval# python gen_vllm_grade.py 
+/mmu_cd_ssd/pengtiantian/envs/ptt_verl_opd/lib/python3.12/site-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+INFO 06-08 10:46:36 [__init__.py:216] Automatically detected platform cuda.
+
+============================================================
+  STEP 1 / 2 : Generation
+============================================================
+GPU workers: ['0', '1', '2', '3', '4', '5', '6', '7']
+apply_chat_template enable_thinking=False
+
+==================================================
+Starting generation for model: /mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL
+==================================================
+Starting generation for task: AMC23 (N=128)
+Total unique samples: 40
+Example prompt after formatting:
+Cities $A$ and $B$ are $45$ miles apart. Alicia lives in $A$ and Beth lives in $B$. Alicia bikes towards $B$ at 18 miles per hour. Leaving at the same time, Beth bikes toward $A$ at 12 miles per hour. How many miles from City $A$ will they be when they meet? Please reason step by step, and put your final answer within \boxed{}.
+GPU workers (AMC23):   0%|                                                                                                                                               | 0/8 [00:00<?, ?it/s]/mmu_cd_ssd/pengtiantian/envs/ptt_verl_opd/lib/python3.12/site-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+/mmu_cd_ssd/pengtiantian/envs/ptt_verl_opd/lib/python3.12/site-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+/mmu_cd_ssd/pengtiantian/envs/ptt_verl_opd/lib/python3.12/site-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+/mmu_cd_ssd/pengtiantian/envs/ptt_verl_opd/lib/python3.12/site-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+/mmu_cd_ssd/pengtiantian/envs/ptt_verl_opd/lib/python3.12/site-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+/mmu_cd_ssd/pengtiantian/envs/ptt_verl_opd/lib/python3.12/site-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+/mmu_cd_ssd/pengtiantian/envs/ptt_verl_opd/lib/python3.12/site-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+/mmu_cd_ssd/pengtiantian/envs/ptt_verl_opd/lib/python3.12/site-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+INFO 06-08 10:46:46 [__init__.py:216] Automatically detected platform cuda.
+INFO 06-08 10:46:47 [__init__.py:216] Automatically detected platform cuda.
+INFO 06-08 10:46:47 [__init__.py:216] Automatically detected platform cuda.
+INFO 06-08 10:46:47 [__init__.py:216] Automatically detected platform cuda.
+INFO 06-08 10:46:47 [__init__.py:216] Automatically detected platform cuda.
+INFO 06-08 10:46:47 [__init__.py:216] Automatically detected platform cuda.
+INFO 06-08 10:46:47 [__init__.py:216] Automatically detected platform cuda.
+INFO 06-08 10:46:47 [__init__.py:216] Automatically detected platform cuda.
+[GPU 0] | Model: /mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL | rollouts len=16 | loading model (TP=1, enable_thinking=False)...
+INFO 06-08 10:46:49 [utils.py:233] non-default args: {'trust_remote_code': True, 'disable_log_stats': True, 'model': '/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL'}
+The argument `trust_remote_code` is to be used with Auto classes. It has no effect here and is ignored.
+INFO 06-08 10:46:49 [model.py:547] Resolved architecture: Qwen3ForCausalLM
+`torch_dtype` is deprecated! Use `dtype` instead!
+INFO 06-08 10:46:49 [model.py:1510] Using max model len 32768
+[GPU 1] | Model: /mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL | rollouts len=16 | loading model (TP=1, enable_thinking=False)...
+INFO 06-08 10:46:50 [utils.py:233] non-default args: {'trust_remote_code': True, 'disable_log_stats': True, 'model': '/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL'}
+The argument `trust_remote_code` is to be used with Auto classes. It has no effect here and is ignored.
+INFO 06-08 10:46:50 [model.py:547] Resolved architecture: Qwen3ForCausalLM
+`torch_dtype` is deprecated! Use `dtype` instead!
+INFO 06-08 10:46:50 [model.py:1510] Using max model len 32768
+[GPU 2] | Model: /mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL | rollouts len=16 | loading model (TP=1, enable_thinking=False)...
+INFO 06-08 10:46:50 [utils.py:233] non-default args: {'trust_remote_code': True, 'disable_log_stats': True, 'model': '/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL'}
+The argument `trust_remote_code` is to be used with Auto classes. It has no effect here and is ignored.
+INFO 06-08 10:46:50 [model.py:547] Resolved architecture: Qwen3ForCausalLM
+`torch_dtype` is deprecated! Use `dtype` instead!
+INFO 06-08 10:46:50 [model.py:1510] Using max model len 32768
+INFO 06-08 10:46:50 [scheduler.py:205] Chunked prefill is enabled with max_num_batched_tokens=16384.
+INFO 06-08 10:46:50 [scheduler.py:205] Chunked prefill is enabled with max_num_batched_tokens=16384.
+INFO 06-08 10:46:50 [scheduler.py:205] Chunked prefill is enabled with max_num_batched_tokens=16384.
+[GPU 3] | Model: /mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL | rollouts len=16 | loading model (TP=1, enable_thinking=False)...
+INFO 06-08 10:46:50 [utils.py:233] non-default args: {'trust_remote_code': True, 'disable_log_stats': True, 'model': '/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL'}
+The argument `trust_remote_code` is to be used with Auto classes. It has no effect here and is ignored.
+INFO 06-08 10:46:50 [model.py:547] Resolved architecture: Qwen3ForCausalLM
+`torch_dtype` is deprecated! Use `dtype` instead!
+INFO 06-08 10:46:50 [model.py:1510] Using max model len 32768
+[GPU 4] | Model: /mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL | rollouts len=16 | loading model (TP=1, enable_thinking=False)...
+[GPU 5] | Model: /mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL | rollouts len=16 | loading model (TP=1, enable_thinking=False)...
+INFO 06-08 10:46:50 [utils.py:233] non-default args: {'trust_remote_code': True, 'disable_log_stats': True, 'model': '/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL'}
+The argument `trust_remote_code` is to be used with Auto classes. It has no effect here and is ignored.
+INFO 06-08 10:46:50 [utils.py:233] non-default args: {'trust_remote_code': True, 'disable_log_stats': True, 'model': '/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL'}
+The argument `trust_remote_code` is to be used with Auto classes. It has no effect here and is ignored.
+[GPU 6] | Model: /mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL | rollouts len=16 | loading model (TP=1, enable_thinking=False)...
+INFO 06-08 10:46:50 [model.py:547] Resolved architecture: Qwen3ForCausalLM
+`torch_dtype` is deprecated! Use `dtype` instead!
+INFO 06-08 10:46:50 [model.py:1510] Using max model len 32768
+INFO 06-08 10:46:50 [model.py:547] Resolved architecture: Qwen3ForCausalLM
+`torch_dtype` is deprecated! Use `dtype` instead!
+INFO 06-08 10:46:50 [model.py:1510] Using max model len 32768
+[GPU 7] | Model: /mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL | rollouts len=16 | loading model (TP=1, enable_thinking=False)...
+INFO 06-08 10:46:50 [utils.py:233] non-default args: {'trust_remote_code': True, 'disable_log_stats': True, 'model': '/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL'}
+The argument `trust_remote_code` is to be used with Auto classes. It has no effect here and is ignored.
+INFO 06-08 10:46:50 [model.py:547] Resolved architecture: Qwen3ForCausalLM
+`torch_dtype` is deprecated! Use `dtype` instead!
+INFO 06-08 10:46:50 [model.py:1510] Using max model len 32768
+INFO 06-08 10:46:50 [utils.py:233] non-default args: {'trust_remote_code': True, 'disable_log_stats': True, 'model': '/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL'}
+The argument `trust_remote_code` is to be used with Auto classes. It has no effect here and is ignored.
+INFO 06-08 10:46:50 [model.py:547] Resolved architecture: Qwen3ForCausalLM
+`torch_dtype` is deprecated! Use `dtype` instead!
+INFO 06-08 10:46:50 [model.py:1510] Using max model len 32768
+INFO 06-08 10:46:50 [scheduler.py:205] Chunked prefill is enabled with max_num_batched_tokens=16384.
+INFO 06-08 10:46:50 [scheduler.py:205] Chunked prefill is enabled with max_num_batched_tokens=16384.
+INFO 06-08 10:46:50 [scheduler.py:205] Chunked prefill is enabled with max_num_batched_tokens=16384.
+WARNING 06-08 10:46:51 [__init__.py:3036] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: CUDA is initialized
+INFO 06-08 10:46:51 [scheduler.py:205] Chunked prefill is enabled with max_num_batched_tokens=16384.
+INFO 06-08 10:46:51 [scheduler.py:205] Chunked prefill is enabled with max_num_batched_tokens=16384.
+WARNING 06-08 10:46:51 [__init__.py:3036] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: CUDA is initialized
+WARNING 06-08 10:46:51 [__init__.py:3036] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: CUDA is initialized
+WARNING 06-08 10:46:51 [__init__.py:3036] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: CUDA is initialized
+WARNING 06-08 10:46:51 [__init__.py:3036] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: CUDA is initialized
+WARNING 06-08 10:46:51 [__init__.py:3036] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: CUDA is initialized
+WARNING 06-08 10:46:51 [__init__.py:3036] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: CUDA is initialized
+WARNING 06-08 10:46:51 [__init__.py:3036] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: CUDA is initialized
+/mmu_cd_ssd/pengtiantian/envs/ptt_verl_opd/lib/python3.12/site-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+/mmu_cd_ssd/pengtiantian/envs/ptt_verl_opd/lib/python3.12/site-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+/mmu_cd_ssd/pengtiantian/envs/ptt_verl_opd/lib/python3.12/site-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+/mmu_cd_ssd/pengtiantian/envs/ptt_verl_opd/lib/python3.12/site-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+/mmu_cd_ssd/pengtiantian/envs/ptt_verl_opd/lib/python3.12/site-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+/mmu_cd_ssd/pengtiantian/envs/ptt_verl_opd/lib/python3.12/site-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+/mmu_cd_ssd/pengtiantian/envs/ptt_verl_opd/lib/python3.12/site-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+/mmu_cd_ssd/pengtiantian/envs/ptt_verl_opd/lib/python3.12/site-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+INFO 06-08 10:46:54 [__init__.py:216] Automatically detected platform cuda.
+INFO 06-08 10:46:54 [__init__.py:216] Automatically detected platform cuda.
+INFO 06-08 10:46:54 [__init__.py:216] Automatically detected platform cuda.
+INFO 06-08 10:46:55 [__init__.py:216] Automatically detected platform cuda.
+INFO 06-08 10:46:55 [__init__.py:216] Automatically detected platform cuda.
+INFO 06-08 10:46:55 [__init__.py:216] Automatically detected platform cuda.
+INFO 06-08 10:46:55 [__init__.py:216] Automatically detected platform cuda.
+INFO 06-08 10:46:55 [__init__.py:216] Automatically detected platform cuda.
+[1;36m(EngineCore_DP0 pid=3657818)[0;0m INFO 06-08 10:46:58 [core.py:644] Waiting for init message from front-end.
+[1;36m(EngineCore_DP0 pid=3657818)[0;0m INFO 06-08 10:46:58 [core.py:77] Initializing a V1 LLM engine (v0.11.0) with config: model='/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL', speculative_config=None, tokenizer='/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=True, dtype=torch.bfloat16, max_seq_len=32768, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=False, kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser=''), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None), seed=0, served_model_name=/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL, enable_prefix_caching=True, chunked_prefill_enabled=True, pooler_config=None, compilation_config={"level":3,"debug_dump_path":"","cache_dir":"","backend":"","custom_ops":[],"splitting_ops":["vllm.unified_attention","vllm.unified_attention_with_output","vllm.mamba_mixer2","vllm.mamba_mixer","vllm.short_conv","vllm.linear_attention","vllm.plamo2_mamba_mixer","vllm.gdn_attention","vllm.sparse_attn_indexer"],"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"enable_auto_functionalized_v2":false},"inductor_passes":{},"cudagraph_mode":[2,1],"use_cudagraph":true,"cudagraph_num_of_warmups":1,"cudagraph_capture_sizes":[512,504,496,488,480,472,464,456,448,440,432,424,416,408,400,392,384,376,368,360,352,344,336,328,320,312,304,296,288,280,272,264,256,248,240,232,224,216,208,200,192,184,176,168,160,152,144,136,128,120,112,104,96,88,80,72,64,56,48,40,32,24,16,8,4,2,1],"cudagraph_copy_inputs":false,"full_cuda_graph":false,"use_inductor_graph_partition":false,"pass_config":{},"max_capture_size":512,"local_cache_dir":null}
+[1;36m(EngineCore_DP0 pid=3657841)[0;0m INFO 06-08 10:46:58 [core.py:644] Waiting for init message from front-end.
+[1;36m(EngineCore_DP0 pid=3657841)[0;0m INFO 06-08 10:46:58 [core.py:77] Initializing a V1 LLM engine (v0.11.0) with config: model='/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL', speculative_config=None, tokenizer='/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=True, dtype=torch.bfloat16, max_seq_len=32768, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=False, kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser=''), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None), seed=0, served_model_name=/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL, enable_prefix_caching=True, chunked_prefill_enabled=True, pooler_config=None, compilation_config={"level":3,"debug_dump_path":"","cache_dir":"","backend":"","custom_ops":[],"splitting_ops":["vllm.unified_attention","vllm.unified_attention_with_output","vllm.mamba_mixer2","vllm.mamba_mixer","vllm.short_conv","vllm.linear_attention","vllm.plamo2_mamba_mixer","vllm.gdn_attention","vllm.sparse_attn_indexer"],"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"enable_auto_functionalized_v2":false},"inductor_passes":{},"cudagraph_mode":[2,1],"use_cudagraph":true,"cudagraph_num_of_warmups":1,"cudagraph_capture_sizes":[512,504,496,488,480,472,464,456,448,440,432,424,416,408,400,392,384,376,368,360,352,344,336,328,320,312,304,296,288,280,272,264,256,248,240,232,224,216,208,200,192,184,176,168,160,152,144,136,128,120,112,104,96,88,80,72,64,56,48,40,32,24,16,8,4,2,1],"cudagraph_copy_inputs":false,"full_cuda_graph":false,"use_inductor_graph_partition":false,"pass_config":{},"max_capture_size":512,"local_cache_dir":null}
+[1;36m(EngineCore_DP0 pid=3657828)[0;0m INFO 06-08 10:46:58 [core.py:644] Waiting for init message from front-end.
+[1;36m(EngineCore_DP0 pid=3657828)[0;0m INFO 06-08 10:46:58 [core.py:77] Initializing a V1 LLM engine (v0.11.0) with config: model='/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL', speculative_config=None, tokenizer='/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=True, dtype=torch.bfloat16, max_seq_len=32768, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=False, kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser=''), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None), seed=0, served_model_name=/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL, enable_prefix_caching=True, chunked_prefill_enabled=True, pooler_config=None, compilation_config={"level":3,"debug_dump_path":"","cache_dir":"","backend":"","custom_ops":[],"splitting_ops":["vllm.unified_attention","vllm.unified_attention_with_output","vllm.mamba_mixer2","vllm.mamba_mixer","vllm.short_conv","vllm.linear_attention","vllm.plamo2_mamba_mixer","vllm.gdn_attention","vllm.sparse_attn_indexer"],"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"enable_auto_functionalized_v2":false},"inductor_passes":{},"cudagraph_mode":[2,1],"use_cudagraph":true,"cudagraph_num_of_warmups":1,"cudagraph_capture_sizes":[512,504,496,488,480,472,464,456,448,440,432,424,416,408,400,392,384,376,368,360,352,344,336,328,320,312,304,296,288,280,272,264,256,248,240,232,224,216,208,200,192,184,176,168,160,152,144,136,128,120,112,104,96,88,80,72,64,56,48,40,32,24,16,8,4,2,1],"cudagraph_copy_inputs":false,"full_cuda_graph":false,"use_inductor_graph_partition":false,"pass_config":{},"max_capture_size":512,"local_cache_dir":null}
+[1;36m(EngineCore_DP0 pid=3657847)[0;0m INFO 06-08 10:46:58 [core.py:644] Waiting for init message from front-end.
+[1;36m(EngineCore_DP0 pid=3657831)[0;0m INFO 06-08 10:46:58 [core.py:644] Waiting for init message from front-end.
+[1;36m(EngineCore_DP0 pid=3657856)[0;0m INFO 06-08 10:46:58 [core.py:644] Waiting for init message from front-end.
+[1;36m(EngineCore_DP0 pid=3657847)[0;0m INFO 06-08 10:46:58 [core.py:77] Initializing a V1 LLM engine (v0.11.0) with config: model='/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL', speculative_config=None, tokenizer='/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=True, dtype=torch.bfloat16, max_seq_len=32768, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=False, kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser=''), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None), seed=0, served_model_name=/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL, enable_prefix_caching=True, chunked_prefill_enabled=True, pooler_config=None, compilation_config={"level":3,"debug_dump_path":"","cache_dir":"","backend":"","custom_ops":[],"splitting_ops":["vllm.unified_attention","vllm.unified_attention_with_output","vllm.mamba_mixer2","vllm.mamba_mixer","vllm.short_conv","vllm.linear_attention","vllm.plamo2_mamba_mixer","vllm.gdn_attention","vllm.sparse_attn_indexer"],"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"enable_auto_functionalized_v2":false},"inductor_passes":{},"cudagraph_mode":[2,1],"use_cudagraph":true,"cudagraph_num_of_warmups":1,"cudagraph_capture_sizes":[512,504,496,488,480,472,464,456,448,440,432,424,416,408,400,392,384,376,368,360,352,344,336,328,320,312,304,296,288,280,272,264,256,248,240,232,224,216,208,200,192,184,176,168,160,152,144,136,128,120,112,104,96,88,80,72,64,56,48,40,32,24,16,8,4,2,1],"cudagraph_copy_inputs":false,"full_cuda_graph":false,"use_inductor_graph_partition":false,"pass_config":{},"max_capture_size":512,"local_cache_dir":null}
+[1;36m(EngineCore_DP0 pid=3657855)[0;0m INFO 06-08 10:46:58 [core.py:644] Waiting for init message from front-end.
+[1;36m(EngineCore_DP0 pid=3657831)[0;0m INFO 06-08 10:46:58 [core.py:77] Initializing a V1 LLM engine (v0.11.0) with config: model='/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL', speculative_config=None, tokenizer='/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=True, dtype=torch.bfloat16, max_seq_len=32768, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=False, kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser=''), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None), seed=0, served_model_name=/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL, enable_prefix_caching=True, chunked_prefill_enabled=True, pooler_config=None, compilation_config={"level":3,"debug_dump_path":"","cache_dir":"","backend":"","custom_ops":[],"splitting_ops":["vllm.unified_attention","vllm.unified_attention_with_output","vllm.mamba_mixer2","vllm.mamba_mixer","vllm.short_conv","vllm.linear_attention","vllm.plamo2_mamba_mixer","vllm.gdn_attention","vllm.sparse_attn_indexer"],"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"enable_auto_functionalized_v2":false},"inductor_passes":{},"cudagraph_mode":[2,1],"use_cudagraph":true,"cudagraph_num_of_warmups":1,"cudagraph_capture_sizes":[512,504,496,488,480,472,464,456,448,440,432,424,416,408,400,392,384,376,368,360,352,344,336,328,320,312,304,296,288,280,272,264,256,248,240,232,224,216,208,200,192,184,176,168,160,152,144,136,128,120,112,104,96,88,80,72,64,56,48,40,32,24,16,8,4,2,1],"cudagraph_copy_inputs":false,"full_cuda_graph":false,"use_inductor_graph_partition":false,"pass_config":{},"max_capture_size":512,"local_cache_dir":null}
+[1;36m(EngineCore_DP0 pid=3657856)[0;0m INFO 06-08 10:46:58 [core.py:77] Initializing a V1 LLM engine (v0.11.0) with config: model='/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL', speculative_config=None, tokenizer='/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=True, dtype=torch.bfloat16, max_seq_len=32768, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=False, kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser=''), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None), seed=0, served_model_name=/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL, enable_prefix_caching=True, chunked_prefill_enabled=True, pooler_config=None, compilation_config={"level":3,"debug_dump_path":"","cache_dir":"","backend":"","custom_ops":[],"splitting_ops":["vllm.unified_attention","vllm.unified_attention_with_output","vllm.mamba_mixer2","vllm.mamba_mixer","vllm.short_conv","vllm.linear_attention","vllm.plamo2_mamba_mixer","vllm.gdn_attention","vllm.sparse_attn_indexer"],"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"enable_auto_functionalized_v2":false},"inductor_passes":{},"cudagraph_mode":[2,1],"use_cudagraph":true,"cudagraph_num_of_warmups":1,"cudagraph_capture_sizes":[512,504,496,488,480,472,464,456,448,440,432,424,416,408,400,392,384,376,368,360,352,344,336,328,320,312,304,296,288,280,272,264,256,248,240,232,224,216,208,200,192,184,176,168,160,152,144,136,128,120,112,104,96,88,80,72,64,56,48,40,32,24,16,8,4,2,1],"cudagraph_copy_inputs":false,"full_cuda_graph":false,"use_inductor_graph_partition":false,"pass_config":{},"max_capture_size":512,"local_cache_dir":null}
+[1;36m(EngineCore_DP0 pid=3657855)[0;0m INFO 06-08 10:46:58 [core.py:77] Initializing a V1 LLM engine (v0.11.0) with config: model='/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL', speculative_config=None, tokenizer='/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=True, dtype=torch.bfloat16, max_seq_len=32768, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=False, kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser=''), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None), seed=0, served_model_name=/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL, enable_prefix_caching=True, chunked_prefill_enabled=True, pooler_config=None, compilation_config={"level":3,"debug_dump_path":"","cache_dir":"","backend":"","custom_ops":[],"splitting_ops":["vllm.unified_attention","vllm.unified_attention_with_output","vllm.mamba_mixer2","vllm.mamba_mixer","vllm.short_conv","vllm.linear_attention","vllm.plamo2_mamba_mixer","vllm.gdn_attention","vllm.sparse_attn_indexer"],"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"enable_auto_functionalized_v2":false},"inductor_passes":{},"cudagraph_mode":[2,1],"use_cudagraph":true,"cudagraph_num_of_warmups":1,"cudagraph_capture_sizes":[512,504,496,488,480,472,464,456,448,440,432,424,416,408,400,392,384,376,368,360,352,344,336,328,320,312,304,296,288,280,272,264,256,248,240,232,224,216,208,200,192,184,176,168,160,152,144,136,128,120,112,104,96,88,80,72,64,56,48,40,32,24,16,8,4,2,1],"cudagraph_copy_inputs":false,"full_cuda_graph":false,"use_inductor_graph_partition":false,"pass_config":{},"max_capture_size":512,"local_cache_dir":null}
+[1;36m(EngineCore_DP0 pid=3657857)[0;0m INFO 06-08 10:46:58 [core.py:644] Waiting for init message from front-end.
+[1;36m(EngineCore_DP0 pid=3657857)[0;0m INFO 06-08 10:46:58 [core.py:77] Initializing a V1 LLM engine (v0.11.0) with config: model='/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL', speculative_config=None, tokenizer='/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=True, dtype=torch.bfloat16, max_seq_len=32768, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=False, kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser=''), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None), seed=0, served_model_name=/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL, enable_prefix_caching=True, chunked_prefill_enabled=True, pooler_config=None, compilation_config={"level":3,"debug_dump_path":"","cache_dir":"","backend":"","custom_ops":[],"splitting_ops":["vllm.unified_attention","vllm.unified_attention_with_output","vllm.mamba_mixer2","vllm.mamba_mixer","vllm.short_conv","vllm.linear_attention","vllm.plamo2_mamba_mixer","vllm.gdn_attention","vllm.sparse_attn_indexer"],"use_inductor":true,"compile_sizes":[],"inductor_compile_config":{"enable_auto_functionalized_v2":false},"inductor_passes":{},"cudagraph_mode":[2,1],"use_cudagraph":true,"cudagraph_num_of_warmups":1,"cudagraph_capture_sizes":[512,504,496,488,480,472,464,456,448,440,432,424,416,408,400,392,384,376,368,360,352,344,336,328,320,312,304,296,288,280,272,264,256,248,240,232,224,216,208,200,192,184,176,168,160,152,144,136,128,120,112,104,96,88,80,72,64,56,48,40,32,24,16,8,4,2,1],"cudagraph_copy_inputs":false,"full_cuda_graph":false,"use_inductor_graph_partition":false,"pass_config":{},"max_capture_size":512,"local_cache_dir":null}
+[1;36m(EngineCore_DP0 pid=3657818)[0;0m W0608 10:47:02.001000 3657818 site-packages/torch/utils/cpp_extension.py:2425] TORCH_CUDA_ARCH_LIST is not set, all archs for visible cards are included for compilation. 
+[1;36m(EngineCore_DP0 pid=3657818)[0;0m W0608 10:47:02.001000 3657818 site-packages/torch/utils/cpp_extension.py:2425] If this is not desired, please set os.environ['TORCH_CUDA_ARCH_LIST'] to specific architectures.
+[1;36m(EngineCore_DP0 pid=3657855)[0;0m W0608 10:47:02.001000 3657855 site-packages/torch/utils/cpp_extension.py:2425] TORCH_CUDA_ARCH_LIST is not set, all archs for visible cards are included for compilation. 
+[1;36m(EngineCore_DP0 pid=3657841)[0;0m W0608 10:47:02.001000 3657841 site-packages/torch/utils/cpp_extension.py:2425] TORCH_CUDA_ARCH_LIST is not set, all archs for visible cards are included for compilation. 
+[1;36m(EngineCore_DP0 pid=3657847)[0;0m W0608 10:47:02.001000 3657847 site-packages/torch/utils/cpp_extension.py:2425] TORCH_CUDA_ARCH_LIST is not set, all archs for visible cards are included for compilation. 
+[1;36m(EngineCore_DP0 pid=3657855)[0;0m W0608 10:47:02.001000 3657855 site-packages/torch/utils/cpp_extension.py:2425] If this is not desired, please set os.environ['TORCH_CUDA_ARCH_LIST'] to specific architectures.
+[1;36m(EngineCore_DP0 pid=3657841)[0;0m W0608 10:47:02.001000 3657841 site-packages/torch/utils/cpp_extension.py:2425] If this is not desired, please set os.environ['TORCH_CUDA_ARCH_LIST'] to specific architectures.
+[1;36m(EngineCore_DP0 pid=3657857)[0;0m W0608 10:47:02.001000 3657857 site-packages/torch/utils/cpp_extension.py:2425] TORCH_CUDA_ARCH_LIST is not set, all archs for visible cards are included for compilation. 
+[1;36m(EngineCore_DP0 pid=3657847)[0;0m W0608 10:47:02.001000 3657847 site-packages/torch/utils/cpp_extension.py:2425] If this is not desired, please set os.environ['TORCH_CUDA_ARCH_LIST'] to specific architectures.
+[1;36m(EngineCore_DP0 pid=3657857)[0;0m W0608 10:47:02.001000 3657857 site-packages/torch/utils/cpp_extension.py:2425] If this is not desired, please set os.environ['TORCH_CUDA_ARCH_LIST'] to specific architectures.
+[1;36m(EngineCore_DP0 pid=3657856)[0;0m W0608 10:47:02.001000 3657856 site-packages/torch/utils/cpp_extension.py:2425] TORCH_CUDA_ARCH_LIST is not set, all archs for visible cards are included for compilation. 
+[1;36m(EngineCore_DP0 pid=3657831)[0;0m W0608 10:47:02.001000 3657831 site-packages/torch/utils/cpp_extension.py:2425] TORCH_CUDA_ARCH_LIST is not set, all archs for visible cards are included for compilation. 
+[1;36m(EngineCore_DP0 pid=3657856)[0;0m W0608 10:47:02.001000 3657856 site-packages/torch/utils/cpp_extension.py:2425] If this is not desired, please set os.environ['TORCH_CUDA_ARCH_LIST'] to specific architectures.
+[1;36m(EngineCore_DP0 pid=3657828)[0;0m W0608 10:47:02.001000 3657828 site-packages/torch/utils/cpp_extension.py:2425] TORCH_CUDA_ARCH_LIST is not set, all archs for visible cards are included for compilation. 
+[1;36m(EngineCore_DP0 pid=3657831)[0;0m W0608 10:47:02.001000 3657831 site-packages/torch/utils/cpp_extension.py:2425] If this is not desired, please set os.environ['TORCH_CUDA_ARCH_LIST'] to specific architectures.
+[1;36m(EngineCore_DP0 pid=3657828)[0;0m W0608 10:47:02.001000 3657828 site-packages/torch/utils/cpp_extension.py:2425] If this is not desired, please set os.environ['TORCH_CUDA_ARCH_LIST'] to specific architectures.
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[1;36m(EngineCore_DP0 pid=3657847)[0;0m INFO 06-08 10:47:03 [parallel_state.py:1208] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0, EP rank 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[1;36m(EngineCore_DP0 pid=3657818)[0;0m INFO 06-08 10:47:03 [parallel_state.py:1208] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0, EP rank 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[1;36m(EngineCore_DP0 pid=3657828)[0;0m INFO 06-08 10:47:03 [parallel_state.py:1208] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0, EP rank 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[1;36m(EngineCore_DP0 pid=3657841)[0;0m INFO 06-08 10:47:03 [parallel_state.py:1208] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0, EP rank 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[1;36m(EngineCore_DP0 pid=3657856)[0;0m INFO 06-08 10:47:03 [parallel_state.py:1208] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0, EP rank 0
+[1;36m(EngineCore_DP0 pid=3657831)[0;0m INFO 06-08 10:47:03 [parallel_state.py:1208] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0, EP rank 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[1;36m(EngineCore_DP0 pid=3657855)[0;0m INFO 06-08 10:47:03 [parallel_state.py:1208] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0, EP rank 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[Gloo] Rank 0 is connected to 0 peer ranks. Expected number of connected peer ranks is : 0
+[1;36m(EngineCore_DP0 pid=3657857)[0;0m INFO 06-08 10:47:03 [parallel_state.py:1208] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0, EP rank 0
+[1;36m(EngineCore_DP0 pid=3657818)[0;0m INFO 06-08 10:47:04 [topk_topp_sampler.py:55] Using FlashInfer for top-p & top-k sampling.
+[1;36m(EngineCore_DP0 pid=3657847)[0;0m INFO 06-08 10:47:04 [topk_topp_sampler.py:55] Using FlashInfer for top-p & top-k sampling.
+[1;36m(EngineCore_DP0 pid=3657831)[0;0m INFO 06-08 10:47:04 [topk_topp_sampler.py:55] Using FlashInfer for top-p & top-k sampling.
+[1;36m(EngineCore_DP0 pid=3657828)[0;0m INFO 06-08 10:47:04 [topk_topp_sampler.py:55] Using FlashInfer for top-p & top-k sampling.
+[1;36m(EngineCore_DP0 pid=3657841)[0;0m INFO 06-08 10:47:04 [topk_topp_sampler.py:55] Using FlashInfer for top-p & top-k sampling.
+[1;36m(EngineCore_DP0 pid=3657857)[0;0m INFO 06-08 10:47:04 [topk_topp_sampler.py:55] Using FlashInfer for top-p & top-k sampling.
+[1;36m(EngineCore_DP0 pid=3657855)[0;0m INFO 06-08 10:47:04 [topk_topp_sampler.py:55] Using FlashInfer for top-p & top-k sampling.
+[1;36m(EngineCore_DP0 pid=3657856)[0;0m INFO 06-08 10:47:04 [topk_topp_sampler.py:55] Using FlashInfer for top-p & top-k sampling.
+[1;36m(EngineCore_DP0 pid=3657847)[0;0m INFO 06-08 10:47:04 [gpu_model_runner.py:2602] Starting to load model /mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL...
+[1;36m(EngineCore_DP0 pid=3657841)[0;0m INFO 06-08 10:47:04 [gpu_model_runner.py:2602] Starting to load model /mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL...
+[1;36m(EngineCore_DP0 pid=3657831)[0;0m INFO 06-08 10:47:04 [gpu_model_runner.py:2602] Starting to load model /mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL...
+[1;36m(EngineCore_DP0 pid=3657818)[0;0m INFO 06-08 10:47:04 [gpu_model_runner.py:2602] Starting to load model /mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL...
+[1;36m(EngineCore_DP0 pid=3657855)[0;0m INFO 06-08 10:47:04 [gpu_model_runner.py:2602] Starting to load model /mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL...
+[1;36m(EngineCore_DP0 pid=3657856)[0;0m INFO 06-08 10:47:04 [gpu_model_runner.py:2602] Starting to load model /mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL...
+[1;36m(EngineCore_DP0 pid=3657828)[0;0m INFO 06-08 10:47:04 [gpu_model_runner.py:2602] Starting to load model /mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL...
+[1;36m(EngineCore_DP0 pid=3657857)[0;0m INFO 06-08 10:47:04 [gpu_model_runner.py:2602] Starting to load model /mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-05_11-55-02/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL...
+[1;36m(EngineCore_DP0 pid=3657841)[0;0m INFO 06-08 10:47:04 [gpu_model_runner.py:2634] Loading model from scratch...
+[1;36m(EngineCore_DP0 pid=3657847)[0;0m INFO 06-08 10:47:04 [gpu_model_runner.py:2634] Loading model from scratch...
+[1;36m(EngineCore_DP0 pid=3657856)[0;0m INFO 06-08 10:47:04 [gpu_model_runner.py:2634] Loading model from scratch...
+[1;36m(EngineCore_DP0 pid=3657818)[0;0m INFO 06-08 10:47:04 [gpu_model_runner.py:2634] Loading model from scratch...
+[1;36m(EngineCore_DP0 pid=3657855)[0;0m INFO 06-08 10:47:04 [gpu_model_runner.py:2634] Loading model from scratch...
+[1;36m(EngineCore_DP0 pid=3657828)[0;0m INFO 06-08 10:47:04 [gpu_model_runner.py:2634] Loading model from scratch...
+[1;36m(EngineCore_DP0 pid=3657831)[0;0m INFO 06-08 10:47:04 [gpu_model_runner.py:2634] Loading model from scratch...
+[1;36m(EngineCore_DP0 pid=3657857)[0;0m INFO 06-08 10:47:04 [gpu_model_runner.py:2634] Loading model from scratch...
+[1;36m(EngineCore_DP0 pid=3657841)[0;0m INFO 06-08 10:47:04 [cuda.py:366] Using Flash Attention backend on V1 engine.
+[1;36m(EngineCore_DP0 pid=3657847)[0;0m INFO 06-08 10:47:04 [cuda.py:366] Using Flash Attention backend on V1 engine.
+[1;36m(EngineCore_DP0 pid=3657856)[0;0m INFO 06-08 10:47:04 [cuda.py:366] Using Flash Attention backend on V1 engine.
+[1;36m(EngineCore_DP0 pid=3657818)[0;0m INFO 06-08 10:47:04 [cuda.py:366] Using Flash Attention backend on V1 engine.
+[1;36m(EngineCore_DP0 pid=3657855)[0;0m INFO 06-08 10:47:04 [cuda.py:366] Using Flash Attention backend on V1 engine.
+[1;36m(EngineCore_DP0 pid=3657828)[0;0m INFO 06-08 10:47:04 [cuda.py:366] Using Flash Attention backend on V1 engine.
+[1;36m(EngineCore_DP0 pid=3657831)[0;0m INFO 06-08 10:47:04 [cuda.py:366] Using Flash Attention backend on V1 engine.
+[1;36m(EngineCore_DP0 pid=3657857)[0;0m INFO 06-08 10:47:04 [cuda.py:366] Using Flash Attention backend on V1 engine.
+[1;36m(EngineCore_DP0 pid=3657818)[0;0m Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+[1;36m(EngineCore_DP0 pid=3657855)[0;0m Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+[1;36m(EngineCore_DP0 pid=3657841)[0;0m Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+[1;36m(EngineCore_DP0 pid=3657856)[0;0m Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+[1;36m(EngineCore_DP0 pid=3657831)[0;0m Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+[1;36m(EngineCore_DP0 pid=3657857)[0;0m Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+[1;36m(EngineCore_DP0 pid=3657847)[0;0m Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+[1;36m(EngineCore_DP0 pid=3657828)[0;0m Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+[1;36m(EngineCore_DP0 pid=3657828)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:06<00:00,  6.98s/it]
+[1;36m(EngineCore_DP0 pid=3657856)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:06<00:00,  6.98s/it]
+[1;36m(EngineCore_DP0 pid=3657831)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:06<00:00,  6.98s/it]
+[1;36m(EngineCore_DP0 pid=3657841)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:06<00:00,  6.98s/it]
+[1;36m(EngineCore_DP0 pid=3657857)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:06<00:00,  6.98s/it]
+[1;36m(EngineCore_DP0 pid=3657855)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:06<00:00,  6.98s/it]
+[1;36m(EngineCore_DP0 pid=3657847)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:06<00:00,  6.98s/it]
+[1;36m(EngineCore_DP0 pid=3657828)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:06<00:00,  6.98s/it]
+[1;36m(EngineCore_DP0 pid=3657828)[0;0m 
+[1;36m(EngineCore_DP0 pid=3657856)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:06<00:00,  6.99s/it]
+[1;36m(EngineCore_DP0 pid=3657856)[0;0m 
+[1;36m(EngineCore_DP0 pid=3657841)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:06<00:00,  6.99s/it]
+[1;36m(EngineCore_DP0 pid=3657831)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:06<00:00,  6.99s/it]
+[1;36m(EngineCore_DP0 pid=3657841)[0;0m 
+[1;36m(EngineCore_DP0 pid=3657831)[0;0m 
+[1;36m(EngineCore_DP0 pid=3657857)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:06<00:00,  6.99s/it]
+[1;36m(EngineCore_DP0 pid=3657855)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:06<00:00,  6.99s/it]
+[1;36m(EngineCore_DP0 pid=3657857)[0;0m 
+[1;36m(EngineCore_DP0 pid=3657855)[0;0m 
+[1;36m(EngineCore_DP0 pid=3657847)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:06<00:00,  6.98s/it]
+[1;36m(EngineCore_DP0 pid=3657847)[0;0m 
+[1;36m(EngineCore_DP0 pid=3657818)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:06<00:00,  6.99s/it]
+[1;36m(EngineCore_DP0 pid=3657818)[0;0m Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:06<00:00,  6.99s/it]
+[1;36m(EngineCore_DP0 pid=3657818)[0;0m 
+[1;36m(EngineCore_DP0 pid=3657841)[0;0m INFO 06-08 10:47:12 [default_loader.py:267] Loading weights took 7.10 seconds
+[1;36m(EngineCore_DP0 pid=3657818)[0;0m INFO 06-08 10:47:12 [default_loader.py:267] Loading weights took 7.35 seconds
+[1;36m(EngineCore_DP0 pid=3657855)[0;0m INFO 06-08 10:47:12 [default_loader.py:267] Loading weights took 7.35 seconds
+[1;36m(EngineCore_DP0 pid=3657847)[0;0m INFO 06-08 10:47:12 [default_loader.py:267] Loading weights took 7.34 seconds
+[1;36m(EngineCore_DP0 pid=3657857)[0;0m INFO 06-08 10:47:12 [default_loader.py:267] Loading weights took 7.35 seconds
+[1;36m(EngineCore_DP0 pid=3657828)[0;0m INFO 06-08 10:47:12 [default_loader.py:267] Loading weights took 7.35 seconds
+[1;36m(EngineCore_DP0 pid=3657831)[0;0m INFO 06-08 10:47:12 [default_loader.py:267] Loading weights took 7.35 seconds
+[1;36m(EngineCore_DP0 pid=3657856)[0;0m INFO 06-08 10:47:12 [default_loader.py:267] Loading weights took 7.35 seconds
+[1;36m(EngineCore_DP0 pid=3657841)[0;0m INFO 06-08 10:47:12 [gpu_model_runner.py:2653] Model loading took 3.2132 GiB and 7.451259 seconds
+[1;36m(EngineCore_DP0 pid=3657818)[0;0m INFO 06-08 10:47:12 [gpu_model_runner.py:2653] Model loading took 3.2132 GiB and 7.648896 seconds
+[1;36m(EngineCore_DP0 pid=3657828)[0;0m INFO 06-08 10:47:12 [gpu_model_runner.py:2653] Model loading took 3.2132 GiB and 7.642407 seconds
+[1;36m(EngineCore_DP0 pid=3657857)[0;0m INFO 06-08 10:47:12 [gpu_model_runner.py:2653] Model loading took 3.2132 GiB and 7.597780 seconds
+[1;36m(EngineCore_DP0 pid=3657847)[0;0m INFO 06-08 10:47:12 [gpu_model_runner.py:2653] Model loading took 3.2132 GiB and 7.686194 seconds
+[1;36m(EngineCore_DP0 pid=3657856)[0;0m INFO 06-08 10:47:12 [gpu_model_runner.py:2653] Model loading took 3.2132 GiB and 7.664886 seconds
+[1;36m(EngineCore_DP0 pid=3657855)[0;0m INFO 06-08 10:47:12 [gpu_model_runner.py:2653] Model loading took 3.2132 GiB and 7.644774 seconds
+[1;36m(EngineCore_DP0 pid=3657831)[0;0m INFO 06-08 10:47:12 [gpu_model_runner.py:2653] Model loading took 3.2132 GiB and 7.630169 seconds
+  [1;36m(EngineCore_DP0 pid=3657847)[0;0m INFO 06-08 10:47:21 [backends.py:548] Using cache directory: /root/.cache/vllm/torch_compile_cache/88b8daa043/rank_0_0/backbone for vLLM's torch.compile
+[1;36m(EngineCore_DP0 pid=3657828)[0;0m INFO 06-08 10:47:21 [backends.py:548] Using cache directory: /root/.cache/vllm/torch_compile_cache/88b8daa043/rank_0_0/backbone for vLLM's torch.compile
+[1;36m(EngineCore_DP0 pid=3657857)[0;0m INFO 06-08 10:47:21 [backends.py:548] Using cache directory: /root/.cache/vllm/torch_compile_cache/88b8daa043/rank_0_0/backbone for vLLM's torch.compile
+[1;36m(EngineCore_DP0 pid=3657855)[0;0m INFO 06-08 10:47:21 [backends.py:548] Using cache directory: /root/.cache/vllm/torch_compile_cache/88b8daa043/rank_0_0/backbone for vLLM's torch.compile
+[1;36m(EngineCore_DP0 pid=3657856)[0;0m INFO 06-08 10:47:21 [backends.py:548] Using cache directory: /root/.cache/vllm/torch_compile_cache/88b8daa043/rank_0_0/backbone for vLLM's torch.compile
+[1;36m(EngineCore_DP0 pid=3657818)[0;0m INFO 06-08 10:47:21 [backends.py:548] Using cache directory: /root/.cache/vllm/torch_compile_cache/88b8daa043/rank_0_0/backbone for vLLM's torch.compile
+[1;36m(EngineCore_DP0 pid=3657831)[0;0m INFO 06-08 10:47:21 [backends.py:548] Using cache directory: /root/.cache/vllm/torch_compile_cache/88b8daa043/rank_0_0/backbone for vLLM's torch.compile
+[1;36m(EngineCore_DP0 pid=3657841)[0;0m INFO 06-08 10:47:21 [backends.py:548] Using cache directory: /root/.cache/vllm/torch_compile_cache/88b8daa043/rank_0_0/backbone for vLLM's torch.compile
+[1;36m(EngineCore_DP0 pid=3657857)[0;0m INFO 06-08 10:47:21 [backends.py:559] Dynamo bytecode transform time: 8.23 s
+[1;36m(EngineCore_DP0 pid=3657856)[0;0m INFO 06-08 10:47:21 [backends.py:559] Dynamo bytecode transform time: 8.23 s
+[1;36m(EngineCore_DP0 pid=3657828)[0;0m INFO 06-08 10:47:21 [backends.py:559] Dynamo bytecode transform time: 8.24 s
+[1;36m(EngineCore_DP0 pid=3657847)[0;0m INFO 06-08 10:47:21 [backends.py:559] Dynamo bytecode transform time: 8.23 s
+[1;36m(EngineCore_DP0 pid=3657855)[0;0m INFO 06-08 10:47:21 [backends.py:559] Dynamo bytecode transform time: 8.18 s
+[1;36m(EngineCore_DP0 pid=3657818)[0;0m INFO 06-08 10:47:21 [backends.py:559] Dynamo bytecode transform time: 8.27 s
+[1;36m(EngineCore_DP0 pid=3657841)[0;0m INFO 06-08 10:47:21 [backends.py:559] Dynamo bytecode transform time: 8.45 s
+[1;36m(EngineCore_DP0 pid=3657831)[0;0m INFO 06-08 10:47:21 [backends.py:559] Dynamo bytecode transform time: 8.21 s
+[1;36m(EngineCore_DP0 pid=3657857)[0;0m INFO 06-08 10:47:29 [backends.py:197] Cache the graph for dynamic shape for later use
+[1;36m(EngineCore_DP0 pid=3657856)[0;0m INFO 06-08 10:47:29 [backends.py:197] Cache the graph for dynamic shape for later use
+[1;36m(EngineCore_DP0 pid=3657847)[0;0m INFO 06-08 10:47:29 [backends.py:197] Cache the graph for dynamic shape for later use
+[1;36m(EngineCore_DP0 pid=3657828)[0;0m INFO 06-08 10:47:29 [backends.py:197] Cache the graph for dynamic shape for later use
+[1;36m(EngineCore_DP0 pid=3657855)[0;0m INFO 06-08 10:47:29 [backends.py:197] Cache the graph for dynamic shape for later use
+[1;36m(EngineCore_DP0 pid=3657841)[0;0m INFO 06-08 10:47:29 [backends.py:197] Cache the graph for dynamic shape for later use
+[1;36m(EngineCore_DP0 pid=3657831)[0;0m INFO 06-08 10:47:29 [backends.py:197] Cache the graph for dynamic shape for later use
+[1;36m(EngineCore_DP0 pid=3657818)[0;0m INFO 06-08 10:47:29 [backends.py:197] Cache the graph for dynamic shape for later use
+[1;36m(EngineCore_DP0 pid=3657856)[0;0m INFO 06-08 10:47:50 [backends.py:218] Compiling a graph for dynamic shape takes 28.82 s
+[1;36m(EngineCore_DP0 pid=3657855)[0;0m INFO 06-08 10:47:50 [backends.py:218] Compiling a graph for dynamic shape takes 28.83 s
+[1;36m(EngineCore_DP0 pid=3657847)[0;0m INFO 06-08 10:47:50 [backends.py:218] Compiling a graph for dynamic shape takes 28.88 s
+[1;36m(EngineCore_DP0 pid=3657857)[0;0m INFO 06-08 10:47:50 [backends.py:218] Compiling a graph for dynamic shape takes 28.92 s
+[1;36m(EngineCore_DP0 pid=3657818)[0;0m INFO 06-08 10:47:50 [backends.py:218] Compiling a graph for dynamic shape takes 28.94 s
+[1;36m(EngineCore_DP0 pid=3657831)[0;0m INFO 06-08 10:47:50 [backends.py:218] Compiling a graph for dynamic shape takes 28.96 s
+[1;36m(EngineCore_DP0 pid=3657828)[0;0m INFO 06-08 10:47:50 [backends.py:218] Compiling a graph for dynamic shape takes 28.99 s
+[1;36m(EngineCore_DP0 pid=3657841)[0;0m INFO 06-08 10:47:50 [backends.py:218] Compiling a graph for dynamic shape takes 28.99 s
+[1;36m(EngineCore_DP0 pid=3657856)[0;0m INFO 06-08 10:48:00 [monitor.py:34] torch.compile takes 37.05 s in total
+[1;36m(EngineCore_DP0 pid=3657847)[0;0m INFO 06-08 10:48:00 [monitor.py:34] torch.compile takes 37.11 s in total
+[1;36m(EngineCore_DP0 pid=3657855)[0;0m INFO 06-08 10:48:00 [monitor.py:34] torch.compile takes 37.02 s in total
+[1;36m(EngineCore_DP0 pid=3657841)[0;0m INFO 06-08 10:48:00 [monitor.py:34] torch.compile takes 37.44 s in total
+[1;36m(EngineCore_DP0 pid=3657831)[0;0m INFO 06-08 10:48:00 [monitor.py:34] torch.compile takes 37.17 s in total
+[1;36m(EngineCore_DP0 pid=3657828)[0;0m INFO 06-08 10:48:00 [monitor.py:34] torch.compile takes 37.23 s in total
+[1;36m(EngineCore_DP0 pid=3657857)[0;0m INFO 06-08 10:48:00 [monitor.py:34] torch.compile takes 37.15 s in total
+[1;36m(EngineCore_DP0 pid=3657818)[0;0m INFO 06-08 10:48:00 [monitor.py:34] torch.compile takes 37.21 s in total
+[1;36m(EngineCore_DP0 pid=3657856)[0;0m INFO 06-08 10:48:01 [gpu_worker.py:298] Available KV cache memory: 66.03 GiB
+[1;36m(EngineCore_DP0 pid=3657828)[0;0m INFO 06-08 10:48:02 [gpu_worker.py:298] Available KV cache memory: 66.03 GiB
+[1;36m(EngineCore_DP0 pid=3657841)[0;0m INFO 06-08 10:48:02 [gpu_worker.py:298] Available KV cache memory: 66.03 GiB
+[1;36m(EngineCore_DP0 pid=3657855)[0;0m INFO 06-08 10:48:02 [gpu_worker.py:298] Available KV cache memory: 66.03 GiB
+[1;36m(EngineCore_DP0 pid=3657856)[0;0m INFO 06-08 10:48:02 [kv_cache_utils.py:1087] GPU KV cache size: 618,208 tokens
+[1;36m(EngineCore_DP0 pid=3657856)[0;0m INFO 06-08 10:48:02 [kv_cache_utils.py:1091] Maximum concurrency for 32,768 tokens per request: 18.87x
+[1;36m(EngineCore_DP0 pid=3657831)[0;0m INFO 06-08 10:48:02 [gpu_worker.py:298] Available KV cache memory: 66.03 GiB
+[1;36m(EngineCore_DP0 pid=3657818)[0;0m INFO 06-08 10:48:02 [gpu_worker.py:298] Available KV cache memory: 66.03 GiB
+[1;36m(EngineCore_DP0 pid=3657828)[0;0m INFO 06-08 10:48:02 [kv_cache_utils.py:1087] GPU KV cache size: 618,208 tokens
+[1;36m(EngineCore_DP0 pid=3657828)[0;0m INFO 06-08 10:48:02 [kv_cache_utils.py:1091] Maximum concurrency for 32,768 tokens per request: 18.87x
+[1;36m(EngineCore_DP0 pid=3657857)[0;0m INFO 06-08 10:48:02 [gpu_worker.py:298] Available KV cache memory: 66.03 GiB
+[1;36m(EngineCore_DP0 pid=3657841)[0;0m INFO 06-08 10:48:02 [kv_cache_utils.py:1087] GPU KV cache size: 618,208 tokens
+[1;36m(EngineCore_DP0 pid=3657841)[0;0m INFO 06-08 10:48:02 [kv_cache_utils.py:1091] Maximum concurrency for 32,768 tokens per request: 18.87x
+[1;36m(EngineCore_DP0 pid=3657855)[0;0m INFO 06-08 10:48:02 [kv_cache_utils.py:1087] GPU KV cache size: 618,208 tokens
+[1;36m(EngineCore_DP0 pid=3657855)[0;0m INFO 06-08 10:48:02 [kv_cache_utils.py:1091] Maximum concurrency for 32,768 tokens per request: 18.87x
+[1;36m(EngineCore_DP0 pid=3657847)[0;0m INFO 06-08 10:48:02 [gpu_worker.py:298] Available KV cache memory: 66.03 GiB
+[1;36m(EngineCore_DP0 pid=3657856)[0;0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   0%|                                                                                                          | 0/67 [00:00<?, ?it/s][1;36m(EngineCore_DP0 pid=3657818)[0;0m INFO 06-08 10:48:02 [kv_cache_utils.py:1087] GPU KV cache size: 618,208 tokens
+[1;36m(EngineCore_DP0 pid=3657818)[0;0m INFO 06-08 10:48:02 [kv_cache_utils.py:1091] Maximum concurrency for 32,768 tokens per request: 18.87x
+[1;36m(EngineCore_DP0 pid=3657831)[0;0m INFO 06-08 10:48:02 [kv_cache_utils.py:1087] GPU KV cache size: 618,208 tokens
+[1;36m(EngineCore_DP0 pid=3657831)[0;0m INFO 06-08 10:48:02 [kv_cache_utils.py:1091] Maximum concurrency for 32,768 tokens per request: 18.87x
+Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   4%|████▍                                                                                             | 3/67 [00:00<00:02, 22.41it/s][1;36m(EngineCore_DP0 pid=3657828)[0;0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   0%|                                                                                                          | 0/67 [00:00<?, ?it/s][1;36m(EngineCore_DP0 pid=3657857)[0;0m INFO 06-08 10:48:02 [kv_cache_utils.py:1087] GPU KV cache size: 618,208 tokens
+[1;36m(EngineCore_DP0 pid=3657857)[0;0m INFO 06-08 10:48:02 [kv_cache_utils.py:1091] Maximum concurrency for 32,768 tokens per request: 18.87x
+Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   9%|████████▊                                                                                         | 6/67 [00:00<00:02, 24.44it/s][1;36m(EngineCore_DP0 pid=3657841)[0;0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   0%|                                                                                                          | 0/67 [00:00<?, ?it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   4%|████▍                                                                                             | 3/67 [00:00<00:02, 26.47it/s][1;36m(EngineCore_DP0 pid=3657855)[0;0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   0%|                                                                                                          | 0/67 [00:00<?, ?it/s][1;36m(EngineCore_DP0 pid=3657847)[0;0m INFO 06-08 10:48:02 [kv_cache_utils.py:1087] GPU KV cache size: 618,208 tokens
+[1;36m(EngineCore_DP0 pid=3657847)[0;0m INFO 06-08 10:48:02 [kv_cache_utils.py:1091] Maximum concurrency for 32,768 tokens per request: 18.87x
+Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  13%|█████████████▏                                                                                    | 9/67 [00:00<00:02, 26.38it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   4%|████▍                                                                                             | 3/67 [00:00<00:02, 26.99it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   9%|████████▊                                                                                         | 6/67 [00:00<00:02, 27.17it/s][1;36m(EngineCore_DP0 pid=3657818)[0;0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   0%|                                                                                                          | 0/67 [00:00<?, ?it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   4%|████▍                                                                                             | 3/67 [00:00<00:02, 26.00it/s][1;36m(EngineCore_DP0 pid=3657831)[0;0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   0%|                                                                                                          | 0/67 [00:00<?, ?it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   9%|████████▊                                                                                         | 6/67 [00:00<00:02, 28.40it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  19%|██████████████████▊                                                                              | 13/67 [00:00<00:01, 28.75it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   4%|████▍                                                                                             | 3/67 [00:00<00:02, 29.71it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   9%|████████▊                                                                                         | 6/67 [00:00<00:02, 27.68it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  15%|██████████████▍                                                                                  | 10/67 [00:00<00:01, 29.40it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   4%|████▍                                                                                             | 3/67 [00:00<00:02, 27.98it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  13%|█████████████▏                                                                                    | 9/67 [00:00<00:01, 29.02it/s][1;36m(EngineCore_DP0 pid=3657857)[0;0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   0%|                                                                                                          | 0/67 [00:00<?, ?it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  25%|████████████████████████▌                                                                        | 17/67 [00:00<00:01, 29.80it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  13%|█████████████▏                                                                                    | 9/67 [00:00<00:02, 28.08it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  10%|██████████▏                                                                                       | 7/67 [00:00<00:01, 30.46it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  21%|████████████████████▎                                                                            | 14/67 [00:00<00:01, 30.09it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   9%|████████▊                                                                                         | 6/67 [00:00<00:02, 27.21it/s][1;36m(EngineCore_DP0 pid=3657847)[0;0m Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   0%|                                                                                                          | 0/67 [00:00<?, ?it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  18%|█████████████████▎                                                                               | 12/67 [00:00<00:01, 27.61it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   4%|████▍                                                                                             | 3/67 [00:00<00:02, 25.53it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  30%|████████████████████████████▉                                                                    | 20/67 [00:00<00:01, 28.79it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  18%|█████████████████▎                                                                               | 12/67 [00:00<00:02, 27.03it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  25%|████████████████████████▌                                                                        | 17/67 [00:00<00:01, 29.20it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  13%|█████████████▏                                                                                    | 9/67 [00:00<00:02, 27.75it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   4%|████▍                                                                                             | 3/67 [00:00<00:02, 26.56it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  16%|███████████████▉                                                                                 | 11/67 [00:00<00:01, 28.45it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  22%|█████████████████████▋                                                                           | 15/67 [00:00<00:01, 28.08it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   9%|████████▊                                                                                         | 6/67 [00:00<00:02, 26.73it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  34%|█████████████████████████████████▎                                                               | 23/67 [00:00<00:01, 27.07it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  22%|█████████████████████▋                                                                           | 15/67 [00:00<00:02, 25.57it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  30%|████████████████████████████▉                                                                    | 20/67 [00:00<00:01, 27.66it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  18%|█████████████████▎                                                                               | 12/67 [00:00<00:02, 25.70it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   9%|████████▊                                                                                         | 6/67 [00:00<00:02, 24.25it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  21%|████████████████████▎                                                                            | 14/67 [00:00<00:02, 26.30it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  27%|██████████████████████████                                                                       | 18/67 [00:00<00:01, 26.03it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  13%|█████████████▏                                                                                    | 9/67 [00:00<00:02, 25.19it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  39%|█████████████████████████████████████▋                                                           | 26/67 [00:00<00:01, 27.35it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  27%|██████████████████████████                                                                       | 18/67 [00:00<00:01, 25.57it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  34%|█████████████████████████████████▎                                                               | 23/67 [00:00<00:01, 27.56it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  22%|█████████████████████▋                                                                           | 15/67 [00:00<00:01, 26.60it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  13%|█████████████▏                                                                                    | 9/67 [00:00<00:02, 25.90it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  25%|████████████████████████▌                                                                        | 17/67 [00:00<00:01, 26.88it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  31%|██████████████████████████████▍                                                                  | 21/67 [00:00<00:01, 27.06it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  18%|█████████████████▎                                                                               | 12/67 [00:00<00:02, 26.86it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  43%|█████████████████████████████████████████▉                                                       | 29/67 [00:01<00:01, 28.07it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  31%|██████████████████████████████▍                                                                  | 21/67 [00:00<00:01, 25.80it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  39%|█████████████████████████████████████▋                                                           | 26/67 [00:00<00:01, 27.48it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  27%|██████████████████████████                                                                       | 18/67 [00:00<00:01, 25.90it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  18%|█████████████████▎                                                                               | 12/67 [00:00<00:02, 25.05it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  30%|████████████████████████████▉                                                                    | 20/67 [00:00<00:01, 26.52it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  36%|██████████████████████████████████▋                                                              | 24/67 [00:00<00:01, 26.00it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  22%|█████████████████████▋                                                                           | 15/67 [00:00<00:01, 26.13it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  48%|██████████████████████████████████████████████▎                                                  | 32/67 [00:01<00:01, 26.61it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  36%|██████████████████████████████████▋                                                              | 24/67 [00:00<00:01, 24.87it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  43%|█████████████████████████████████████████▉                                                       | 29/67 [00:01<00:01, 25.82it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  31%|██████████████████████████████▍                                                                  | 21/67 [00:00<00:01, 25.88it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  34%|█████████████████████████████████▎                                                               | 23/67 [00:00<00:01, 25.91it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  22%|█████████████████████▋                                                                           | 15/67 [00:00<00:02, 24.81it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  27%|██████████████████████████                                                                       | 18/67 [00:00<00:01, 25.63it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  40%|███████████████████████████████████████                                                          | 27/67 [00:01<00:01, 25.26it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  40%|███████████████████████████████████████                                                          | 27/67 [00:01<00:01, 26.21it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  52%|██████████████████████████████████████████████████▋                                              | 35/67 [00:01<00:01, 24.37it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  36%|██████████████████████████████████▋                                                              | 24/67 [00:00<00:01, 26.92it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  27%|██████████████████████████                                                                       | 18/67 [00:00<00:01, 25.92it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  39%|█████████████████████████████████████▋                                                           | 26/67 [00:00<00:01, 26.57it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  49%|███████████████████████████████████████████████▊                                                 | 33/67 [00:01<00:01, 25.51it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  31%|██████████████████████████████▍                                                                  | 21/67 [00:00<00:01, 25.85it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  45%|███████████████████████████████████████████▍                                                     | 30/67 [00:01<00:01, 25.32it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  45%|███████████████████████████████████████████▍                                                     | 30/67 [00:01<00:01, 25.99it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  57%|███████████████████████████████████████████████████████                                          | 38/67 [00:01<00:01, 24.45it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  40%|███████████████████████████████████████                                                          | 27/67 [00:01<00:01, 26.39it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  31%|██████████████████████████████▍                                                                  | 21/67 [00:00<00:01, 25.95it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  43%|█████████████████████████████████████████▉                                                       | 29/67 [00:01<00:01, 26.33it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  36%|██████████████████████████████████▋                                                              | 24/67 [00:00<00:01, 26.85it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  54%|████████████████████████████████████████████████████                                             | 36/67 [00:01<00:01, 26.05it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  49%|███████████████████████████████████████████████▊                                                 | 33/67 [00:01<00:01, 24.73it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  61%|███████████████████████████████████████████████████████████▎                                     | 41/67 [00:01<00:01, 25.56it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  49%|███████████████████████████████████████████████▊                                                 | 33/67 [00:01<00:01, 25.58it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  45%|███████████████████████████████████████████▍                                                     | 30/67 [00:01<00:01, 26.97it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  36%|██████████████████████████████████▋                                                              | 24/67 [00:00<00:01, 26.82it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  40%|███████████████████████████████████████                                                          | 27/67 [00:01<00:01, 27.71it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  58%|████████████████████████████████████████████████████████▍                                        | 39/67 [00:01<00:01, 26.39it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  49%|███████████████████████████████████████████████▊                                                 | 33/67 [00:01<00:01, 26.27it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  54%|████████████████████████████████████████████████████                                             | 36/67 [00:01<00:01, 25.49it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  66%|███████████████████████████████████████████████████████████████▋                                 | 44/67 [00:01<00:00, 26.16it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  54%|████████████████████████████████████████████████████                                             | 36/67 [00:01<00:01, 25.59it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  40%|███████████████████████████████████████                                                          | 27/67 [00:01<00:01, 26.71it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  49%|███████████████████████████████████████████████▊                                                 | 33/67 [00:01<00:01, 25.26it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  45%|███████████████████████████████████████████▍                                                     | 30/67 [00:01<00:01, 27.41it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  63%|████████████████████████████████████████████████████████████▊                                    | 42/67 [00:01<00:00, 26.12it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  54%|████████████████████████████████████████████████████                                             | 36/67 [00:01<00:01, 25.95it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  58%|████████████████████████████████████████████████████████▍                                        | 39/67 [00:01<00:01, 25.32it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  70%|████████████████████████████████████████████████████████████████████                             | 47/67 [00:01<00:00, 26.43it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  58%|████████████████████████████████████████████████████████▍                                        | 39/67 [00:01<00:01, 25.57it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  45%|███████████████████████████████████████████▍                                                     | 30/67 [00:01<00:01, 26.82it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  54%|████████████████████████████████████████████████████                                             | 36/67 [00:01<00:01, 25.75it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  67%|█████████████████████████████████████████████████████████████████▏                               | 45/67 [00:01<00:00, 26.46it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  49%|███████████████████████████████████████████████▊                                                 | 33/67 [00:01<00:01, 25.88it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  58%|████████████████████████████████████████████████████████▍                                        | 39/67 [00:01<00:01, 25.36it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  63%|████████████████████████████████████████████████████████████▊                                    | 42/67 [00:01<00:01, 24.77it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  75%|████████████████████████████████████████████████████████████████████████▍                        | 50/67 [00:01<00:00, 25.75it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  63%|████████████████████████████████████████████████████████████▊                                    | 42/67 [00:01<00:01, 23.96it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  58%|████████████████████████████████████████████████████████▍                                        | 39/67 [00:01<00:01, 24.18it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  49%|███████████████████████████████████████████████▊                                                 | 33/67 [00:01<00:01, 24.15it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  54%|████████████████████████████████████████████████████                                             | 36/67 [00:01<00:01, 24.67it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  72%|█████████████████████████████████████████████████████████████████████▍                           | 48/67 [00:01<00:00, 22.78it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  63%|████████████████████████████████████████████████████████████▊                                    | 42/67 [00:01<00:01, 24.50it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  67%|█████████████████████████████████████████████████████████████████▏                               | 45/67 [00:01<00:00, 24.29it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  79%|████████████████████████████████████████████████████████████████████████████▋                    | 53/67 [00:02<00:00, 24.73it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  67%|█████████████████████████████████████████████████████████████████▏                               | 45/67 [00:01<00:00, 23.56it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  63%|████████████████████████████████████████████████████████████▊                                    | 42/67 [00:01<00:01, 23.65it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  54%|████████████████████████████████████████████████████                                             | 36/67 [00:01<00:01, 23.51it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  58%|████████████████████████████████████████████████████████▍                                        | 39/67 [00:01<00:01, 24.53it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  67%|█████████████████████████████████████████████████████████████████▏                               | 45/67 [00:01<00:00, 22.52it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  72%|█████████████████████████████████████████████████████████████████████▍                           | 48/67 [00:01<00:00, 22.05it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  76%|█████████████████████████████████████████████████████████████████████████▊                       | 51/67 [00:02<00:00, 20.62it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  84%|█████████████████████████████████████████████████████████████████████████████████                | 56/67 [00:02<00:00, 22.59it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  72%|█████████████████████████████████████████████████████████████████████▍                           | 48/67 [00:01<00:00, 20.42it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  67%|█████████████████████████████████████████████████████████████████▏                               | 45/67 [00:01<00:01, 20.81it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  63%|████████████████████████████████████████████████████████████▊                                    | 42/67 [00:01<00:01, 20.65it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  58%|████████████████████████████████████████████████████████▍                                        | 39/67 [00:01<00:01, 20.11it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  72%|█████████████████████████████████████████████████████████████████████▍                           | 48/67 [00:01<00:00, 21.76it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  76%|█████████████████████████████████████████████████████████████████████████▊                       | 51/67 [00:02<00:00, 21.21it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  81%|██████████████████████████████████████████████████████████████████████████████▏                  | 54/67 [00:02<00:00, 20.57it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  88%|█████████████████████████████████████████████████████████████████████████████████████▍           | 59/67 [00:02<00:00, 22.32it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  76%|█████████████████████████████████████████████████████████████████████████▊                       | 51/67 [00:02<00:00, 22.01it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  72%|█████████████████████████████████████████████████████████████████████▍                           | 48/67 [00:01<00:00, 22.41it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  67%|█████████████████████████████████████████████████████████████████▏                               | 45/67 [00:01<00:00, 22.45it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  63%|████████████████████████████████████████████████████████████▊                                    | 42/67 [00:01<00:01, 21.00it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  76%|█████████████████████████████████████████████████████████████████████████▊                       | 51/67 [00:02<00:00, 22.59it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  85%|██████████████████████████████████████████████████████████████████████████████████▌              | 57/67 [00:02<00:00, 21.88it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  93%|█████████████████████████████████████████████████████████████████████████████████████████▊       | 62/67 [00:02<00:00, 23.18it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  81%|██████████████████████████████████████████████████████████████████████████████▏                  | 54/67 [00:02<00:00, 22.12it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  76%|█████████████████████████████████████████████████████████████████████████▊                       | 51/67 [00:02<00:00, 23.02it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  81%|██████████████████████████████████████████████████████████████████████████████▏                  | 54/67 [00:02<00:00, 22.41it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  72%|█████████████████████████████████████████████████████████████████████▍                           | 48/67 [00:01<00:00, 23.26it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  67%|█████████████████████████████████████████████████████████████████▏                               | 45/67 [00:01<00:01, 21.92it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  81%|██████████████████████████████████████████████████████████████████████████████▏                  | 54/67 [00:02<00:00, 23.26it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  85%|██████████████████████████████████████████████████████████████████████████████████▌              | 57/67 [00:02<00:00, 23.21it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  90%|██████████████████████████████████████████████████████████████████████████████████████▊          | 60/67 [00:02<00:00, 22.66it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  97%|██████████████████████████████████████████████████████████████████████████████████████████████   | 65/67 [00:02<00:00, 21.18it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  81%|██████████████████████████████████████████████████████████████████████████████▏                  | 54/67 [00:02<00:00, 22.79it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  85%|██████████████████████████████████████████████████████████████████████████████████▌              | 57/67 [00:02<00:00, 22.14it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  76%|█████████████████████████████████████████████████████████████████████████▊                       | 51/67 [00:02<00:00, 22.95it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  94%|███████████████████████████████████████████████████████████████████████████████████████████▏     | 63/67 [00:02<00:00, 21.41it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  72%|█████████████████████████████████████████████████████████████████████▍                           | 48/67 [00:02<00:00, 19.85it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  85%|██████████████████████████████████████████████████████████████████████████████████▌              | 57/67 [00:02<00:00, 21.14it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  90%|██████████████████████████████████████████████████████████████████████████████████████▊          | 60/67 [00:02<00:00, 21.16it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE): 100%|█████████████████████████████████████████████████████████████████████████████████████████████████| 67/67 [00:02<00:00, 24.40it/s]
+[1;36m(EngineCore_DP0 pid=3657856)[0;0m Capturing CUDA graphs (decode, FULL):   0%|                                                                                                                             | 0/67 [00:00<?, ?it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  90%|██████████████████████████████████████████████████████████████████████████████████████▊          | 60/67 [00:02<00:00, 20.51it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  85%|██████████████████████████████████████████████████████████████████████████████████▌              | 57/67 [00:02<00:00, 20.17it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  81%|██████████████████████████████████████████████████████████████████████████████▏                  | 54/67 [00:02<00:00, 20.85it/s]Capturing CUDA graphs (decode, FULL):   1%|█▋                                                                                                                   | 1/67 [00:00<00:07,  8.32it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  94%|███████████████████████████████████████████████████████████████████████████████████████████▏     | 63/67 [00:02<00:00, 19.86it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  90%|██████████████████████████████████████████████████████████████████████████████████████▊          | 60/67 [00:02<00:00, 19.48it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  76%|█████████████████████████████████████████████████████████████████████████▊                       | 51/67 [00:02<00:00, 18.54it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  99%|███████████████████████████████████████████████████████████████████████████████████████████████▌ | 66/67 [00:02<00:00, 18.77it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  94%|███████████████████████████████████████████████████████████████████████████████████████████▏     | 63/67 [00:02<00:00, 20.27it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  85%|██████████████████████████████████████████████████████████████████████████████████▌              | 57/67 [00:02<00:00, 20.40it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  90%|██████████████████████████████████████████████████████████████████████████████████████▊          | 60/67 [00:02<00:00, 19.67it/s]Capturing CUDA graphs (decode, FULL):   6%|██████▉                                                                                                              | 4/67 [00:00<00:03, 16.44it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  79%|████████████████████████████████████████████████████████████████████████████▋                    | 53/67 [00:02<00:00, 18.64it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE): 100%|█████████████████████████████████████████████████████████████████████████████████████████████████| 67/67 [00:02<00:00, 23.40it/s]
+[1;36m(EngineCore_DP0 pid=3657828)[0;0m Capturing CUDA graphs (decode, FULL):   0%|                                                                                                                             | 0/67 [00:00<?, ?it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  94%|███████████████████████████████████████████████████████████████████████████████████████████▏     | 63/67 [00:02<00:00, 20.25it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  99%|███████████████████████████████████████████████████████████████████████████████████████████████▌ | 66/67 [00:02<00:00, 19.48it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  82%|███████████████████████████████████████████████████████████████████████████████▋                 | 55/67 [00:02<00:00, 18.84it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  94%|███████████████████████████████████████████████████████████████████████████████████████████▏     | 63/67 [00:02<00:00, 19.80it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  90%|██████████████████████████████████████████████████████████████████████████████████████▊          | 60/67 [00:02<00:00, 20.10it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE): 100%|█████████████████████████████████████████████████████████████████████████████████████████████████| 67/67 [00:02<00:00, 23.27it/s]
+[1;36m(EngineCore_DP0 pid=3657841)[0;0m Capturing CUDA graphs (decode, FULL):   0%|                                                                                                                             | 0/67 [00:00<?, ?it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  99%|███████████████████████████████████████████████████████████████████████████████████████████████▌ | 66/67 [00:02<00:00, 18.96it/s]Capturing CUDA graphs (decode, FULL):  10%|████████████▏                                                                                                        | 7/67 [00:00<00:03, 19.19it/s]Capturing CUDA graphs (decode, FULL):   4%|█████▏                                                                                                               | 3/67 [00:00<00:02, 22.79it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  85%|██████████████████████████████████████████████████████████████████████████████████▌              | 57/67 [00:02<00:00, 18.08it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE): 100%|█████████████████████████████████████████████████████████████████████████████████████████████████| 67/67 [00:02<00:00, 22.62it/s]
+[1;36m(EngineCore_DP0 pid=3657855)[0;0m Capturing CUDA graphs (decode, FULL):   0%|                                                                                                                             | 0/67 [00:00<?, ?it/s]Capturing CUDA graphs (decode, FULL):   3%|███▍                                                                                                                 | 2/67 [00:00<00:03, 17.73it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  99%|███████████████████████████████████████████████████████████████████████████████████████████████▌ | 66/67 [00:02<00:00, 18.09it/s]Capturing CUDA graphs (decode, FULL):  13%|███████████████▋                                                                                                     | 9/67 [00:00<00:03, 19.11it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  94%|███████████████████████████████████████████████████████████████████████████████████████████▏     | 63/67 [00:02<00:00, 19.62it/s]Capturing CUDA graphs (decode, FULL):   9%|██████████▍                                                                                                          | 6/67 [00:00<00:03, 19.51it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  99%|███████████████████████████████████████████████████████████████████████████████████████████████▌ | 66/67 [00:02<00:00, 17.94it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE): 100%|█████████████████████████████████████████████████████████████████████████████████████████████████| 67/67 [00:02<00:00, 22.80it/s]
+[1;36m(EngineCore_DP0 pid=3657818)[0;0m Capturing CUDA graphs (decode, FULL):   0%|                                                                                                                             | 0/67 [00:00<?, ?it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  88%|█████████████████████████████████████████████████████████████████████████████████████▍           | 59/67 [00:02<00:00, 18.17it/s]Capturing CUDA graphs (decode, FULL):  18%|████████████████████▊                                                                                               | 12/67 [00:00<00:02, 20.83it/s]Capturing CUDA graphs (decode, FULL):   7%|████████▋                                                                                                            | 5/67 [00:00<00:02, 20.98it/s]Capturing CUDA graphs (decode, FULL):   4%|█████▏                                                                                                               | 3/67 [00:00<00:02, 22.79it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE): 100%|█████████████████████████████████████████████████████████████████████████████████████████████████| 67/67 [00:02<00:00, 22.58it/s]
+[1;36m(EngineCore_DP0 pid=3657831)[0;0m Capturing CUDA graphs (decode, FULL):   0%|                                                                                                                             | 0/67 [00:00<?, ?it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  99%|███████████████████████████████████████████████████████████████████████████████████████████████▌ | 66/67 [00:02<00:00, 20.07it/s]Capturing CUDA graphs (decode, FULL):  13%|███████████████▋                                                                                                     | 9/67 [00:00<00:02, 22.34it/s]Capturing CUDA graphs (decode, FULL):   4%|█████▏                                                                                                               | 3/67 [00:00<00:02, 24.57it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  93%|█████████████████████████████████████████████████████████████████████████████████████████▊       | 62/67 [00:02<00:00, 19.84it/s]Capturing CUDA graphs (decode, FULL):  22%|█████████████████████████▉                                                                                          | 15/67 [00:00<00:02, 22.91it/s]Capturing CUDA graphs (decode, FULL):  12%|█████████████▉                                                                                                       | 8/67 [00:00<00:02, 23.07it/s]Capturing CUDA graphs (decode, FULL):   9%|██████████▍                                                                                                          | 6/67 [00:00<00:02, 24.49it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE): 100%|█████████████████████████████████████████████████████████████████████████████████████████████████| 67/67 [00:02<00:00, 22.91it/s]
+[1;36m(EngineCore_DP0 pid=3657857)[0;0m Capturing CUDA graphs (decode, FULL):   0%|                                                                                                                             | 0/67 [00:00<?, ?it/s]Capturing CUDA graphs (decode, FULL):   4%|█████▏                                                                                                               | 3/67 [00:00<00:02, 24.76it/s]Capturing CUDA graphs (decode, FULL):  18%|████████████████████▊                                                                                               | 12/67 [00:00<00:02, 23.26it/s]Capturing CUDA graphs (decode, FULL):   9%|██████████▍                                                                                                          | 6/67 [00:00<00:02, 26.22it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  96%|████████████████████████████████████████████████████████████████████████████████████████████▋    | 64/67 [00:02<00:00, 19.80it/s]Capturing CUDA graphs (decode, FULL):  27%|███████████████████████████████▏                                                                                    | 18/67 [00:00<00:01, 24.50it/s]Capturing CUDA graphs (decode, FULL):  13%|███████████████▋                                                                                                     | 9/67 [00:00<00:02, 25.82it/s]Capturing CUDA graphs (decode, FULL):  16%|███████████████████                                                                                                 | 11/67 [00:00<00:02, 24.42it/s]Capturing CUDA graphs (decode, FULL):   4%|█████▏                                                                                                               | 3/67 [00:00<00:02, 26.28it/s]Capturing CUDA graphs (decode, FULL):   9%|██████████▍                                                                                                          | 6/67 [00:00<00:02, 26.29it/s]Capturing CUDA graphs (decode, FULL):  22%|█████████████████████████▉                                                                                          | 15/67 [00:00<00:02, 24.78it/s]Capturing CUDA graphs (decode, FULL):  13%|███████████████▋                                                                                                     | 9/67 [00:00<00:02, 27.16it/s]Capturing CUDA graphs (decode, FULL):  31%|████████████████████████████████████▎                                                                               | 21/67 [00:00<00:01, 25.74it/s]Capturing CUDA graphs (decode, FULL):  18%|████████████████████▊                                                                                               | 12/67 [00:00<00:02, 25.38it/s]Capturing CUDA graphs (decode, FULL):   9%|██████████▍                                                                                                          | 6/67 [00:00<00:02, 26.33it/s]Capturing CUDA graphs (decode, FULL):  21%|████████████████████████▏                                                                                           | 14/67 [00:00<00:02, 24.34it/s]Capturing CUDA graphs (decode, FULL):  13%|███████████████▋                                                                                                     | 9/67 [00:00<00:02, 26.22it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE): 100%|█████████████████████████████████████████████████████████████████████████████████████████████████| 67/67 [00:03<00:00, 18.66it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE): 100%|█████████████████████████████████████████████████████████████████████████████████████████████████| 67/67 [00:03<00:00, 21.59it/s]
+[1;36m(EngineCore_DP0 pid=3657847)[0;0m Capturing CUDA graphs (decode, FULL):   0%|                                                                                                                             | 0/67 [00:00<?, ?it/s]Capturing CUDA graphs (decode, FULL):  27%|███████████████████████████████▏                                                                                    | 18/67 [00:00<00:01, 24.62it/s]Capturing CUDA graphs (decode, FULL):  18%|████████████████████▊                                                                                               | 12/67 [00:00<00:02, 26.51it/s]Capturing CUDA graphs (decode, FULL):  36%|█████████████████████████████████████████▌                                                                          | 24/67 [00:01<00:01, 25.13it/s]Capturing CUDA graphs (decode, FULL):  13%|███████████████▋                                                                                                     | 9/67 [00:00<00:02, 26.31it/s]Capturing CUDA graphs (decode, FULL):  22%|█████████████████████████▉                                                                                          | 15/67 [00:00<00:02, 25.45it/s]Capturing CUDA graphs (decode, FULL):  25%|█████████████████████████████▍                                                                                      | 17/67 [00:00<00:01, 25.04it/s]Capturing CUDA graphs (decode, FULL):  18%|████████████████████▊                                                                                               | 12/67 [00:00<00:02, 26.02it/s]Capturing CUDA graphs (decode, FULL):   4%|█████▏                                                                                                               | 3/67 [00:00<00:02, 22.24it/s]Capturing CUDA graphs (decode, FULL):  22%|█████████████████████████▉                                                                                          | 15/67 [00:00<00:01, 26.64it/s]Capturing CUDA graphs (decode, FULL):  31%|████████████████████████████████████▎                                                                               | 21/67 [00:00<00:01, 25.09it/s]Capturing CUDA graphs (decode, FULL):  40%|██████████████████████████████████████████████▋                                                                     | 27/67 [00:01<00:01, 25.64it/s]Capturing CUDA graphs (decode, FULL):  18%|████████████████████▊                                                                                               | 12/67 [00:00<00:02, 25.45it/s]Capturing CUDA graphs (decode, FULL):  30%|██████████████████████████████████▋                                                                                 | 20/67 [00:00<00:01, 24.66it/s]Capturing CUDA graphs (decode, FULL):  27%|███████████████████████████████▏                                                                                    | 18/67 [00:00<00:01, 24.68it/s]Capturing CUDA graphs (decode, FULL):  22%|█████████████████████████▉                                                                                          | 15/67 [00:00<00:01, 26.03it/s]Capturing CUDA graphs (decode, FULL):  27%|███████████████████████████████▏                                                                                    | 18/67 [00:00<00:01, 26.80it/s]Capturing CUDA graphs (decode, FULL):   9%|██████████▍                                                                                                          | 6/67 [00:00<00:02, 23.41it/s]Capturing CUDA graphs (decode, FULL):  36%|█████████████████████████████████████████▌                                                                          | 24/67 [00:00<00:01, 25.53it/s]Capturing CUDA graphs (decode, FULL):  45%|███████████████████████████████████████████████████▉                                                                | 30/67 [00:01<00:01, 26.08it/s]Capturing CUDA graphs (decode, FULL):  22%|█████████████████████████▉                                                                                          | 15/67 [00:00<00:01, 26.07it/s]Capturing CUDA graphs (decode, FULL):  31%|████████████████████████████████████▎                                                                               | 21/67 [00:00<00:01, 25.20it/s]Capturing CUDA graphs (decode, FULL):  34%|███████████████████████████████████████▊                                                                            | 23/67 [00:00<00:01, 24.98it/s]Capturing CUDA graphs (decode, FULL):  27%|███████████████████████████████▏                                                                                    | 18/67 [00:00<00:01, 26.28it/s]Capturing CUDA graphs (decode, FULL):  31%|████████████████████████████████████▎                                                                               | 21/67 [00:00<00:01, 26.80it/s]Capturing CUDA graphs (decode, FULL):  40%|██████████████████████████████████████████████▋                                                                     | 27/67 [00:01<00:01, 26.17it/s]Capturing CUDA graphs (decode, FULL):  13%|███████████████▋                                                                                                     | 9/67 [00:00<00:02, 24.43it/s]Capturing CUDA graphs (decode, FULL):  49%|█████████████████████████████████████████████████████████▏                                                          | 33/67 [00:01<00:01, 26.73it/s]Capturing CUDA graphs (decode, FULL):  27%|███████████████████████████████▏                                                                                    | 18/67 [00:00<00:01, 26.11it/s]Capturing CUDA graphs (decode, FULL):  31%|████████████████████████████████████▎                                                                               | 21/67 [00:00<00:01, 26.16it/s]Capturing CUDA graphs (decode, FULL):  36%|█████████████████████████████████████████▌                                                                          | 24/67 [00:00<00:01, 25.19it/s]Capturing CUDA graphs (decode, FULL):  39%|█████████████████████████████████████████████                                                                       | 26/67 [00:01<00:01, 25.15it/s]Capturing CUDA graphs (decode, FULL):  36%|█████████████████████████████████████████▌                                                                          | 24/67 [00:00<00:01, 26.06it/s]Capturing CUDA graphs (decode, FULL):  45%|███████████████████████████████████████████████████▉                                                                | 30/67 [00:01<00:01, 25.43it/s]Capturing CUDA graphs (decode, FULL):  18%|████████████████████▊                                                                                               | 12/67 [00:00<00:02, 23.58it/s]Capturing CUDA graphs (decode, FULL):  54%|██████████████████████████████████████████████████████████████▎                                                     | 36/67 [00:01<00:01, 25.54it/s]Capturing CUDA graphs (decode, FULL):  31%|████████████████████████████████████▎                                                                               | 21/67 [00:00<00:01, 25.10it/s]Capturing CUDA graphs (decode, FULL):  43%|██████████████████████████████████████████████████▏                                                                 | 29/67 [00:01<00:01, 23.88it/s]Capturing CUDA graphs (decode, FULL):  40%|██████████████████████████████████████████████▋                                                                     | 27/67 [00:01<00:01, 23.86it/s]Capturing CUDA graphs (decode, FULL):  36%|█████████████████████████████████████████▌                                                                          | 24/67 [00:00<00:01, 24.34it/s]Capturing CUDA graphs (decode, FULL):  40%|██████████████████████████████████████████████▋                                                                     | 27/67 [00:01<00:01, 25.88it/s]Capturing CUDA graphs (decode, FULL):  49%|█████████████████████████████████████████████████████████▏                                                          | 33/67 [00:01<00:01, 25.32it/s]Capturing CUDA graphs (decode, FULL):  22%|█████████████████████████▉                                                                                          | 15/67 [00:00<00:02, 23.54it/s]Capturing CUDA graphs (decode, FULL):  58%|███████████████████████████████████████████████████████████████████▌                                                | 39/67 [00:01<00:01, 25.65it/s]Capturing CUDA graphs (decode, FULL):  36%|█████████████████████████████████████████▌                                                                          | 24/67 [00:00<00:01, 25.60it/s]Capturing CUDA graphs (decode, FULL):  48%|███████████████████████████████████████████████████████▍                                                            | 32/67 [00:01<00:01, 24.76it/s]Capturing CUDA graphs (decode, FULL):  40%|██████████████████████████████████████████████▋                                                                     | 27/67 [00:01<00:01, 25.13it/s]Capturing CUDA graphs (decode, FULL):  45%|███████████████████████████████████████████████████▉                                                                | 30/67 [00:01<00:01, 24.49it/s]Capturing CUDA graphs (decode, FULL):  45%|███████████████████████████████████████████████████▉                                                                | 30/67 [00:01<00:01, 26.64it/s]Capturing CUDA graphs (decode, FULL):  54%|██████████████████████████████████████████████████████████████▎                                                     | 36/67 [00:01<00:01, 25.78it/s]Capturing CUDA graphs (decode, FULL):  63%|████████████████████████████████████████████████████████████████████████▋                                           | 42/67 [00:01<00:00, 26.48it/s]Capturing CUDA graphs (decode, FULL):  27%|███████████████████████████████▏                                                                                    | 18/67 [00:00<00:02, 23.85it/s]Capturing CUDA graphs (decode, FULL):  40%|██████████████████████████████████████████████▋                                                                     | 27/67 [00:01<00:01, 26.21it/s]Capturing CUDA graphs (decode, FULL):  45%|███████████████████████████████████████████████████▉                                                                | 30/67 [00:01<00:01, 25.90it/s]Capturing CUDA graphs (decode, FULL):  52%|████████████████████████████████████████████████████████████▌                                                       | 35/67 [00:01<00:01, 25.32it/s]Capturing CUDA graphs (decode, FULL):  49%|█████████████████████████████████████████████████████████▏                                                          | 33/67 [00:01<00:01, 27.21it/s]Capturing CUDA graphs (decode, FULL):  49%|█████████████████████████████████████████████████████████▏                                                          | 33/67 [00:01<00:01, 25.09it/s]Capturing CUDA graphs (decode, FULL):  58%|███████████████████████████████████████████████████████████████████▌                                                | 39/67 [00:01<00:01, 26.26it/s]Capturing CUDA graphs (decode, FULL):  67%|█████████████████████████████████████████████████████████████████████████████▉                                      | 45/67 [00:01<00:00, 27.02it/s]Capturing CUDA graphs (decode, FULL):  31%|████████████████████████████████████▎                                                                               | 21/67 [00:00<00:01, 24.30it/s]Capturing CUDA graphs (decode, FULL):  45%|███████████████████████████████████████████████████▉                                                                | 30/67 [00:01<00:01, 26.77it/s]Capturing CUDA graphs (decode, FULL):  49%|█████████████████████████████████████████████████████████▏                                                          | 33/67 [00:01<00:01, 26.29it/s]Capturing CUDA graphs (decode, FULL):  54%|██████████████████████████████████████████████████████████████▎                                                     | 36/67 [00:01<00:01, 27.49it/s]Capturing CUDA graphs (decode, FULL):  57%|█████████████████████████████████████████████████████████████████▊                                                  | 38/67 [00:01<00:01, 25.69it/s]Capturing CUDA graphs (decode, FULL):  54%|██████████████████████████████████████████████████████████████▎                                                     | 36/67 [00:01<00:01, 25.64it/s]Capturing CUDA graphs (decode, FULL):  63%|████████████████████████████████████████████████████████████████████████▋                                           | 42/67 [00:01<00:00, 26.81it/s]Capturing CUDA graphs (decode, FULL):  72%|███████████████████████████████████████████████████████████████████████████████████                                 | 48/67 [00:01<00:00, 27.52it/s]Capturing CUDA graphs (decode, FULL):  36%|█████████████████████████████████████████▌                                                                          | 24/67 [00:01<00:01, 24.13it/s]Capturing CUDA graphs (decode, FULL):  49%|█████████████████████████████████████████████████████████▏                                                          | 33/67 [00:01<00:01, 26.42it/s]Capturing CUDA graphs (decode, FULL):  54%|██████████████████████████████████████████████████████████████▎                                                     | 36/67 [00:01<00:01, 26.06it/s]Capturing CUDA graphs (decode, FULL):  58%|███████████████████████████████████████████████████████████████████▌                                                | 39/67 [00:01<00:01, 26.39it/s]Capturing CUDA graphs (decode, FULL):  61%|██████████████████████████████████████████████████████████████████████▉                                             | 41/67 [00:01<00:01, 25.27it/s]Capturing CUDA graphs (decode, FULL):  58%|███████████████████████████████████████████████████████████████████▌                                                | 39/67 [00:01<00:01, 25.39it/s]Capturing CUDA graphs (decode, FULL):  67%|█████████████████████████████████████████████████████████████████████████████▉                                      | 45/67 [00:01<00:00, 26.52it/s]Capturing CUDA graphs (decode, FULL):  76%|████████████████████████████████████████████████████████████████████████████████████████▎                           | 51/67 [00:02<00:00, 27.45it/s]Capturing CUDA graphs (decode, FULL):  54%|██████████████████████████████████████████████████████████████▎                                                     | 36/67 [00:01<00:01, 26.50it/s]Capturing CUDA graphs (decode, FULL):  40%|██████████████████████████████████████████████▋                                                                     | 27/67 [00:01<00:01, 23.97it/s]Capturing CUDA graphs (decode, FULL):  58%|███████████████████████████████████████████████████████████████████▌                                                | 39/67 [00:01<00:01, 25.81it/s]Capturing CUDA graphs (decode, FULL):  63%|████████████████████████████████████████████████████████████████████████▋                                           | 42/67 [00:01<00:00, 26.40it/s]Capturing CUDA graphs (decode, FULL):  63%|████████████████████████████████████████████████████████████████████████▋                                           | 42/67 [00:01<00:00, 25.34it/s]Capturing CUDA graphs (decode, FULL):  66%|████████████████████████████████████████████████████████████████████████████▏                                       | 44/67 [00:01<00:00, 24.72it/s]Capturing CUDA graphs (decode, FULL):  72%|███████████████████████████████████████████████████████████████████████████████████                                 | 48/67 [00:01<00:00, 26.07it/s]Capturing CUDA graphs (decode, FULL):  81%|█████████████████████████████████████████████████████████████████████████████████████████████▍                      | 54/67 [00:02<00:00, 26.97it/s]Capturing CUDA graphs (decode, FULL):  58%|███████████████████████████████████████████████████████████████████▌                                                | 39/67 [00:01<00:01, 25.25it/s]Capturing CUDA graphs (decode, FULL):  45%|███████████████████████████████████████████████████▉                                                                | 30/67 [00:01<00:01, 23.75it/s]Capturing CUDA graphs (decode, FULL):  63%|████████████████████████████████████████████████████████████████████████▋                                           | 42/67 [00:01<00:00, 25.79it/s]Capturing CUDA graphs (decode, FULL):  67%|█████████████████████████████████████████████████████████████████████████████▉                                      | 45/67 [00:01<00:00, 26.52it/s]Capturing CUDA graphs (decode, FULL):  85%|██████████████████████████████████████████████████████████████████████████████████████████████████▋                 | 57/67 [00:02<00:00, 27.35it/s]Capturing CUDA graphs (decode, FULL):  76%|████████████████████████████████████████████████████████████████████████████████████████▎                           | 51/67 [00:02<00:00, 26.37it/s]Capturing CUDA graphs (decode, FULL):  70%|█████████████████████████████████████████████████████████████████████████████████▎                                  | 47/67 [00:01<00:00, 25.28it/s]Capturing CUDA graphs (decode, FULL):  67%|█████████████████████████████████████████████████████████████████████████████▉                                      | 45/67 [00:01<00:00, 25.14it/s]Capturing CUDA graphs (decode, FULL):  63%|████████████████████████████████████████████████████████████████████████▋                                           | 42/67 [00:01<00:00, 25.97it/s]Capturing CUDA graphs (decode, FULL):  72%|███████████████████████████████████████████████████████████████████████████████████                                 | 48/67 [00:01<00:00, 27.24it/s]Capturing CUDA graphs (decode, FULL):  67%|█████████████████████████████████████████████████████████████████████████████▉                                      | 45/67 [00:01<00:00, 26.24it/s]Capturing CUDA graphs (decode, FULL):  49%|█████████████████████████████████████████████████████████▏                                                          | 33/67 [00:01<00:01, 24.05it/s]Capturing CUDA graphs (decode, FULL):  81%|█████████████████████████████████████████████████████████████████████████████████████████████▍                      | 54/67 [00:02<00:00, 27.02it/s]Capturing CUDA graphs (decode, FULL):  75%|██████████████████████████████████████████████████████████████████████████████████████▌                             | 50/67 [00:02<00:00, 25.76it/s]Capturing CUDA graphs (decode, FULL):  72%|███████████████████████████████████████████████████████████████████████████████████                                 | 48/67 [00:01<00:00, 25.58it/s]Capturing CUDA graphs (decode, FULL):  91%|█████████████████████████████████████████████████████████████████████████████████████████████████████████▌          | 61/67 [00:02<00:00, 28.21it/s]Capturing CUDA graphs (decode, FULL):  67%|█████████████████████████████████████████████████████████████████████████████▉                                      | 45/67 [00:01<00:00, 26.53it/s]Capturing CUDA graphs (decode, FULL):  76%|████████████████████████████████████████████████████████████████████████████████████████▎                           | 51/67 [00:01<00:00, 27.84it/s]Capturing CUDA graphs (decode, FULL):  72%|███████████████████████████████████████████████████████████████████████████████████                                 | 48/67 [00:01<00:00, 26.65it/s]Capturing CUDA graphs (decode, FULL):  85%|██████████████████████████████████████████████████████████████████████████████████████████████████▋                 | 57/67 [00:02<00:00, 27.45it/s]Capturing CUDA graphs (decode, FULL):  54%|██████████████████████████████████████████████████████████████▎                                                     | 36/67 [00:01<00:01, 24.23it/s]Capturing CUDA graphs (decode, FULL):  79%|███████████████████████████████████████████████████████████████████████████████████████████▊                        | 53/67 [00:02<00:00, 26.31it/s]Capturing CUDA graphs (decode, FULL):  76%|████████████████████████████████████████████████████████████████████████████████████████▎                           | 51/67 [00:02<00:00, 26.09it/s]Capturing CUDA graphs (decode, FULL):  96%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████▊     | 64/67 [00:02<00:00, 28.50it/s]Capturing CUDA graphs (decode, FULL):  72%|███████████████████████████████████████████████████████████████████████████████████                                 | 48/67 [00:01<00:00, 25.98it/s]Capturing CUDA graphs (decode, FULL):  81%|█████████████████████████████████████████████████████████████████████████████████████████████▍                      | 54/67 [00:02<00:00, 26.33it/s]Capturing CUDA graphs (decode, FULL):  90%|███████████████████████████████████████████████████████████████████████████████████████████████████████▉            | 60/67 [00:02<00:00, 26.68it/s]Capturing CUDA graphs (decode, FULL):  76%|████████████████████████████████████████████████████████████████████████████████████████▎                           | 51/67 [00:01<00:00, 25.53it/s]Capturing CUDA graphs (decode, FULL): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 67/67 [00:02<00:00, 28.03it/s]Capturing CUDA graphs (decode, FULL): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 67/67 [00:02<00:00, 25.37it/s]
+Capturing CUDA graphs (decode, FULL):  84%|████████████████████████████████████████████████████████████████████████████████████████████████▉                   | 56/67 [00:02<00:00, 25.38it/s]Capturing CUDA graphs (decode, FULL):  81%|█████████████████████████████████████████████████████████████████████████████████████████████▍                      | 54/67 [00:02<00:00, 25.32it/s]Capturing CUDA graphs (decode, FULL):  58%|███████████████████████████████████████████████████████████████████▌                                                | 39/67 [00:01<00:01, 23.14it/s]Capturing CUDA graphs (decode, FULL):  76%|████████████████████████████████████████████████████████████████████████████████████████▎                           | 51/67 [00:01<00:00, 26.22it/s]Capturing CUDA graphs (decode, FULL):  85%|██████████████████████████████████████████████████████████████████████████████████████████████████▋                 | 57/67 [00:02<00:00, 26.48it/s]Capturing CUDA graphs (decode, FULL):  94%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████       | 63/67 [00:02<00:00, 26.93it/s]Capturing CUDA graphs (decode, FULL):  81%|█████████████████████████████████████████████████████████████████████████████████████████████▍                      | 54/67 [00:02<00:00, 25.92it/s]Capturing CUDA graphs (decode, FULL):  88%|██████████████████████████████████████████████████████████████████████████████████████████████████████▏             | 59/67 [00:02<00:00, 25.72it/s]Capturing CUDA graphs (decode, FULL):  85%|██████████████████████████████████████████████████████████████████████████████████████████████████▋                 | 57/67 [00:02<00:00, 25.60it/s]Capturing CUDA graphs (decode, FULL):  63%|████████████████████████████████████████████████████████████████████████▋                                           | 42/67 [00:01<00:01, 23.63it/s]Capturing CUDA graphs (decode, FULL):  81%|█████████████████████████████████████████████████████████████████████████████████████████████▍                      | 54/67 [00:02<00:00, 26.52it/s]Capturing CUDA graphs (decode, FULL):  90%|███████████████████████████████████████████████████████████████████████████████████████████████████████▉            | 60/67 [00:02<00:00, 26.64it/s]Capturing CUDA graphs (decode, FULL):  99%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎ | 66/67 [00:02<00:00, 26.55it/s]Capturing CUDA graphs (decode, FULL):  85%|██████████████████████████████████████████████████████████████████████████████████████████████████▋                 | 57/67 [00:02<00:00, 26.20it/s]Capturing CUDA graphs (decode, FULL):  93%|███████████████████████████████████████████████████████████████████████████████████████████████████████████▎        | 62/67 [00:02<00:00, 26.28it/s]Capturing CUDA graphs (decode, FULL):  90%|███████████████████████████████████████████████████████████████████████████████████████████████████████▉            | 60/67 [00:02<00:00, 26.15it/s]Capturing CUDA graphs (decode, FULL): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 67/67 [00:02<00:00, 25.69it/s]
+Capturing CUDA graphs (decode, FULL):  67%|█████████████████████████████████████████████████████████████████████████████▉                                      | 45/67 [00:01<00:00, 24.23it/s]Capturing CUDA graphs (decode, FULL):  85%|██████████████████████████████████████████████████████████████████████████████████████████████████▋                 | 57/67 [00:02<00:00, 26.75it/s]Capturing CUDA graphs (decode, FULL):  94%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████       | 63/67 [00:02<00:00, 26.89it/s]Capturing CUDA graphs (decode, FULL):  90%|███████████████████████████████████████████████████████████████████████████████████████████████████████▉            | 60/67 [00:02<00:00, 26.76it/s][1;36m(EngineCore_DP0 pid=3657856)[0;0m INFO 06-08 10:48:08 [gpu_model_runner.py:3480] Graph capturing finished in 6 secs, took 3.85 GiB
+Capturing CUDA graphs (decode, FULL):  97%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████▌   | 65/67 [00:02<00:00, 26.35it/s]Capturing CUDA graphs (decode, FULL):  94%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████       | 63/67 [00:02<00:00, 26.56it/s][1;36m(EngineCore_DP0 pid=3657856)[0;0m INFO 06-08 10:48:08 [core.py:210] init engine (profile, create kv cache, warmup model) took 55.36 seconds
+Capturing CUDA graphs (decode, FULL):  72%|███████████████████████████████████████████████████████████████████████████████████                                 | 48/67 [00:01<00:00, 25.16it/s]Capturing CUDA graphs (decode, FULL):  90%|███████████████████████████████████████████████████████████████████████████████████████████████████████▉            | 60/67 [00:02<00:00, 27.00it/s]Capturing CUDA graphs (decode, FULL): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 67/67 [00:02<00:00, 25.12it/s]
+Capturing CUDA graphs (decode, FULL):  99%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎ | 66/67 [00:02<00:00, 26.89it/s]Capturing CUDA graphs (decode, FULL):  94%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████       | 63/67 [00:02<00:00, 26.90it/s]Capturing CUDA graphs (decode, FULL): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 67/67 [00:02<00:00, 26.73it/s]
+Capturing CUDA graphs (decode, FULL):  99%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎ | 66/67 [00:02<00:00, 26.23it/s]Capturing CUDA graphs (decode, FULL):  76%|████████████████████████████████████████████████████████████████████████████████████████▎                           | 51/67 [00:02<00:00, 25.60it/s]Capturing CUDA graphs (decode, FULL): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 67/67 [00:02<00:00, 25.46it/s]
+Capturing CUDA graphs (decode, FULL):  94%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████       | 63/67 [00:02<00:00, 27.06it/s]Capturing CUDA graphs (decode, FULL):  99%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎ | 66/67 [00:02<00:00, 26.45it/s]Capturing CUDA graphs (decode, FULL): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 67/67 [00:02<00:00, 26.09it/s]
+Capturing CUDA graphs (decode, FULL):  81%|█████████████████████████████████████████████████████████████████████████████████████████████▍                      | 54/67 [00:02<00:00, 25.92it/s]Capturing CUDA graphs (decode, FULL):  99%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎ | 66/67 [00:02<00:00, 26.34it/s]Capturing CUDA graphs (decode, FULL): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 67/67 [00:02<00:00, 26.26it/s]
+[1;36m(EngineCore_DP0 pid=3657828)[0;0m INFO 06-08 10:48:08 [gpu_model_runner.py:3480] Graph capturing finished in 6 secs, took 3.85 GiB
+[1;36m(EngineCore_DP0 pid=3657828)[0;0m INFO 06-08 10:48:08 [core.py:210] init engine (profile, create kv cache, warmup model) took 55.72 seconds
+Capturing CUDA graphs (decode, FULL):  85%|██████████████████████████████████████████████████████████████████████████████████████████████████▋                 | 57/67 [00:02<00:00, 25.69it/s][1;36m(EngineCore_DP0 pid=3657841)[0;0m INFO 06-08 10:48:08 [gpu_model_runner.py:3480] Graph capturing finished in 6 secs, took 3.85 GiB
+Capturing CUDA graphs (decode, FULL):  90%|███████████████████████████████████████████████████████████████████████████████████████████████████████▉            | 60/67 [00:02<00:00, 26.06it/s][1;36m(EngineCore_DP0 pid=3657841)[0;0m INFO 06-08 10:48:08 [core.py:210] init engine (profile, create kv cache, warmup model) took 56.08 seconds
+[1;36m(EngineCore_DP0 pid=3657818)[0;0m INFO 06-08 10:48:08 [gpu_model_runner.py:3480] Graph capturing finished in 6 secs, took 3.85 GiB
+[1;36m(EngineCore_DP0 pid=3657818)[0;0m INFO 06-08 10:48:08 [core.py:210] init engine (profile, create kv cache, warmup model) took 55.95 seconds
+[1;36m(EngineCore_DP0 pid=3657855)[0;0m INFO 06-08 10:48:08 [gpu_model_runner.py:3480] Graph capturing finished in 6 secs, took 3.85 GiB
+[1;36m(EngineCore_DP0 pid=3657831)[0;0m INFO 06-08 10:48:08 [gpu_model_runner.py:3480] Graph capturing finished in 6 secs, took 3.85 GiB
+Capturing CUDA graphs (decode, FULL):  94%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████       | 63/67 [00:02<00:00, 25.07it/s][1;36m(EngineCore_DP0 pid=3657855)[0;0m INFO 06-08 10:48:08 [core.py:210] init engine (profile, create kv cache, warmup model) took 55.95 seconds
+[1;36m(EngineCore_DP0 pid=3657831)[0;0m INFO 06-08 10:48:08 [core.py:210] init engine (profile, create kv cache, warmup model) took 55.95 seconds
+[1;36m(EngineCore_DP0 pid=3657857)[0;0m INFO 06-08 10:48:08 [gpu_model_runner.py:3480] Graph capturing finished in 6 secs, took 3.85 GiB
+[1;36m(EngineCore_DP0 pid=3657857)[0;0m INFO 06-08 10:48:09 [core.py:210] init engine (profile, create kv cache, warmup model) took 56.03 seconds
+Capturing CUDA graphs (decode, FULL):  99%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎ | 66/67 [00:02<00:00, 25.37it/s]Capturing CUDA graphs (decode, FULL): 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 67/67 [00:02<00:00, 24.52it/s]
+INFO 06-08 10:48:09 [llm.py:306] Supported_tasks: ['generate']
+
+
+
+
+
+GPU 5:   0%|                                                                                                                                                            | 0/16 [00:00<?, ?it/s][A[A[A[A[A[1;36m(EngineCore_DP0 pid=3657847)[0;0m INFO 06-08 10:48:09 [gpu_model_runner.py:3480] Graph capturing finished in 7 secs, took 3.85 GiB
+[1;36m(EngineCore_DP0 pid=3657847)[0;0m INFO 06-08 10:48:09 [core.py:210] init engine (profile, create kv cache, warmup model) took 56.47 seconds
+INFO 06-08 10:48:09 [llm.py:306] Supported_tasks: ['generate']
+
+GPU 1:   0%|                                                                                                                                                            | 0/16 [00:00<?, ?it/s][AINFO 06-08 10:48:09 [llm.py:306] Supported_tasks: ['generate']
+
+
+
+GPU 3:   0%|                                                                                                                                                            | 0/16 [00:00<?, ?it/s][A[A[AINFO 06-08 10:48:09 [llm.py:306] Supported_tasks: ['generate']
+
+
+GPU 2:   0%|                                                                                                                                                            | 0/16 [00:00<?, ?it/s][A[AINFO 06-08 10:48:09 [llm.py:306] Supported_tasks: ['generate']
+INFO 06-08 10:48:09 [llm.py:306] Supported_tasks: ['generate']
+
+
+
+
+
+
+GPU 6:   0%|                                                                                                                                                            | 0/16 [00:00<?, ?it/s][A[A[A[A[A[AGPU 0:   0%|                                                                                                                                                            | 0/16 [00:00<?, ?it/s]INFO 06-08 10:48:09 [llm.py:306] Supported_tasks: ['generate']
+
+
+
+
+
+
+
+GPU 7:   0%|                                                                                                                                                            | 0/16 [00:00<?, ?it/s][A[A[A[A[A[A[AINFO 06-08 10:48:10 [llm.py:306] Supported_tasks: ['generate']
+
+
+
+
+GPU 4:   0%|                                                                                                                                                            | 0/16 [00:00<?, ?it/s][A[A[A[A
+GPU 1:   6%|█████████▏                                                                                                                                         | 1/16 [01:49<27:23, 109.59s/it][A
+
+
+
+
+GPU 5:   6%|█████████▏                                                                                                                                         | 1/16 [02:00<30:03, 120.25s/it][A[A[A[A[A
+
+
+
+
+
+
+GPU 7:   6%|█████████▏                                                                                                                                         | 1/16 [02:00<30:04, 120.31s/it][A[A[A[A[A[A[A
+
+
+
+
+
+GPU 6:   6%|█████████▏                                                                                                                                         | 1/16 [02:03<30:45, 123.05s/it][A[A[A[A[A[A
+
+
+GPU 3:   6%|█████████▏                                                                                                                                         | 1/16 [02:06<31:38, 126.54s/it][A[A[A
+
+GPU 2:   6%|█████████▏                                                                                                                                         | 1/16 [02:14<33:37, 134.50s/it][A[AGPU 0:   6%|█████████▏                                                                                                                                         | 1/16 [02:14<33:36, 134.43s/it]
+
+
+
+GPU 4:   6%|█████████▏                                                                                                                                         | 1/16 [02:35<38:51, 155.46s/it][A[A[A[A
+GPU 1:  12%|██████████████████▍                                                                                                                                | 2/16 [04:02<28:48, 123.46s/it][A
+
+
+
+
+GPU 5:  12%|██████████████████▍                                                                                                                                | 2/16 [04:09<29:18, 125.64s/it][A[A[A[A[A
+
+
+GPU 3:  12%|██████████████████▍                                                                                                                                | 2/16 [04:11<29:16, 125.48s/it][A[A[A
+
+GPU 2:  12%|██████████████████▍                                                                                                                                | 2/16 [04:12<29:09, 124.94s/it][A[A
+
+
+
+
+
+GPU 6:  12%|██████████████████▍                                                                                                                                | 2/16 [04:13<29:40, 127.18s/it][A[A[A[A[A[A
+
+
+
+
+
+
+GPU 7:  12%|██████████████████▍                                                                                                                                | 2/16 [04:21<30:59, 132.83s/it][A[A[A[A[A[A[AGPU 0:  12%|██████████████████▍                                                                                                                                | 2/16 [04:37<32:34, 139.60s/it]
+
+
+
+GPU 4:  12%|██████████████████▍                                                                                                                                | 2/16 [04:56<34:17, 146.94s/it][A[A[A[A
+
+
+
+
+GPU 5:  19%|███████████████████████████▌                                                                                                                       | 3/16 [06:04<26:06, 120.52s/it][A[A[A[A[A
+GPU 1:  19%|███████████████████████████▌                                                                                                                       | 3/16 [06:14<27:36, 127.39s/it][A
+
+
+
+
+
+GPU 6:  19%|███████████████████████████▌                                                                                                                       | 3/16 [06:25<28:02, 129.43s/it][A[A[A[A[A[A
+
+GPU 2:  19%|███████████████████████████▌                                                                                                                       | 3/16 [06:36<28:54, 133.40s/it][A[A
+
+
+
+GPU 4:  19%|███████████████████████████▌                                                                                                                       | 3/16 [06:42<27:49, 128.42s/it][A[A[A[A
+
+
+
+
+
+
+GPU 7:  19%|███████████████████████████▌                                                                                                                       | 3/16 [06:51<30:24, 140.36s/it][A[A[A[A[A[A[A
+
+
+GPU 3:  19%|███████████████████████████▌                                                                                                                       | 3/16 [07:07<32:12, 148.63s/it][A[A[AGPU 0:  19%|███████████████████████████▌                                                                                                                       | 3/16 [07:16<32:07, 148.30s/it]
+
+
+
+
+GPU 5:  25%|████████████████████████████████████▊                                                                                                              | 4/16 [07:59<23:41, 118.48s/it][A[A[A[A[A
+GPU 1:  25%|████████████████████████████████████▊                                                                                                              | 4/16 [08:42<27:07, 135.59s/it][A
+
+GPU 2:  25%|████████████████████████████████████▊                                                                                                              | 4/16 [08:44<26:17, 131.47s/it][A[A
+
+
+
+
+
+GPU 6:  25%|████████████████████████████████████▊                                                                                                              | 4/16 [09:01<28:00, 140.06s/it][A[A[A[A[A[A
+
+
+
+GPU 4:  25%|████████████████████████████████████▊                                                                                                              | 4/16 [09:13<27:27, 137.32s/it][A[A[A[A
+
+
+
+
+
+
+GPU 7:  25%|████████████████████████████████████▊                                                                                                              | 4/16 [09:16<28:28, 142.37s/it][A[A[A[A[A[A[A
+
+
+GPU 3:  25%|████████████████████████████████████▊                                                                                                              | 4/16 [09:32<29:27, 147.29s/it][A[A[AGPU 0:  25%|████████████████████████████████████▊                                                                                                              | 4/16 [09:53<30:23, 151.96s/it]
+
+
+
+
+GPU 5:  31%|█████████████████████████████████████████████▉                                                                                                     | 5/16 [10:10<22:31, 122.86s/it][A[A[A[A[A
+GPU 1:  31%|█████████████████████████████████████████████▉                                                                                                     | 5/16 [10:47<24:06, 131.47s/it][A
+
+GPU 2:  31%|█████████████████████████████████████████████▉                                                                                                     | 5/16 [11:03<24:33, 133.93s/it][A[A
+
+
+
+
+
+GPU 6:  31%|█████████████████████████████████████████████▉                                                                                                     | 5/16 [11:14<25:13, 137.56s/it][A[A[A[A[A[A
+
+
+
+GPU 4:  31%|█████████████████████████████████████████████▉                                                                                                     | 5/16 [11:34<25:24, 138.55s/it][A[A[A[A
+
+
+
+
+
+
+GPU 7:  31%|█████████████████████████████████████████████▉                                                                                                     | 5/16 [11:43<26:25, 144.10s/it][A[A[A[A[A[A[A
+
+
+GPU 3:  31%|█████████████████████████████████████████████▉                                                                                                     | 5/16 [11:44<25:58, 141.66s/it][A[A[A
+
+
+
+
+GPU 5:  38%|███████████████████████████████████████████████████████▏                                                                                           | 6/16 [12:08<20:12, 121.28s/it][A[A[A[A[AGPU 0:  31%|█████████████████████████████████████████████▉                                                                                                     | 5/16 [12:26<27:55, 152.32s/it]
+GPU 1:  38%|███████████████████████████████████████████████████████▏                                                                                           | 6/16 [12:51<21:31, 129.13s/it][A
+
+GPU 2:  38%|███████████████████████████████████████████████████████▏                                                                                           | 6/16 [13:10<21:58, 131.87s/it][A[A
+
+
+
+
+
+GPU 6:  38%|███████████████████████████████████████████████████████▏                                                                                           | 6/16 [13:22<22:22, 134.23s/it][A[A[A[A[A[A
+
+
+GPU 3:  38%|███████████████████████████████████████████████████████▏                                                                                           | 6/16 [13:37<22:00, 132.03s/it][A[A[A
+
+
+
+
+GPU 5:  44%|████████████████████████████████████████████████████████████████▎                                                                                  | 7/16 [14:05<17:59, 119.96s/it][A[A[A[A[A
+
+
+
+
+
+
+GPU 7:  38%|███████████████████████████████████████████████████████▏                                                                                           | 6/16 [14:13<24:21, 146.12s/it][A[A[A[A[A[A[A
+
+
+
+GPU 4:  38%|███████████████████████████████████████████████████████▏                                                                                           | 6/16 [14:14<24:19, 145.97s/it][A[A[A[AGPU 0:  38%|███████████████████████████████████████████████████████▏                                                                                           | 6/16 [14:30<23:46, 142.66s/it]
+GPU 1:  44%|████████████████████████████████████████████████████████████████▎                                                                                  | 7/16 [15:18<20:14, 134.93s/it][A
+
+GPU 2:  44%|████████████████████████████████████████████████████████████████▎                                                                                  | 7/16 [15:22<19:46, 131.79s/it][A[A
+
+
+
+
+
+GPU 6:  44%|████████████████████████████████████████████████████████████████▎                                                                                  | 7/16 [15:38<20:14, 134.89s/it][A[A[A[A[A[A
+
+
+GPU 3:  44%|████████████████████████████████████████████████████████████████▎                                                                                  | 7/16 [16:02<20:25, 136.13s/it][A[A[A
+
+
+
+GPU 4:  44%|████████████████████████████████████████████████████████████████▎                                                                                  | 7/16 [16:06<20:11, 134.65s/it][A[A[A[A
+
+
+
+
+
+
+GPU 7:  44%|████████████████████████████████████████████████████████████████▎                                                                                  | 7/16 [16:13<20:35, 137.33s/it][A[A[A[A[A[A[A
+
+
+
+
+GPU 5:  50%|█████████████████████████████████████████████████████████████████████████▌                                                                         | 8/16 [16:23<16:44, 125.60s/it][A[A[A[A[AGPU 0:  44%|████████████████████████████████████████████████████████████████▎                                                                                  | 7/16 [16:55<21:31, 143.48s/it]
+
+GPU 2:  50%|█████████████████████████████████████████████████████████████████████████▌                                                                         | 8/16 [17:32<17:29, 131.20s/it][A[A
+
+
+
+
+
+GPU 6:  50%|█████████████████████████████████████████████████████████████████████████▌                                                                         | 8/16 [17:47<17:43, 132.99s/it][A[A[A[A[A[A
+GPU 1:  50%|█████████████████████████████████████████████████████████████████████████▌                                                                         | 8/16 [17:49<18:39, 139.91s/it][A
+
+
+
+GPU 4:  50%|█████████████████████████████████████████████████████████████████████████▌                                                                         | 8/16 [18:06<17:20, 130.10s/it][A[A[A[A
+
+
+
+
+GPU 5:  56%|██████████████████████████████████████████████████████████████████████████████████▋                                                                | 9/16 [18:26<14:34, 124.89s/it][A[A[A[A[A
+
+
+
+
+
+
+GPU 7:  50%|█████████████████████████████████████████████████████████████████████████▌                                                                         | 8/16 [18:36<18:33, 139.19s/it][A[A[A[A[A[A[A
+
+
+GPU 3:  50%|█████████████████████████████████████████████████████████████████████████▌                                                                         | 8/16 [18:37<18:58, 142.36s/it][A[A[AGPU 0:  50%|█████████████████████████████████████████████████████████████████████████▌                                                                         | 8/16 [18:48<17:49, 133.66s/it]
+
+GPU 2:  56%|██████████████████████████████████████████████████████████████████████████████████▋                                                                | 9/16 [19:35<15:01, 128.73s/it][A[A
+GPU 1:  56%|██████████████████████████████████████████████████████████████████████████████████▋                                                                | 9/16 [19:51<15:41, 134.54s/it][A
+
+
+
+
+
+GPU 6:  56%|██████████████████████████████████████████████████████████████████████████████████▋                                                                | 9/16 [20:09<15:49, 135.69s/it][A[A[A[A[A[A
+
+
+
+
+GPU 5:  62%|███████████████████████████████████████████████████████████████████████████████████████████▎                                                      | 10/16 [20:35<12:36, 126.04s/it][A[A[A[A[A
+
+
+GPU 3:  56%|██████████████████████████████████████████████████████████████████████████████████▋                                                                | 9/16 [20:41<15:54, 136.35s/it][A[A[A
+
+
+
+GPU 4:  56%|██████████████████████████████████████████████████████████████████████████████████▋                                                                | 9/16 [20:45<16:14, 139.21s/it][A[A[A[AGPU 0:  56%|██████████████████████████████████████████████████████████████████████████████████▋                                                                | 9/16 [20:58<15:26, 132.36s/it]
+
+
+
+
+
+
+GPU 7:  56%|██████████████████████████████████████████████████████████████████████████████████▋                                                                | 9/16 [21:05<16:36, 142.41s/it][A[A[A[A[A[A[A
+
+GPU 2:  62%|███████████████████████████████████████████████████████████████████████████████████████████▎                                                      | 10/16 [21:35<12:35, 125.99s/it][A[A
+
+
+
+
+
+GPU 6:  62%|███████████████████████████████████████████████████████████████████████████████████████████▎                                                      | 10/16 [22:05<12:57, 129.59s/it][A[A[A[A[A[A
+GPU 1:  62%|███████████████████████████████████████████████████████████████████████████████████████████▎                                                      | 10/16 [22:19<13:51, 138.65s/it][A
+
+
+
+GPU 4:  62%|███████████████████████████████████████████████████████████████████████████████████████████▎                                                      | 10/16 [22:46<13:21, 133.52s/it][A[A[A[A
+
+
+
+
+GPU 5:  69%|████████████████████████████████████████████████████████████████████████████████████████████████████▍                                             | 11/16 [22:50<10:43, 128.77s/it][A[A[A[A[A
+
+
+GPU 3:  62%|███████████████████████████████████████████████████████████████████████████████████████████▎                                                      | 10/16 [23:03<13:49, 138.24s/it][A[A[A
+
+
+
+
+
+
+GPU 7:  62%|███████████████████████████████████████████████████████████████████████████████████████████▎                                                      | 10/16 [23:20<13:59, 139.98s/it][A[A[A[A[A[A[AGPU 0:  62%|███████████████████████████████████████████████████████████████████████████████████████████▎                                                      | 10/16 [23:21<13:33, 135.66s/it]
+
+GPU 2:  69%|████████████████████████████████████████████████████████████████████████████████████████████████████▍                                             | 11/16 [23:55<10:51, 130.35s/it][A[A
+
+
+
+GPU 4:  69%|████████████████████████████████████████████████████████████████████████████████████████████████████▍                                             | 11/16 [24:47<10:48, 129.75s/it][A[A[A[A
+GPU 1:  69%|████████████████████████████████████████████████████████████████████████████████████████████████████▍                                             | 11/16 [24:49<11:49, 141.97s/it][A
+
+
+GPU 3:  69%|████████████████████████████████████████████████████████████████████████████████████████████████████▍                                             | 11/16 [25:01<10:59, 131.99s/it][A[A[A
+
+
+
+
+GPU 5:  75%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████▌                                    | 12/16 [25:07<08:46, 131.50s/it][A[A[A[A[A
+
+
+
+
+
+GPU 6:  69%|████████████████████████████████████████████████████████████████████████████████████████████████████▍                                             | 11/16 [25:17<12:24, 148.82s/it][A[A[A[A[A[AGPU 0:  69%|████████████████████████████████████████████████████████████████████████████████████████████████████▍                                             | 11/16 [25:48<11:36, 139.27s/it]
+
+
+
+
+
+
+GPU 7:  69%|████████████████████████████████████████████████████████████████████████████████████████████████████▍                                             | 11/16 [26:00<12:10, 146.11s/it][A[A[A[A[A[A[A
+
+GPU 2:  75%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████▌                                    | 12/16 [26:03<08:38, 129.52s/it][A[A
+
+
+
+GPU 4:  75%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████▌                                    | 12/16 [26:52<08:32, 128.09s/it][A[A[A[A
+
+
+
+
+
+GPU 6:  75%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████▌                                    | 12/16 [27:05<09:04, 136.21s/it][A[A[A[A[A[A
+
+
+
+
+GPU 5:  81%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▋                           | 13/16 [27:14<06:30, 130.10s/it][A[A[A[A[A
+GPU 1:  75%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████▌                                    | 12/16 [27:17<09:35, 143.77s/it][A
+
+
+GPU 3:  75%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████▌                                    | 12/16 [27:25<09:02, 135.60s/it][A[A[AGPU 0:  75%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████▌                                    | 12/16 [28:12<09:22, 140.67s/it]
+
+GPU 2:  81%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▋                           | 13/16 [28:20<06:35, 131.78s/it][A[A
+
+
+
+
+
+
+GPU 7:  75%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████▌                                    | 12/16 [28:32<09:51, 147.97s/it][A[A[A[A[A[A[A
+
+
+
+
+
+GPU 6:  81%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▋                           | 13/16 [28:53<06:23, 127.93s/it][A[A[A[A[A[A
+
+
+
+GPU 4:  81%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▋                           | 13/16 [29:08<06:31, 130.47s/it][A[A[A[A
+
+
+
+
+GPU 5:  88%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊                  | 14/16 [29:28<04:22, 131.06s/it][A[A[A[A[A
+
+
+GPU 3:  81%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▋                           | 13/16 [29:42<06:48, 136.19s/it][A[A[A
+GPU 1:  81%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▋                           | 13/16 [29:54<07:23, 147.88s/it][A
+
+
+
+
+GPU 5:  94%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▉         | 15/16 [30:28<01:49, 109.86s/it][A[A[A[A[A
+
+
+
+
+
+
+GPU 7:  81%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▋                           | 13/16 [30:41<07:06, 142.26s/it][A[A[A[A[A[A[A
+
+
+
+
+
+GPU 6:  88%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊                  | 14/16 [30:48<04:07, 123.79s/it][A[A[A[A[A[A
+
+GPU 2:  88%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊                  | 14/16 [30:50<04:34, 137.27s/it][A[AGPU 0:  81%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▋                           | 13/16 [30:50<07:18, 146.09s/it]
+
+
+
+GPU 4:  88%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊                  | 14/16 [31:20<04:22, 131.12s/it][A[A[A[A
+GPU 1:  88%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊                  | 14/16 [31:56<04:40, 140.08s/it][A
+
+
+GPU 3:  88%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊                  | 14/16 [32:14<04:41, 140.84s/it][A[A[A
+
+
+
+
+GPU 5: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 16/16 [32:43<00:00, 117.37s/it][A[A[A[A[AGPU 5: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 16/16 [32:43<00:00, 122.72s/it]
+[GPU 5] Cleaning up resources...
+[rank0]:[W608 11:20:53.283883463 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[GPU 5] Cleanup done.
+GPU workers (AMC23):  12%|████████████████▍                                                                                                                  | 1/8 [34:10<3:59:16, 2050.97s/it]
+
+
+
+
+
+
+GPU 7:  88%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊                  | 14/16 [32:46<04:34, 137.09s/it][A[A[A[A[A[A[A
+
+GPU 2:  94%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▉         | 15/16 [32:52<02:12, 132.62s/it][A[A
+
+
+
+
+
+GPU 6:  94%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▉         | 15/16 [33:15<02:11, 131.01s/it][A[A[A[A[A[AGPU 0:  88%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊                  | 14/16 [33:24<04:56, 148.38s/it]
+
+
+
+GPU 4:  94%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▉         | 15/16 [33:47<02:15, 135.78s/it][A[A[A[A
+
+
+GPU 3:  94%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▉         | 15/16 [34:20<02:16, 136.37s/it][A[A[A
+GPU 1:  94%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▉         | 15/16 [34:43<02:28, 148.16s/it][A
+
+GPU 2: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 16/16 [35:08<00:00, 133.75s/it][A[AGPU 2: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 16/16 [35:08<00:00, 131.79s/it]
+[GPU 2] Cleaning up resources...
+[rank0]:[W608 11:23:18.903807640 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[GPU 2] Cleanup done.
+GPU workers (AMC23):  25%|█████████████████████████████████                                                                                                   | 2/8 [36:36<1:33:00, 930.04s/it]
+
+
+
+
+
+
+GPU 7:  94%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▉         | 15/16 [35:11<02:19, 139.23s/it][A[A[A[A[A[A[A
+
+
+
+
+
+GPU 6: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 16/16 [35:14<00:00, 127.38s/it][A[A[A[A[A[AGPU 6: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 16/16 [35:14<00:00, 132.18s/it]
+[GPU 6] Cleaning up resources...
+[rank0]:[W608 11:23:24.175800384 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[GPU 6] Cleanup done.
+GPU workers (AMC23):  38%|██████████████████████████████████████████████████▎                                                                                   | 3/8 [36:42<42:20, 508.18s/it]GPU 0:  94%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▉         | 15/16 [35:31<02:21, 141.99s/it]
+
+
+
+GPU 4: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 16/16 [36:10<00:00, 137.99s/it][A[A[A[AGPU 4: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 16/16 [36:10<00:00, 135.65s/it]
+[GPU 4] Cleaning up resources...
+[rank0]:[W608 11:24:21.284781907 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[GPU 4] Cleanup done.
+GPU workers (AMC23):  50%|███████████████████████████████████████████████████████████████████                                                                   | 4/8 [37:38<21:58, 329.74s/it]
+
+
+GPU 3: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 16/16 [36:59<00:00, 143.23s/it][A[A[AGPU 3: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 16/16 [36:59<00:00, 138.72s/it]
+[GPU 3] Cleaning up resources...
+[rank0]:[W608 11:25:09.837732200 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[GPU 3] Cleanup done.
+GPU workers (AMC23):  62%|███████████████████████████████████████████████████████████████████████████████████▊                                                  | 5/8 [38:27<11:24, 228.30s/it]
+GPU 1: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 16/16 [37:11<00:00, 148.18s/it][AGPU 1: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 16/16 [37:11<00:00, 139.48s/it]
+[GPU 1] Cleaning up resources...
+[rank0]:[W608 11:25:21.724335162 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[GPU 1] Cleanup done.
+GPU workers (AMC23):  75%|████████████████████████████████████████████████████████████████████████████████████████████████████▌                                 | 6/8 [38:39<05:09, 154.77s/it]
+
+
+
+
+
+
+GPU 7: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 16/16 [37:30<00:00, 139.16s/it][A[A[A[A[A[A[AGPU 7: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 16/16 [37:30<00:00, 140.63s/it]
+[GPU 7] Cleaning up resources...
+[rank0]:[W608 11:25:40.400792988 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[GPU 7] Cleanup done.
+GPU workers (AMC23):  88%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎                | 7/8 [38:57<01:50, 110.23s/it]GPU 0: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 16/16 [37:34<00:00, 136.19s/it]GPU 0: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 16/16 [37:34<00:00, 140.91s/it]
+[GPU 0] Cleaning up resources...
+[rank0]:[W608 11:25:44.893544419 ProcessGroupNCCL.cpp:1538] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+[GPU 0] Cleanup done.
+GPU workers (AMC23): 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 8/8 [39:02<00:00, 76.57s/it]GPU workers (AMC23): 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 8/8 [39:02<00:00, 292.78s/it]
+Total generations collected for AMC23: 5120
+Saved results for AMC23 to /mmu_cd_ssd/pengtiantian/projects/OPD/eval_output/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL/amc23_t0.7_p0.95_n128-MNT15360.jsonl
+
+============================================================
+  STEP 2 / 2 : Grading
+============================================================
+Model verifier disabled. Running in rule-based only mode.
+Processing file: /mmu_cd_ssd/pengtiantian/projects/OPD/eval_output/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL/amc23_t0.7_p0.95_n128-MNT15360.jsonl
+Grading results saved to /mmu_cd_ssd/pengtiantian/projects/OPD/eval_output/Qwen3-1.7B-OPD_by_Qwen3-4B_FKL/grading_results.json
+(ptt_verl_opd) root@rack-wlf2-ge26-2:/mmu_cd_ssd/pengtiantian/projects/OPD/scripts/val/eval#   cd ../..
+(ptt_verl_opd) root@rack-wlf2-ge26-2:/mmu_cd_ssd/pengtiantian/projects/OPD/scripts# cd tools/
+(ptt_verl_opd) root@rack-wlf2-ge26-2:/mmu_cd_ssd/pengtiantian/projects/OPD/scripts/tools# pyth[K[K[K[Kcd pl[Ko[K[K[K[K[Kls
+[0m[01;34mentropy_rollout[0m  model_merge.sh  passk_plot.py
+(ptt_verl_opd) root@rack-wlf2-ge26-2:/mmu_cd_ssd/pengtiantian/projects/OPD/scripts/tools# python pa[Kassk_plot.py 
+Saved: /mmu_cd_ssd/pengtiantian/projects/OPD/results/passk_plot/amc23_n128_RKL_vs_FKL.png
+(ptt_verl_opd) root@rack-wlf2-ge26-2:/mmu_cd_ssd/pengtiantian/projects/OPD/scripts/tools# exit
+
+Script done on 2026-06-08 12:11:11+08:00 [COMMAND_EXIT_CODE="0"]

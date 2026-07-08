@@ -49,7 +49,7 @@ export GRPO_OUTCOME_WEIGHT=1.0
 
 export MAX_PROMPT_LENGTH=1024
 export MAX_RESP_LENGTH=7168  # TODO: 31744 /15360 / 7168 / 3072 / 5120
-export MAX_VAL_RESP_LENGTH=31744 # TODO: 15360 / 7168 / 3072
+export MAX_VAL_RESP_LENGTH=7168 # TODO: 15360 / 7168 / 3072
 export MAX_MODEL_LEN=$(( MAX_RESP_LENGTH + MAX_PROMPT_LENGTH > MAX_VAL_RESP_LENGTH + MAX_PROMPT_LENGTH ? MAX_RESP_LENGTH + MAX_PROMPT_LENGTH : MAX_VAL_RESP_LENGTH + MAX_PROMPT_LENGTH ))
 export MINI_BATCH_SIZE=${MINI_BATCH_SIZE:-64} # TODO: 1 / 8 / 16 / 32 / 64 (default 64)
 export TEMPERATURE=${TEMPERATURE:-1.0} # TODO: 0.6 / 0.8 / 1.0 / 1.2 (default 1.0)
@@ -65,7 +65,7 @@ export USE_KL=${USE_KL:-False} # TODO: True / False (default False)
 export ENABLE_FORMAT_REWARD=${ENABLE_FORMAT_REWARD:-False} # TODO: True / False (default False)
 export MODEL_DTYPE=${MODEL_DTYPE:-fp32} # actor/ref/critic fsdp_config.model_dtype: fp32 or bfloat16
 export IS_PLOT=${IS_PLOT:-False} # TODO: True / False (default False)
-export LOSS_AGG_MODE=${LOSS_AGG_MODE:-"token-mean"} # TODO: "token-mean" / "seq-mean-token-sum" / "seq-mean-token-mean" / "seq-mean-token-sum-norm" (default "token-mean")
+export LOSS_AGG_MODE=${LOSS_AGG_MODE:-"seq-mean-token-sum-norm"} # TODO: "token-mean" / "seq-mean-token-sum" / "seq-mean-token-mean" / "seq-mean-token-sum-norm" (default "token-mean")
 
 # TODO: qwen3_1p7b_base / qwen3_1p7b / llama31_8b_base / llama31_8b_inst / qwen3_8b_base / qwen3_8b / qwen25_1p5b_base / qwen25_1p5b_inst / qwen25_7b_base / qwen25_7b_inst / qwen25_math_7b_base / qwen25_math_7b_inst / qwen25_math_1p5b_base / qwen25_math_1p5b_inst / distill_r1_1p5b / olmo2_1124_7b_base / olmo2_1124_7b_sft / olmo2_1124_7b_inst / llama32_3b_inst
 # export EXPERIMENT_NAME=grpo_${TASK}_llama31_tulu3_8b_sft_8k-T_${TEMPERATURE}-n_${N_RESPONSES}-kl_${USE_KL}-mbs_${MINI_BATCH_SIZE}-${REWARD_TYPE}-$(date +%Y-%m-%d_%H-%M-%S)
@@ -73,7 +73,7 @@ export LOSS_AGG_MODE=${LOSS_AGG_MODE:-"token-mean"} # TODO: "token-mean" / "seq-
 # export TRAIN_DATASET=datasets/DeepMath-103K/verl_format/train.parquet
 # export TRAIN_DATASET=datasets/DAPO-Math-17k/data/dapo-math-17k-1percent.parquet
 # export TRAIN_DATASET=datasets/DAPO-Math-17k/data/dapo-math-17k-1percent-processed.parquet
-export TRAIN_DATASET=datasets/DAPO-Math-17k-Processed/DAPO-Math.parquet
+export TRAIN_DATASET=datasets/dapo-math-17k-processed.parquet
 # export TRAIN_DATASET=datasets/DeepMath-103K/verl_format/sampled_5k.parquet
 # export TRAIN_DATASET=datasets/OpenThoughts3-1.2M/verl_format/train.parquet
 export TRAIN_DATASET_NAME=DAPO-Math-17k-Processed
@@ -87,28 +87,29 @@ TEST_DATASET=${TEST_FILE:-["$TEST_DATA_DIR/AIME25/test.parquet", "$TEST_DATA_DIR
 # TEST_DATASET=${TEST_FILE:-["$DATA_DIR/AIME24/test.parquet","$DATA_DIR/AIME25/test.parquet","$DATA_DIR/AMC23/test.parquet","$DATA_DIR/MATH-500/test.parquet","$DATA_DIR/Minerva/test.parquet","$DATA_DIR/Olympiad-Bench/test.parquet"]}
 
 # TODO:
-# export ACTOR_MODEL_PATH=model/qwen3-1.7b-math-sft
-# export ACTOR_MODEL_PATH=model/DeepSeek-R1-Distill-Qwen-1.5B
-# export ACTOR_MODEL_PATH=model/Qwen3-1.7B-Base
-# export ACTOR_MODEL_PATH=model/Qwen3-1.7B
-# export ACTOR_MODEL_PATH=model/Qwen3-1.7B-sft/checkpoint-6000
-# export ACTOR_MODEL_PATH=model/DeepSeek-R1-Distill-Qwen-7B
-# export ACTOR_MODEL_PATH=model/DS-1.5B-SFT
-export ACTOR_MODEL_PATH=model/Qwen3-4B-Base
-# export ACTOR_MODEL_NAME=model/Qwen3-4B-grpo
-# export ACTOR_MODEL_NAME=model/Qwen3-4B
+# export ACTOR_MODEL_PATH=models/qwen3-1.7b-math-sft
+# export ACTOR_MODEL_PATH=models/DeepSeek-R1-Distill-Qwen-1.5B
+# export ACTOR_MODEL_PATH=models/Qwen3-1.7B-Base
+# export ACTOR_MODEL_PATH=models/Qwen3-1.7B
+# export ACTOR_MODEL_PATH=models/Qwen3-1.7B-sft/checkpoint-6000
+# export ACTOR_MODEL_PATH=models/DeepSeek-R1-Distill-Qwen-7B
+# export ACTOR_MODEL_PATH=models/DS-1.5B-SFT
+export ACTOR_MODEL_PATH=models/Qwen3-8B-Base
+# export ACTOR_MODEL_NAME=models/Qwen3-4B-grpo
+# export ACTOR_MODEL_NAME=models/Qwen3-4B
 export ACTOR_MODEL_NAME=$(basename "$ACTOR_MODEL_PATH")
-export REWARD_MODEL_PATH=model/Qwen3-4B
-# export REWARD_MODEL_PATH=model/Qwen3-1.7B
-# export REWARD_MODEL_PATH=model/DeepSeek-R1-Distill-Qwen-7B
-# export REWARD_MODEL_PATH=model/Skywork-OR1-Math-7B
-# export REWARD_MODEL_PATH=model/DeepSeek-R1-Distill-Qwen-14B
-# export REWARD_MODEL_PATH=model/JustRL-DeepSeek-1.5B
+export REWARD_MODEL_PATH=models/Qwen3-4B
+# export REWARD_MODEL_PATH=models/Qwen3-1.7B
+# export REWARD_MODEL_PATH=models/DeepSeek-R1-Distill-Qwen-7B
+# export REWARD_MODEL_PATH=models/Skywork-OR1-Math-7B
+# export REWARD_MODEL_PATH=models/DeepSeek-R1-Distill-Qwen-14B
+# export REWARD_MODEL_PATH=models/JustRL-DeepSeek-1.5B
 export REWARD_MODEL_NAME=$(basename "$REWARD_MODEL_PATH")
+export EXP_SHORT_NAME="Qwen3-8B-Base-DrGRPO" # TODO:
 
 export PROJECT_PATH=checkpoint
 export PARALLEL_SIZE=1
-export CKPT_PATH=${PROJECT_PATH}/${ADV_ESTIMATOR}_${TRAIN_DATASET_NAME}_${ACTOR_MODEL_NAME}_${REWARD_MODEL_NAME}_${MAX_RESP_LENGTH}-T_${TEMPERATURE}-Tch_${TEACHER_TEMPERATURE}-n_${N_RESPONSES}-mbs_${MINI_BATCH_SIZE}-topk_${LOG_PROB_TOP_K}-topk_strategy_${TOP_K_STRATEGY}-rw_${REWARD_WEIGHT_MODE}-$(date +%Y-%m-%d_%H-%M-%S)
+export CKPT_PATH=${PROJECT_PATH}/${EXP_SHORT_NAME}_${ADV_ESTIMATOR}_${TRAIN_DATASET_NAME}_${ACTOR_MODEL_NAME}_${REWARD_MODEL_NAME}_${MAX_RESP_LENGTH}-T_${TEMPERATURE}-Tch_${TEACHER_TEMPERATURE}-n_${N_RESPONSES}-mbs_${MINI_BATCH_SIZE}-topk_${LOG_PROB_TOP_K}-topk_strategy_${TOP_K_STRATEGY}-rw_${REWARD_WEIGHT_MODE}-$(date +%Y-%m-%d_%H-%M-%S)
 export OUTLINES_CACHE_DIR=~/.cache/outlines/$(uuidgen)
 export NCCL_DEBUG=WARN
 
@@ -119,7 +120,7 @@ export SWANLAB_LOG_DIR=${PROJECT_PATH}/swanlab_log
 export HYDRA_FULL_ERROR=1
 
 
-export EXPERIMENT_NAME=${ADV_ESTIMATOR}_${TRAIN_DATASET_NAME}_${ACTOR_MODEL_NAME}_${REWARD_MODEL_NAME}_${MAX_RESP_LENGTH}-T_${TEMPERATURE}-Tch_${TEACHER_TEMPERATURE}-n_${N_RESPONSES}-mbs_${MINI_BATCH_SIZE}-topk_${LOG_PROB_TOP_K}-topk_strategy_${TOP_K_STRATEGY}-rw_${REWARD_WEIGHT_MODE}-$(date +%Y-%m-%d_%H-%M-%S)
+export EXPERIMENT_NAME=${EXP_SHORT_NAME}_${ADV_ESTIMATOR}_${TRAIN_DATASET_NAME}_${ACTOR_MODEL_NAME}_${REWARD_MODEL_NAME}_${MAX_RESP_LENGTH}-T_${TEMPERATURE}-Tch_${TEACHER_TEMPERATURE}-n_${N_RESPONSES}-mbs_${MINI_BATCH_SIZE}-topk_${LOG_PROB_TOP_K}-topk_strategy_${TOP_K_STRATEGY}-rw_${REWARD_WEIGHT_MODE}-$(date +%Y-%m-%d_%H-%M-%S)
 
 KL_ARGS=""
 if [ "$USE_KL" = "True" ]; then
@@ -147,6 +148,7 @@ sleep 5
 python3 -m verl.trainer.main_ppo \
     algorithm.adv_estimator=$ADV_ESTIMATOR \
     algorithm.grpo_outcome_weight=$GRPO_OUTCOME_WEIGHT \
+    algorithm.norm_adv_by_std_in_grpo=False \
     +algorithm.rollout_correction.rollout_is=token \
     +algorithm.rollout_correction.rollout_is_threshold=2.0 \
     data.shuffle=False \
@@ -165,9 +167,9 @@ python3 -m verl.trainer.main_ppo \
     actor_rollout_ref.model.enable_gradient_checkpointing=True \
     actor_rollout_ref.actor.optim.lr=1e-6 \
     $LR_ARGS \
-    actor_rollout_ref.actor.ppo_mini_batch_size=$MINI_BATCH_SIZE \
+    actor_rollout_ref.actor.ppo_mini_batch_size=16 \
     actor_rollout_ref.actor.use_dynamic_bsz=True \
-    actor_rollout_ref.actor.ppo_micro_batch_size_per_gpu=1 \
+    actor_rollout_ref.actor.ppo_micro_batch_size_per_gpu=2 \
     actor_rollout_ref.actor.ppo_max_token_len_per_gpu=$PPO_MAX_TOKEN_LEN_PER_GPU \
     actor_rollout_ref.actor.ulysses_sequence_parallel_size=$PARALLEL_SIZE \
     $KL_ARGS \
@@ -198,7 +200,7 @@ python3 -m verl.trainer.main_ppo \
     actor_rollout_ref.rollout.val_kwargs.top_p=0.95 \
     actor_rollout_ref.rollout.repetition_penalty=$REPETITION_PENALTY \
     actor_rollout_ref.rollout.calculate_log_probs=True \
-    actor_rollout_ref.ref.log_prob_micro_batch_size_per_gpu=1 \
+    actor_rollout_ref.ref.log_prob_micro_batch_size_per_gpu=2 \
     reward_model.enable=False \
     +reward_model.reward_kwargs.enable_format_reward=$ENABLE_FORMAT_REWARD \
     reward_model.model.path=$REWARD_MODEL_PATH \
@@ -218,7 +220,7 @@ python3 -m verl.trainer.main_ppo \
     trainer.n_gpus_per_node=8 \
     trainer.nnodes=1 \
     trainer.save_freq=20 \
-    trainer.test_freq=20 \
+    trainer.test_freq=-1 \
     trainer.total_epochs=1 \
     trainer.default_local_dir="$CKPT_PATH" \
     trainer.is_plot=$IS_PLOT \

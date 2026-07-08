@@ -26,7 +26,17 @@ except ImportError:
 #                   Global constants / variables                              #
 # --------------------------------------------------------------------------- #
 DATA_DIR = "../data"
-# MODEL_FOLDER = "../../model/Qwen3-1.7B-SFT-DAPO-4B-filtered"
+MODEL_FOLDER=[
+    # "/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-4B-Base",
+    # "/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-4B-Base-GRPO"
+    # "/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-4B"
+    "/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-1.7B-Base-OPD"
+    # "/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-1.7B-Base"
+    # "/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_stu-rw_student_p-2026-06-03_11-28-44/global_step_279/hf_model"
+    ]
+GPUS=[0,1,2,3,4,5,6,7]
+OUT_DIR_NAME = "/mmu_cd_ssd/pengtiantian/projects/OPD/eval_output"
+# actually save path："/mmu_cd_ssd/pengtiantian/projects/OPD/eval_output/{model_name}"
 
 def extract_max_number(path):
     """Extract all numbers from a path and return the largest one for sorting."""
@@ -36,25 +46,26 @@ def extract_max_number(path):
     return -1  # If there is no number, keep this entry at the end.
 
 # Collect model paths and sort them by descending numeric suffix.
-try:
-    model_files = os.listdir(MODEL_FOLDER)
-    MODEL_NAMES_CANDIDATES = [os.path.join(MODEL_FOLDER, f) for f in model_files]
-    MODEL_NAMES_CANDIDATES.sort(key=extract_max_number, reverse=True)
-except FileNotFoundError:
-    MODEL_NAMES_CANDIDATES = []
+# try:
+#     model_files = os.listdir(MODEL_FOLDER)
+#     MODEL_NAMES_CANDIDATES = [os.path.join(MODEL_FOLDER, f) for f in model_files]
+#     MODEL_NAMES_CANDIDATES.sort(key=extract_max_number, reverse=True)
+# except FileNotFoundError:
+#     MODEL_NAMES_CANDIDATES = []
 
-# Active model list.
-MODEL_NAMES = MODEL_NAMES_CANDIDATES
-MODEL_NAMES = ["../../model/Qwen3-4B"]
+# # Active model list.
+# MODEL_NAMES = MODEL_NAMES_CANDIDATES
+MODEL_NAMES= MODEL_FOLDER
 
 TASKS = [
-    {"name": "AIME24", "path": f"{DATA_DIR}/AIME24/test.parquet", "N": 16},
-    {"name": "AIME25", "path": f"{DATA_DIR}/AIME25/test.parquet", "N": 16},
-    {"name": "AMC23", "path": f"{DATA_DIR}/AMC23/test.parquet", "N": 16},
+    # {"name": "AIME24", "path": f"{DATA_DIR}/AIME24/test.parquet", "N": 16},
+    # {"name": "AIME25", "path": f"{DATA_DIR}/AIME25/test.parquet", "N": 16},
+    {"name": "AMC23", "path": f"{DATA_DIR}/AMC23/test.parquet", "N": 128},
+    # {"name": "MATH-500", "path": f"{DATA_DIR}/MATH-500/test.parquet", "N": 128},
 ]
 
 PROMPT_TEMPLATE = """{problem} Please reason step by step, and put your final answer within \\boxed{{}}."""
-MAX_TOKENS  = 31744
+MAX_TOKENS  = 15360 # 16384-1024=15360 8192-1024=7168
 TEMPERATURE = 0.7
 TOP_P       = 0.95
 REPLACE     = False
@@ -145,7 +156,9 @@ def worker_process(args_tuple):
             tokenizer = None
             print(f"[GPU {gpu_id}] Warning: Could not get tokenizer for stop tokens: {e}", flush=True)
         
-        for rollout_id in rollout_id_list:
+        from tqdm import tqdm as tqdm_
+
+        for rollout_id in tqdm_(rollout_id_list, desc=f"GPU {gpu_id}", position=int(gpu_id), leave=True):
             sampling = SamplingParams(
                 temperature=TEMPERATURE,
                 top_p=TOP_P,
@@ -234,7 +247,7 @@ def main():
     args = parser.parse_args()
 
     # Specify GPU IDs, with one model instance assigned to each GPU.
-    available_gpus = [0, 1, 2, 3, 4, 5, 6, 7]
+    available_gpus = GPUS
     gpu_workers = [str(gpu_id) for gpu_id in available_gpus]
     num_workers = len(gpu_workers)
 
@@ -244,7 +257,7 @@ def main():
     for model_name in MODEL_NAMES:
         print(f"\n{'='*50}\nStarting evaluation for model: {model_name}\n{'='*50}")
         
-        OUT_DIR = Path(f"justrl_eval_outputs/{model_name.split('/')[-1]}")
+        OUT_DIR = Path(f"{OUT_DIR_NAME}/{model_name.split('/')[-1]}")
         OUT_DIR.mkdir(parents=True, exist_ok=True)
 
         for task in TASKS:

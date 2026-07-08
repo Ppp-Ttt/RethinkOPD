@@ -1119,6 +1119,8 @@ class RayPPOTrainer:
                             strategy = self.config.actor_rollout_ref.rollout.get("top_k_strategy", "only_stu")
                             kl_estimator = self.config.actor_rollout_ref.rollout.get("kl_estimator", "k1")
                             reward_weight_mode = self.config.actor_rollout_ref.rollout.get("reward_weight_mode", "student_p")
+                            js_threshold = self.config.actor_rollout_ref.rollout.get("js_threshold", 0.1)
+                            fkl_coef = self.config.actor_rollout_ref.rollout.get("fkl_coef", 1.0)
 
                             # pass global_steps and is_plot config to rm_wg
                             batch.meta_info["global_steps"] = self.global_steps
@@ -1129,6 +1131,8 @@ class RayPPOTrainer:
                             batch.meta_info["top_k_strategy"] = strategy
                             batch.meta_info["kl_estimator"] = kl_estimator
                             batch.meta_info["reward_weight_mode"] = reward_weight_mode
+                            batch.meta_info["js_threshold"] = js_threshold
+                            batch.meta_info["fkl_coef"] = fkl_coef
                             batch.meta_info["teacher_temperature"] = teacher_temperature
                             
                             with marked_timer("compute_rm_score", timing_raw, color="magenta"):
@@ -1142,6 +1146,10 @@ class RayPPOTrainer:
                                 with marked_timer("compute_distillation_reward", timing_raw, color="orange"):
                                     distillation_output = self.actor_rollout_wg.compute_distillation_reward(batch)
                                     batch = batch.union(distillation_output)
+                                    if "js_router_forward_kl_ratio" in batch.batch.keys():
+                                        # Per-batch fraction of valid tokens routed to forward KL (teacher_p) by js_router.
+                                        # The tensor is broadcast to (B,); take the first element.
+                                        metrics["js_router/forward_kl_ratio"] = batch.batch["js_router_forward_kl_ratio"][0].item()
                         
                         # Plot overlapping tokens for Reverse KL
                         if (self.global_steps == 1 or self.global_steps % 10 == 0) and "student_valid_counts" in batch.batch.keys():

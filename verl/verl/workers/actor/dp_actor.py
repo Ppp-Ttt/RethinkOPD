@@ -18,6 +18,7 @@ Single Process Actor
 """
 
 import logging
+import math
 import os
 
 import torch
@@ -462,7 +463,29 @@ class DataParallelPPOActor(BasePPOActor):
         top_k = data.meta_info.get("log_prob_top_k", 0)
         strategy = data.meta_info.get("top_k_strategy", "only_stu")
         kl_estimator = data.meta_info.get("kl_estimator", "k1")
-        reward_weight_mode = data.meta_info.get("reward_weight_mode", "student_p")  # "student_p", "teacher_p", or "none"
+        reward_weight_mode = data.meta_info.get("reward_weight_mode", "student_p")  # "student_p", "teacher_p", "none", "js_router", "js_add_fkl", "reweight_student_p"
+        js_threshold_raw = data.meta_info.get("js_threshold", 0.1)
+        fkl_coef = float(data.meta_info.get("fkl_coef", 1.0))  # additive FKL strength for js_add_fkl
+        # Parse js_threshold: "X%" -> percentile mode (top X% of valid tokens by JS go to teacher_p);
+        # otherwise -> absolute mode (per-token JS > value -> teacher_p).
+        if isinstance(js_threshold_raw, str) and js_threshold_raw.strip().endswith("%"):
+            js_threshold_mode = "percentile"
+            js_threshold_value = float(js_threshold_raw.strip()[:-1]) / 100.0
+        else:
+            js_threshold_mode = "absolute"
+            js_threshold_value = float(js_threshold_raw)
+        if reward_weight_mode in ("js_router", "js_add_fkl"):
+            if top_k is None or top_k <= 1:
+                raise ValueError(
+                    f"reward_weight_mode='{reward_weight_mode}' requires log_prob_top_k > 1 to compute a meaningful "
+                    f"top-k JS divergence, got log_prob_top_k={top_k}."
+                )
+            if strategy == "union-intersection":
+                raise NotImplementedError(
+                    f"reward_weight_mode='{reward_weight_mode}' is not supported with top_k_strategy='union-intersection': "
+                    "the student-side and teacher-side columns have disjoint supports on this strategy, "
+                    "so a per-token JS divergence is not well-defined."
+                )
         micro_batch_size = data.meta_info["micro_batch_size"]
         temperature = data.meta_info["temperature"]
         use_dynamic_bsz = data.meta_info["use_dynamic_bsz"]
@@ -481,7 +504,7 @@ class DataParallelPPOActor(BasePPOActor):
             # We need to pass target_ids to _forward_micro_batch, but since we are micro-batching, 
             # we should split target_ids as well.
             mb_data = data.select(batch_keys=select_keys + ["teacher_top_k_ids"], 
-                                 non_tensor_batch_keys=non_tensor_select_keys)
+                                non_tensor_batch_keys=non_tensor_select_keys)
             
             if use_dynamic_bsz:
                 max_token_len = data.meta_info["max_token_len"] * self.ulysses_sequence_parallel_size
@@ -519,85 +542,268 @@ class DataParallelPPOActor(BasePPOActor):
         overlap_mask = data.batch.get("overlap_mask", None)
         if overlap_mask is not None: overlap_mask = overlap_mask.to(device)
 
-        def compute_reward_weights(S_logp, T_logp, valid_mask, weight_mode, normalize=True):
+        # Token-level validity mask (B, S): used as the population for percentile JS routing.
+        response_mask = data.batch.get("response_mask", None)
+        if response_mask is not None:
+            response_mask = response_mask.to(device).bool()
+
+        def compute_reward_weights(S_logp, T_logp, valid_mask, weight_mode, normalize=True,
+                                js_threshold_mode="absolute", js_threshold_value=0.1,
+                                token_valid_mask=None, kl_val=None, fkl_coef=1.0):
             """Compute weights for reward calculation.
-            
+
             Args:
                 S_logp: Student log probabilities (batch, seq, K)
                 T_logp: Teacher log probabilities (batch, seq, K)
-                valid_mask: Boolean mask for valid tokens (batch, seq, K)
-                weight_mode: "student_p", "teacher_p", or "none"
+                valid_mask: Boolean mask for valid (B, S, K) entries
+                weight_mode: "student_p", "teacher_p", "none", "js_router",
+                        "js_add_fkl", or "reweight_student_p"
                 normalize: If True, apply softmax normalization across K dim.
-                          If False, use raw probabilities (masked by valid_mask).
-            
+                        If False, use raw probabilities (masked by valid_mask).
+                js_threshold_mode: "absolute" or "percentile". For "js_router"/"js_add_fkl".
+                js_threshold_value: For "absolute": per-token JS threshold above which we
+                        switch to teacher_p (forward KL). For "percentile": ratio in
+                        [0, 1] selecting the top fraction of valid tokens by JS.
+                token_valid_mask: Optional (B, S) bool mask of valid response tokens; used
+                        as the population for percentile thresholding. Falls back to
+                        valid_mask.any(dim=-1) when None.
+                kl_val: Required when weight_mode in {'js_router','js_add_fkl','teacher_p'}.
+                        The (B, S, K) per-token `S_logp - T_logp`. For js_router it is
+                        used to build the RKL branch (rm = -kl_val * p_s) internally so
+                        the FKL branch can be set directly to p_t (no kl_val factor).
+                        Caller MUST consult `is_final` in the returned tuple and skip the
+                        outer `rm_scores = -kl_val * weights` when it is True.
+                fkl_coef: Strength of the additive FKL term for weight_mode='js_add_fkl'.
+                        rm = rm_rkl + fkl_coef * router_mask * p_t. Ignored otherwise.
+
             Returns:
-                Weights (batch, seq, K)
+                weights (batch, seq, K): when is_final=False this is a multiplier and the
+                    caller must compute `rm_scores = -kl_val * weights`; when is_final=True
+                    this IS the final rm_scores tensor.
+                router_mask (batch, seq) bool tensor of tokens routed to forward KL
+                    (teacher_p), or None when weight_mode not in {js_router, js_add_fkl}.
+                is_final (bool): whether `weights` already encodes the final rm_scores.
             """
+            router_mask = None
+            if weight_mode in ("js_router", "js_add_fkl"):
+                if kl_val is None:
+                    raise ValueError(
+                        f"compute_reward_weights(weight_mode='{weight_mode}') requires kl_val "
+                        "so the RKL branch can be built internally."
+                    )
+                # Build per-token student/teacher distributions over the (shared) K-id support.
+                # NOTE: this is a top-k truncated approximation of JS, not the full-vocab JS.
+                neg_inf = torch.full_like(S_logp, -float('inf'))
+                S_logp_m = torch.where(valid_mask, S_logp, neg_inf)
+                T_logp_m = torch.where(valid_mask, T_logp, neg_inf)
+                # Renormalize over K so each row is a proper distribution on the truncated support.
+                S_logp_norm = S_logp_m - torch.logsumexp(S_logp_m, dim=-1, keepdim=True)
+                T_logp_norm = T_logp_m - torch.logsumexp(T_logp_m, dim=-1, keepdim=True)
+                # log M = log(0.5 * (P_s + P_t)) computed in log-space for numerical stability.
+                stacked = torch.stack([S_logp_norm, T_logp_norm], dim=0)            # (2, B, S, K)
+                logM = torch.logsumexp(stacked, dim=0) - math.log(2.0)              # (B, S, K)
+                P_s = torch.exp(S_logp_norm)
+                P_t = torch.exp(T_logp_norm)
+                kl_s_m = (P_s * (S_logp_norm - logM))
+                kl_t_m = (P_t * (T_logp_norm - logM))
+                kl_s_m = torch.where(valid_mask, kl_s_m, torch.zeros_like(kl_s_m))
+                kl_t_m = torch.where(valid_mask, kl_t_m, torch.zeros_like(kl_t_m))
+                js = 0.5 * (kl_s_m.sum(dim=-1) + kl_t_m.sum(dim=-1))                # (B, S)
+                js = torch.nan_to_num(js, nan=0.0, posinf=0.0, neginf=0.0)
+
+                if js_threshold_mode == "percentile":
+                    # Population for the quantile is the set of valid response tokens.
+                    pop_mask = token_valid_mask if token_valid_mask is not None else valid_mask.any(dim=-1)
+                    pop_mask = pop_mask.bool()
+                    pct = float(js_threshold_value)
+                    pct = max(0.0, min(1.0, pct))
+                    n_valid = int(pop_mask.sum().item())
+                    k = int(round(n_valid * pct))
+                    if n_valid == 0 or k <= 0:
+                        router_mask = torch.zeros_like(js, dtype=torch.bool)
+                    elif k >= n_valid:
+                        router_mask = pop_mask
+                    else:
+                        valid_js = js[pop_mask]
+                        # k-th largest value as the cutoff; tokens with JS >= cutoff are routed.
+                        cutoff = torch.topk(valid_js, k, largest=True, sorted=False).values.min()
+                        router_mask = (js >= cutoff) & pop_mask
+                else:
+                    router_mask = js > js_threshold_value                            # (B, S)
+
+                # RKL branch: standard policy-gradient form rm = -kl_val * p_s. We materialize
+                # it internally so the FKL branch can use the CE form (rm = p_t) without
+                # the spurious log(p_s/p_t) factor that the outer `-kl_val *` would inject.
+                w_student, _, _ = compute_reward_weights(
+                    S_logp, T_logp, valid_mask, "student_p", normalize=normalize,
+                )
+                rm_rkl = -kl_val * w_student                                         # (B, S, K)
+
+                # FKL branch: rm = p_t directly (CE-style; ∇L = -Σ p_t · ∇log p_s).
+                # Out-of-support entries are zeroed so they contribute no gradient.
+                p_t_fkl = torch.where(valid_mask, P_t, torch.zeros_like(P_t))
+                rm_fkl = torch.nan_to_num(p_t_fkl, nan=0.0, posinf=0.0, neginf=0.0)
+
+                if weight_mode == "js_add_fkl":
+                    # All tokens keep RKL; high-JS tokens get an *additional* FKL term
+                    # (scaled by fkl_coef) on top, rather than switching branch.
+                    rm_scores = rm_rkl + fkl_coef * torch.where(
+                        router_mask.unsqueeze(-1), rm_fkl, torch.zeros_like(rm_fkl)
+                    )
+                else:  # js_router: high-JS tokens switch entirely to FKL.
+                    rm_scores = torch.where(router_mask.unsqueeze(-1), rm_fkl, rm_rkl)
+                return rm_scores, router_mask, True
+
+            if weight_mode == "reweight_student_p":
+                # student_p baseline; double weight on top-20% JS tokens. JS computed as in js_router.
+                neg_inf = torch.full_like(S_logp, -float('inf'))
+                S_logp_m = torch.where(valid_mask, S_logp, neg_inf)
+                T_logp_m = torch.where(valid_mask, T_logp, neg_inf)
+                S_logp_norm = S_logp_m - torch.logsumexp(S_logp_m, dim=-1, keepdim=True)
+                T_logp_norm = T_logp_m - torch.logsumexp(T_logp_m, dim=-1, keepdim=True)
+                stacked = torch.stack([S_logp_norm, T_logp_norm], dim=0)
+                logM = torch.logsumexp(stacked, dim=0) - math.log(2.0)
+                P_s = torch.exp(S_logp_norm)
+                P_t = torch.exp(T_logp_norm)
+                kl_s_m = torch.where(valid_mask, P_s * (S_logp_norm - logM), torch.zeros_like(P_s))
+                kl_t_m = torch.where(valid_mask, P_t * (T_logp_norm - logM), torch.zeros_like(P_t))
+                js = 0.5 * (kl_s_m.sum(dim=-1) + kl_t_m.sum(dim=-1))   # (B, S)
+                js = torch.nan_to_num(js, nan=0.0, posinf=0.0, neginf=0.0)
+
+                pop_mask = token_valid_mask if token_valid_mask is not None else valid_mask.any(dim=-1)
+                pop_mask = pop_mask.bool()
+                n_valid = int(pop_mask.sum().item())
+                k = int(round(n_valid * 0.20))
+                if n_valid == 0 or k <= 0:
+                    boost_mask = torch.zeros_like(js, dtype=torch.bool)
+                elif k >= n_valid:
+                    boost_mask = pop_mask
+                else:
+                    valid_js = js[pop_mask]
+                    cutoff = torch.topk(valid_js, k, largest=True, sorted=False).values.min()
+                    boost_mask = (js >= cutoff) & pop_mask
+
+                w_student, _, _ = compute_reward_weights(S_logp, T_logp, valid_mask, "student_p", normalize=normalize)
+                weights = torch.where(boost_mask.unsqueeze(-1), w_student * 2.0, w_student)
+                return weights, boost_mask, False
+
+            if weight_mode == "teacher_p":
+                # FKL CE: ∇L = -Σ p_t · ∇log p_s. Return p_t directly as final rm_scores
+                # so the outer `rm_scores = -kl_val * weights` is skipped — that
+                # multiplication would inject a spurious log(p_s/p_t) factor and turn
+                # this into a policy-gradient estimator of FKL instead of plain CE.
+                # valid_mask defines the support on which p_t is renormalized (e.g.
+                # teacher top-K for only_tch, union unique candidates for union, etc.).
+                log_probs = torch.where(valid_mask, T_logp, torch.full_like(T_logp, -float('inf')))
+                if normalize:
+                    log_probs = log_probs - torch.logsumexp(log_probs, dim=-1, keepdim=True)
+                weights = torch.exp(log_probs)
+                weights = torch.nan_to_num(weights, nan=0.0, posinf=0.0, neginf=0.0)
+                return weights, None, True
+
             if weight_mode == "student_p":
                 log_probs = S_logp
-            elif weight_mode == "teacher_p":
-                log_probs = T_logp
             elif weight_mode == "none":
                 # 对于"none"模式，使用均匀分布
                 log_probs = torch.zeros_like(S_logp)
             else:
                 raise ValueError(f"Unknown reward_weight_mode: {weight_mode}")
-            
+
             log_probs = torch.where(valid_mask, log_probs, torch.full_like(log_probs, -float('inf')))
-            
+
             if normalize:
                 norm_log_weights = log_probs - torch.logsumexp(log_probs, dim=-1, keepdim=True)
                 weights = torch.exp(norm_log_weights)
             else:
                 weights = torch.exp(log_probs)
-            
+
             weights = torch.nan_to_num(weights, nan=0.0, posinf=0.0, neginf=0.0)
-            
-            return weights
+
+            return weights, router_mask, False
 
         res_tensors = {}
-        
+        router_mask = None
+        router_valid_mask = None  # token-level mask of positions where router decision is meaningful
+
         if strategy == "only_stu":
+            if reward_weight_mode == "teacher_p":
+                raise ValueError(
+                    "reward_weight_mode='teacher_p' (FKL) requires the K candidates to come from "
+                    "the teacher distribution; use top_k_strategy='only_tch' (or union)."
+                )
             kl_val = S_logp - T_on_S
             valid_mask = torch.ones_like(S_logp, dtype=torch.bool)
-            norm_weights = compute_reward_weights(S_logp, T_on_S, valid_mask, reward_weight_mode)
-            rm_scores = -kl_val * norm_weights
-            
+            norm_weights, router_mask, is_final = compute_reward_weights(
+                S_logp, T_on_S, valid_mask, reward_weight_mode,
+                js_threshold_mode=js_threshold_mode, js_threshold_value=js_threshold_value,
+                token_valid_mask=response_mask, kl_val=kl_val, fkl_coef=fkl_coef,
+            )
+            rm_scores = norm_weights if is_final else (-kl_val * norm_weights)
+            if router_mask is not None:
+                router_valid_mask = valid_mask.any(dim=-1)
+
         elif strategy == "only_tch":
-            kl_val = S_on_T - T_logp
             valid_mask = torch.ones_like(S_on_T, dtype=torch.bool)
-            norm_weights = compute_reward_weights(S_on_T, T_logp, valid_mask, reward_weight_mode)
-            rm_scores = -kl_val * norm_weights
+            if reward_weight_mode == "teacher_p":
+                # FKL CE: ∇L = -Σ p_t · ∇log p_s, so set advantage = p_t directly,
+                # do NOT multiply by kl_val.
+                norm_log_w = T_logp - torch.logsumexp(T_logp, dim=-1, keepdim=True)
+                p_t = torch.exp(norm_log_w)
+                rm_scores = torch.nan_to_num(p_t, nan=0.0, posinf=0.0, neginf=0.0)
+                router_mask = None
+            else:
+                kl_val = S_on_T - T_logp
+                norm_weights, router_mask, is_final = compute_reward_weights(
+                    S_on_T, T_logp, valid_mask, reward_weight_mode,
+                    js_threshold_mode=js_threshold_mode, js_threshold_value=js_threshold_value,
+                    token_valid_mask=response_mask, kl_val=kl_val, fkl_coef=fkl_coef,
+                )
+                rm_scores = norm_weights if is_final else (-kl_val * norm_weights)
             res_tensors["union_top_k_ids"] = T_ids
-            
+            if router_mask is not None:
+                router_valid_mask = valid_mask.any(dim=-1)
+
         elif strategy == "intersection":
             valid_mask = overlap_mask.bool()
             kl_val = S_logp - T_on_S
             kl_val = torch.where(valid_mask, kl_val, torch.zeros_like(kl_val))
-            norm_weights = compute_reward_weights(S_logp, T_on_S, valid_mask, reward_weight_mode)
-            rm_scores = -kl_val * norm_weights
-            
+            norm_weights, router_mask, is_final = compute_reward_weights(
+                S_logp, T_on_S, valid_mask, reward_weight_mode,
+                js_threshold_mode=js_threshold_mode, js_threshold_value=js_threshold_value,
+                token_valid_mask=response_mask, kl_val=kl_val, fkl_coef=fkl_coef,
+            )
+            rm_scores = norm_weights if is_final else (-kl_val * norm_weights)
+            if router_mask is not None:
+                router_valid_mask = valid_mask.any(dim=-1)
+
         elif strategy == "union":
             union_ids = torch.cat([S_ids, T_ids], dim=-1)
             S_logp_union = torch.cat([S_logp, S_on_T], dim=-1)
             T_logp_union = torch.cat([T_on_S, T_logp], dim=-1)
-            
+
             T_in_S = data.batch["teacher_in_student_mask"].bool().to(device)
             valid_mask = torch.cat([
                 torch.ones_like(S_ids, dtype=torch.bool),
                 ~T_in_S
             ], dim=-1)
-            
+
             kl_val = S_logp_union - T_logp_union
             kl_val = torch.where(valid_mask, kl_val, torch.zeros_like(kl_val))
-            norm_weights = compute_reward_weights(S_logp_union, T_logp_union, valid_mask, reward_weight_mode)
-            rm_scores = -kl_val * norm_weights
-            
+
+            norm_weights, router_mask, is_final = compute_reward_weights(
+                S_logp_union, T_logp_union, valid_mask, reward_weight_mode,
+                js_threshold_mode=js_threshold_mode, js_threshold_value=js_threshold_value,
+                token_valid_mask=response_mask, kl_val=kl_val, fkl_coef=fkl_coef,
+            )
+            rm_scores = norm_weights if is_final else (-kl_val * norm_weights)
+
             # Use different keys to avoid conflict with batch's student_top_k_ids
             res_tensors["union_top_k_ids"] = union_ids
             res_tensors["union_top_k_log_probs"] = S_logp_union
             res_tensors["student_log_probs_on_teacher_ids"] = S_on_T
-        
+            if router_mask is not None:
+                router_valid_mask = valid_mask.any(dim=-1)
+
         elif strategy == "union-intersection":
             union_ids = torch.cat([S_ids, T_ids], dim=-1)
             S_logp_union = torch.cat([S_logp, S_on_T], dim=-1)
@@ -609,18 +815,36 @@ class DataParallelPPOActor(BasePPOActor):
                 ~S_in_T,    # S_ids is valid if not in T
                 ~T_in_S     # T_ids is valid if not in S
             ], dim=-1)
-                
+
             kl_val = S_logp_union - T_logp_union
             kl_val = torch.where(valid_mask, kl_val, torch.zeros_like(kl_val))
-            norm_weights = compute_reward_weights(S_logp_union, T_logp_union, valid_mask, reward_weight_mode, normalize=False)
-            rm_scores = -kl_val * norm_weights
-            
+            # js_router is rejected upstream for this strategy; pass-through call ignores js_threshold.
+            norm_weights, _, is_final = compute_reward_weights(
+                S_logp_union, T_logp_union, valid_mask, reward_weight_mode, normalize=False,
+                js_threshold_mode=js_threshold_mode, js_threshold_value=js_threshold_value,
+                token_valid_mask=response_mask, kl_val=kl_val,
+            )
+            rm_scores = norm_weights if is_final else (-kl_val * norm_weights)
+
             # Use different keys to avoid conflict with batch's student_top_k_ids
             res_tensors["union_top_k_ids"] = union_ids
             res_tensors["union_top_k_log_probs"] = S_logp_union
             res_tensors["student_log_probs_on_teacher_ids"] = S_on_T
-            
+
         res_tensors["rm_scores"] = rm_scores
+        if router_mask is not None:
+            if response_mask is not None:
+                router_stat_mask = response_mask.bool()
+            else:
+                router_stat_mask = valid_mask.any(dim=-1)
+
+            fkl_count = (router_mask & router_stat_mask).float().sum()
+            total_count = router_stat_mask.float().sum().clamp(min=1.0)
+
+            forward_kl_ratio = fkl_count / total_count
+            # Broadcast scalar to a (B,) tensor so DataProto can hold it alongside batched tensors.
+            B = rm_scores.shape[0]
+            res_tensors["js_router_forward_kl_ratio"] = forward_kl_ratio.detach().expand(B).contiguous()
         return DataProto.from_dict(tensors=res_tensors)
 
     def _optimizer_step(self):
@@ -727,6 +951,146 @@ class DataParallelPPOActor(BasePPOActor):
                 topk_log_probs_tensor = restore_dynamic_batch(topk_log_probs_tensor, batch_idx_list)
 
         return log_probs, entropys, topk_ids_tensor, topk_log_probs_tensor
+
+    # TODO: 
+    @GPUMemoryLogger(role="dp actor", logger=logger)
+    def compute_last_hidden(self, data: DataProto) -> torch.Tensor:
+        """For each sample, return the last-layer hidden state at the last
+        non-pad token position (= the last response token).
+
+        Returns:
+            torch.Tensor of shape (bsz, hidden_dim), on GPU.
+        """
+        self.actor_module.eval()
+
+        micro_batch_size = data.meta_info["micro_batch_size"]
+        use_dynamic_bsz = data.meta_info["use_dynamic_bsz"]
+        has_multi_modal_inputs = "multi_modal_inputs" in data.non_tensor_batch.keys()
+        select_keys = ["responses", "input_ids", "attention_mask", "position_ids"]
+        non_tensor_select_keys = ["multi_modal_inputs"] if has_multi_modal_inputs else []
+
+        data = data.select(batch_keys=select_keys, non_tensor_batch_keys=non_tensor_select_keys)
+
+        if use_dynamic_bsz:
+            max_token_len = data.meta_info["max_token_len"] * self.ulysses_sequence_parallel_size
+            micro_batches, batch_idx_list = prepare_dynamic_batch(data, max_token_len=max_token_len)
+        else:
+            micro_batches = data.split(micro_batch_size)
+
+        last_hidden_lst = []
+        for micro_batch in micro_batches:
+            micro_batch = micro_batch.to(get_device_id())
+            with torch.no_grad():
+                last_hidden = self._forward_last_hidden(micro_batch.batch)
+            last_hidden_lst.append(last_hidden)
+
+        last_hidden = torch.concat(last_hidden_lst, dim=0)  # (bsz, hidden_dim)
+
+        if use_dynamic_bsz:
+            last_hidden = restore_dynamic_batch(last_hidden, batch_idx_list)
+
+        return last_hidden
+
+
+    def _forward_last_hidden(self, micro_batch) -> torch.Tensor:
+        """Run forward with output_hidden_states=True and extract the hidden
+        state at each sample's last non-pad position. Returns (bsz, hidden_dim).
+        Mirrors the rmpad/Ulysses-SP handling in `_forward_micro_batch`.
+        """
+        multi_modal_inputs = {}
+        if "multi_modal_inputs" in micro_batch.keys():
+            from verl.utils.model import extract_multi_modal_inputs
+            multi_modal_inputs = extract_multi_modal_inputs(micro_batch["multi_modal_inputs"])
+
+        with torch.autocast(device_type=self.device_name, dtype=torch.bfloat16):
+            input_ids = micro_batch["input_ids"]
+            batch_size, seqlen = input_ids.shape
+            attention_mask = micro_batch["attention_mask"]
+            position_ids = micro_batch["position_ids"]
+
+            if position_ids.dim() == 3:  # qwen2vl mrope
+                position_ids = position_ids.transpose(0, 1)
+
+            if self.use_remove_padding:
+                input_ids_rmpad, indices, cu_seqlens, *_ = unpad_input(
+                    input_ids.unsqueeze(-1), attention_mask
+                )
+                input_ids_rmpad = input_ids_rmpad.transpose(0, 1)  # (1, total_nnz)
+
+                if position_ids.dim() == 3:
+                    position_ids_rmpad = (
+                        index_first_axis(rearrange(position_ids, "c b s ... -> (b s) c ..."), indices)
+                        .transpose(0, 1)
+                        .unsqueeze(1)
+                    )
+                else:
+                    position_ids_rmpad = index_first_axis(
+                        rearrange(position_ids.unsqueeze(-1), "b s ... -> (b s) ..."), indices
+                    ).transpose(0, 1)
+
+                pad_size = 0
+                if self.use_ulysses_sp:
+                    is_vlm_model = hasattr(
+                        getattr(self.actor_module, "module", self.actor_module).config, "vision_config"
+                    )
+                    if is_vlm_model:
+                        input_ids_rmpad, position_ids_rmpad, pad_size = ulysses_pad(
+                            input_ids_rmpad,
+                            position_ids_rmpad=position_ids_rmpad,
+                            sp_size=self.ulysses_sequence_parallel_size,
+                        )
+                    else:
+                        input_ids_rmpad, position_ids_rmpad, pad_size = ulysses_pad_and_slice_inputs(
+                            input_ids_rmpad,
+                            position_ids_rmpad=position_ids_rmpad,
+                            sp_size=self.ulysses_sequence_parallel_size,
+                        )
+
+                # NOTE: do NOT pass fused-kernel extra args here; we need raw hidden_states.
+                output = self.actor_module(
+                    input_ids=input_ids_rmpad,
+                    attention_mask=None,
+                    position_ids=position_ids_rmpad,
+                    **multi_modal_inputs,
+                    use_cache=False,
+                    output_hidden_states=True,
+                )
+                # last layer hidden: (1, total_nnz_or_sliced, D) -> (total_nnz_or_sliced, D)
+                hidden_rmpad = output.hidden_states[-1].squeeze(0)
+
+                if self.use_ulysses_sp:
+                    hidden_rmpad = gather_outputs_and_unpad(
+                        hidden_rmpad,
+                        gather_dim=0,
+                        unpad_dim=0,
+                        padding_size=pad_size,
+                    )
+
+                # Pad back to (bsz, seqlen, D)
+                full_hidden = pad_input(
+                    hidden_states=hidden_rmpad,
+                    indices=indices,
+                    batch=batch_size,
+                    seqlen=seqlen,
+                )
+            else:
+                output = self.actor_module(
+                    input_ids=input_ids,
+                    attention_mask=attention_mask,
+                    position_ids=position_ids,
+                    **multi_modal_inputs,
+                    use_cache=False,
+                    output_hidden_states=True,
+                )
+                full_hidden = output.hidden_states[-1]  # (bsz, seqlen, D)
+
+            # Last non-pad position per sample == last response token (responses are right-padded).
+            last_idx = (attention_mask.sum(dim=-1) - 1).clamp(min=0)  # (bsz,)
+            gather_idx = last_idx.view(-1, 1, 1).expand(-1, 1, full_hidden.size(-1))
+            last_hidden = full_hidden.gather(dim=1, index=gather_idx).squeeze(1)  # (bsz, D)
+
+            return last_hidden
+
 
     @GPUMemoryLogger(role="dp actor", logger=logger)
     def update_policy(self, data: DataProto):

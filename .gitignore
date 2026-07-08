@@ -1,0 +1,33 @@
+# Python cache/env
+__pycache__/
+*.pyc
+.venv/
+.env
+
+# Model/data/artifacts
+/models
+/eval_output
+/checkpoint
+/outputs
+/results
+/verl0.8.0
+/checkpoint_newFKL
+/datasets
+/logs
+/log
+/swanlog
+*.pt
+*.pth
+*.bin
+*.safetensors
+*.ckpt
+*.tar
+*.zip
+
+# IDE/system
+.vscode/
+.idea/
+.DS_Store
+
+# others
+*.whl

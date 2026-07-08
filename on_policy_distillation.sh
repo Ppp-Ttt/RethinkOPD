@@ -14,6 +14,8 @@
 
 set -x
 
+export MODEL_MERGE=${MODEL_MERGE:-True} # TODO: True / False (default True): whether to merge checkpoints after training
+
 # Configure logging when running outside SBATCH.
 if [ -z "$SLURM_JOB_ID" ]; then
     # Create the log directory and file for local runs.
@@ -59,9 +61,10 @@ export TEACHER_TEMPERATURE=${TEACHER_TEMPERATURE:-1.0} # Teacher logits temperat
 export REPETITION_PENALTY=${REPETITION_PENALTY:-1.0} # TODO: 1.0 / 1.1 / 1.2 (default 1.0, no penalty)
 export N_RESPONSES=4 # TODO: 4 / 8 / 16 / 32 (default: 8)
 export LOG_PROB_TOP_K=${LOG_PROB_TOP_K:-16} # 0 represents no top-k sampling
-export TOP_K_STRATEGY=${TOP_K_STRATEGY:-"only_stu"} # "only_stu" or "only_tch" or "intersection" or "union" or "union-intersection"
-export REWARD_WEIGHT_MODE=${REWARD_WEIGHT_MODE:-"student_p"} # "student_p" or "teacher_p" or "none"
-# export LR=${LR:-1e-6}
+export TOP_K_STRATEGY=${TOP_K_STRATEGY:-"union"} # "only_stu" or "only_tch" or "intersection" or "union" or "union-intersection"
+export REWARD_WEIGHT_MODE=${REWARD_WEIGHT_MODE:-"student_p"} # TODO: "student_p" or "teacher_p" or "none" or "js_router" or "js_add_fkl" or "reweight_student_p" (forces top_k_strategy=union)
+export JS_THRESHOLD=${JS_THRESHOLD:-"0.01"} # TODO: Used only when REWARD_WEIGHT_MODE=js_router/js_add_fkl. Two formats: absolute "0.02" (per-token JS > 0.02 -> teacher_p, else student_p); percentile "10%" (top 10% tokens by JS -> teacher_p).
+export FKL_COEF=${FKL_COEF:-"1.0"} # TODO: Used only when REWARD_WEIGHT_MODE=js_add_fkl. Strength of the additive FKL term on high-JS tokens: rm = rm_rkl + FKL_COEF * mask * p_t.
 # export LR_SCHEDULER=${LR_SCHEDULER:-constant}
 export USE_KL=${USE_KL:-False} # TODO: True / False (default False)
 export ENABLE_FORMAT_REWARD=${ENABLE_FORMAT_REWARD:-False} # TODO: True / False (default False)
@@ -106,12 +109,14 @@ TEST_DATASET=${TEST_FILE:-["$TEST_DATA_DIR/AIME25/test.parquet", "$TEST_DATA_DIR
 # export ACTOR_MODEL_PATH=/workspace/model/Qwen3-1.7B-SFT-DAPO-4B-RL
 # export ACTOR_MODEL_PATH=/workspace/model/Qwen3-1.7B-SFT-DAPO-4B
 # export ACTOR_MODEL_PATH=model/Qwen2.5-Math-1.5B
-export ACTOR_MODEL_PATH=model/DeepSeek-R1-Distill-Qwen-1.5B
+# export ACTOR_MODEL_PATH=model/DeepSeek-R1-Distill-Qwen-1.5B
 # export ACTOR_MODEL_PATH=model/JustRL-DeepSeek-1.5B-step_0400
 # export ACTOR_MODEL_PATH=model/JustRL-DeepSeek-1.5B
 # export ACTOR_MODEL_PATH=model/Qwen3-1.7B-SFT
 # export ACTOR_MODEL_PATH=model/Qwen3-1.7B-Base-SFT-OpenThought3-4B/checkpoint-1800
-# export ACTOR_MODEL_PATH=model/Qwen3-1.7B-Base
+# export ACTOR_MODEL_PATH=models/Qwen3-0.6B-Base
+export ACTOR_MODEL_PATH=${ACTOR_MODEL_PATH:-models/Qwen3-1.7B-Base}
+# export ACTOR_MODEL_PATH=models/Qwen3-4B-Base
 # export ACTOR_MODEL_PATH=model/Qwen3-1.7B
 # export ACTOR_MODEL_PATH=model/Qwen3-1.7B-Base-SFT-DeepMath-4B
 # export ACTOR_MODEL_PATH=model/Qwen3-1.7B-sft/checkpoint-6000
@@ -119,7 +124,8 @@ export ACTOR_MODEL_PATH=model/DeepSeek-R1-Distill-Qwen-1.5B
 # export ACTOR_MODEL_PATH=model/DS-1.5B-SFT
 export ACTOR_MODEL_NAME=$(basename "$ACTOR_MODEL_PATH")
 # export REWARD_MODEL_PATH=model/Qwen3-4B
-# export REWARD_MODEL_PATH=model/Qwen3-4B-grpo
+export REWARD_MODEL_PATH=${REWARD_MODEL_PATH:-models/Qwen3-4B-Base-GRPO}
+# export REWARD_MODEL_PATH=checkpoint/Qwen3-8B-Base-GRPO_DAPO-Math-17k-Processed_Qwen3-8B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_8-mbs_64-topk_0-topk_strategy_union-rw_student_p-2026-06-16_15-22-00/global_step_279/Qwen3-8B-Base-GRPO_step279
 # export REWARD_MODEL_PATH=model/Qwen3-1.7B
 # export REWARD_MODEL_PATH=model/OpenMath-Nemotron-1.5B
 # export REWARD_MODEL_PATH=model/DeepSeek-R1-Distill-Qwen-7B
@@ -127,14 +133,23 @@ export ACTOR_MODEL_NAME=$(basename "$ACTOR_MODEL_PATH")
 # export REWARD_MODEL_PATH=model/Skywork-OR1-Math-7B
 # export REWARD_MODEL_PATH=model/Polaris-4B-Preview
 # export REWARD_MODEL_PATH=model/DeepSeek-R1-Distill-Qwen-14B
-export REWARD_MODEL_PATH=model/JustRL-DeepSeek-1.5B
+# export REWARD_MODEL_PATH=model/JustRL-DeepSeek-1.5B
 export REWARD_MODEL_NAME=$(basename "$REWARD_MODEL_PATH")
 
-export PROJECT_PATH=checkpoint
+# TODO:
+export EXP_SHORT_NAME=${EXP_SHORT_NAME:-Qwen3-1.7B-Base_OPD_by_Qwen3-4B-Base-GRPO_FKL}
+
+export PROJECT_PATH=checkpoint_newFKL
 export PARALLEL_SIZE=1
-export CKPT_PATH=${PROJECT_PATH}/${ADV_ESTIMATOR}_${TRAIN_DATASET_NAME}_${ACTOR_MODEL_NAME}_${REWARD_MODEL_NAME}_${MAX_RESP_LENGTH}-T_${TEMPERATURE}-Tch_${TEACHER_TEMPERATURE}-n_${N_RESPONSES}-mbs_${MINI_BATCH_SIZE}-topk_${LOG_PROB_TOP_K}-topk_strategy_${TOP_K_STRATEGY}-rw_${REWARD_WEIGHT_MODE}-$(date +%Y-%m-%d_%H-%M-%S)
+export CKPT_PATH=${PROJECT_PATH}/${EXP_SHORT_NAME}_${ADV_ESTIMATOR}_${TRAIN_DATASET_NAME}_${ACTOR_MODEL_NAME}_${REWARD_MODEL_NAME}_${MAX_RESP_LENGTH}-T_${TEMPERATURE}-Tch_${TEACHER_TEMPERATURE}-n_${N_RESPONSES}-mbs_${MINI_BATCH_SIZE}-topk_${LOG_PROB_TOP_K}-topk_strategy_${TOP_K_STRATEGY}-rw_${REWARD_WEIGHT_MODE}-$(date +%Y-%m-%d_%H-%M-%S)
 export OUTLINES_CACHE_DIR=~/.cache/outlines/$(uuidgen)
 export NCCL_DEBUG=WARN
+
+# on_policy_distillation.sh
+if [[ -n "${LOG_DIR:-}" ]]; then
+    mkdir -p "$LOG_DIR"
+    echo "CKPT_PATH=$CKPT_PATH" > "$LOG_DIR/run_info.env"
+fi
 
 # export VLLM_ATTENTION_BACKEND=XFORMERS
 # export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
@@ -143,7 +158,9 @@ export SWANLAB_LOG_DIR=${PROJECT_PATH}/swanlab_log
 export HYDRA_FULL_ERROR=1
 
 
-export EXPERIMENT_NAME=${ADV_ESTIMATOR}_${TRAIN_DATASET_NAME}_${ACTOR_MODEL_NAME}_${REWARD_MODEL_NAME}_${MAX_RESP_LENGTH}-T_${TEMPERATURE}-Tch_${TEACHER_TEMPERATURE}-n_${N_RESPONSES}-mbs_${MINI_BATCH_SIZE}-topk_${LOG_PROB_TOP_K}-topk_strategy_${TOP_K_STRATEGY}-rw_${REWARD_WEIGHT_MODE}-$(date +%Y-%m-%d_%H-%M-%S)
+export EXPERIMENT_NAME=${EXP_SHORT_NAME}_${ADV_ESTIMATOR}_${TRAIN_DATASET_NAME}_${ACTOR_MODEL_NAME}_${REWARD_MODEL_NAME}_${MAX_RESP_LENGTH}-T_${TEMPERATURE}-Tch_${TEACHER_TEMPERATURE}-n_${N_RESPONSES}-mbs_${MINI_BATCH_SIZE}-topk_${LOG_PROB_TOP_K}-topk_strategy_${TOP_K_STRATEGY}-rw_${REWARD_WEIGHT_MODE}-$(date +%Y-%m-%d_%H-%M-%S)
+
+
 
 KL_ARGS=""
 if [ "$USE_KL" = "True" ]; then
@@ -207,9 +224,11 @@ python3 -m verl.trainer.main_ppo \
     +actor_rollout_ref.rollout.log_prob_top_k=$LOG_PROB_TOP_K \
     +actor_rollout_ref.rollout.top_k_strategy=$TOP_K_STRATEGY \
     +actor_rollout_ref.rollout.reward_weight_mode=$REWARD_WEIGHT_MODE \
+    +actor_rollout_ref.rollout.js_threshold=$JS_THRESHOLD \
+    +actor_rollout_ref.rollout.fkl_coef=$FKL_COEF \
     +actor_rollout_ref.rollout.teacher_temperature=$TEACHER_TEMPERATURE \
     actor_rollout_ref.rollout.tensor_model_parallel_size=$PARALLEL_SIZE \
-    actor_rollout_ref.rollout.gpu_memory_utilization=0.8 \
+    actor_rollout_ref.rollout.gpu_memory_utilization=0.75 \
     actor_rollout_ref.rollout.max_model_len=$MAX_MODEL_LEN \
     actor_rollout_ref.rollout.n=$N_RESPONSES \
     actor_rollout_ref.rollout.val_kwargs.do_sample=True \
@@ -242,7 +261,14 @@ python3 -m verl.trainer.main_ppo \
     trainer.test_freq=-1 \
     trainer.total_epochs=1 \
     trainer.default_local_dir="$CKPT_PATH" \
-    trainer.is_plot=$IS_PLOT \
+    trainer.is_plot=$IS_PLOT
+
+if [ "$MODEL_MERGE" = "True" ]; then
+    echo "=========================================="
+    echo "Running model merge: EXP_DIR=$CKPT_PATH, TARGET_PREFIX=$EXP_SHORT_NAME"
+    echo "=========================================="
+    EXP_DIR="/mmu_cd_ssd/pengtiantian/projects/OPD/$CKPT_PATH" TARGET_PREFIX="$EXP_SHORT_NAME" bash scripts/tools/model_merge_all.sh
+fi
 
 # Log the end time for local runs.
 if [ -z "$SLURM_JOB_ID" ]; then
