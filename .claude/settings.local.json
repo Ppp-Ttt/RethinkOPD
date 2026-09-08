@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(/mmu_cd_ssd/pengtiantian/envs/ptt_verl_opd/bin/python -c \"import flash_attn; print\\('flash_attn version:', flash_attn.__version__\\)\")",
+      "Bash(cat)",
+      "Bash(gcc -shared -fPIC -nostartfiles -Wl,--version-script=/tmp/glibc_compat.map /tmp/glibc_compat.c -o /mmu_cd_ssd/pengtiantian/envs/ptt_verl_opd/lib/glibc_compat.so)",
+      "Bash(echo \"Build: $?\")",
+      "Bash(LD_PRELOAD=/mmu_cd_ssd/pengtiantian/envs/ptt_verl_opd/lib/glibc_compat.so /mmu_cd_ssd/pengtiantian/envs/ptt_verl_opd/bin/python -c 'import flash_attn; print\\('\\\\''flash_attn version:'\\\\'', flash_attn.__version__\\)')"
+    ]
+  }
+}

@@ -39,45 +39,45 @@ except ImportError:
 
 # --- Target checkpoint (edit here before running) ---
 # Absolute path to the weight directory that vLLM should load.
-WEIGHT_DIR = "/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint_newFKL/Qwen3-4B-Base_OPD_by_Qwen3-8B-Base-GRPO_JS-ADD-FKL_token_reward_direct_DAPO-Math-17k_Qwen3-4B-Base_Qwen3-8B-Base-GRPO_step279_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_union-rw_js_add_fkl-2026-06-28_19-04-05/global_step_279/Qwen3-4B-Base_OPD_by_Qwen3-8B-Base-GRPO_JS-ADD-FKL_step279"
+WEIGHT_DIR = "/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint_rerun0711/4B-8B_Tch-en-ADD-FKL20%_token_reward_direct_DAPO-Math-17k_Qwen3-4B-Base_Qwen3-8B-Base-GRPO_step279_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_union-rw_tch_en_add_fkl-2026-08-07_14-21-09/global_step_260/4B-8B_Tch-en-ADD-FKL20%_step260"
 # Step tag used in output filenames and as the `stepN` key in grading_results.json.
-STEP = 279
+STEP = 260
 # Name of the model bucket. Output goes to `{OUT_DIR_NAME}/{MODEL_NAME}/...`.
 # If you want results merged into an existing grading_results.json produced by
 # the steps pipeline, set this to that pipeline's `model_name`.
-MODEL_NAME = "Qwen3-4B-Base_OPD_by_Qwen3-8B-Base-GRPO_JS-ADD-FKL"
+MODEL_NAME = "4B-8B_Tch-en-ADD-FKL20%"
 
 GPUS = [0, 1, 2, 3, 4, 5, 6, 7]
 
 DATA_DIR = "../data"
 TASKS = [
-    {"name": "AIME24",   "path": f"{DATA_DIR}/AIME24/test.parquet",   "N": 128},
-    {"name": "AIME25",   "path": f"{DATA_DIR}/AIME25/test.parquet",   "N": 16},
-    {"name": "AMC23",    "path": f"{DATA_DIR}/AMC23/test.parquet",    "N": 128},
-    {"name": "MATH500", "path": f"{DATA_DIR}/MATH-500/test.parquet", "N": 16},
-    {"name": "Minerva",   "path": f"{DATA_DIR}/Minerva/test.parquet",   "N": 16},
-    {"name": "Olympia",   "path": f"{DATA_DIR}/Olympiad-Bench/test.parquet",   "N": 16},
+    # {"name": "AIME24",   "path": f"{DATA_DIR}/AIME24/test.parquet",   "N": 128},
+    # {"name": "AIME25",   "path": f"{DATA_DIR}/AIME25/test.parquet",   "N": 128},
+    # {"name": "AMC23",    "path": f"{DATA_DIR}/AMC23/test.parquet",    "N": 128},
+    # {"name": "MATH500", "path": f"{DATA_DIR}/MATH-500/test.parquet", "N": 16},
+    {"name": "Minerva",   "path": f"{DATA_DIR}/Minerva/test.parquet",   "N": 8},
+    {"name": "Olympia",   "path": f"{DATA_DIR}/Olympiad-Bench/test.parquet",   "N": 8},
 ]
 
 MAX_TOKENS  = 7168
 TEMPERATURE = 0.7
 TOP_P       = 0.95
 REPLACE     = False
-APPEND      = True
+APPEND      = False
 
 # --- Pipeline switches ---
 SKIP_GEN              = False
 SKIP_GRADE            = False
 ENABLE_THINKING       = False
 ENABLE_MODEL_VERIFIER = False
-DELETE_ROLLOUTS       = True
+DELETE_ROLLOUTS       = False
 
 # --- Grading ---
-LENGTH_TOKENIZER_PATH = "/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-1.7B"
+LENGTH_TOKENIZER_PATH = "/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-1.7B-Base"
 VERIFIER_MODEL_PATH   = "../../model/CompassVerifier-3B"
 
 # --- Derived ---
-OUT_DIR_NAME    = "/mmu_cd_ssd/pengtiantian/projects/OPD/eval_output"
+OUT_DIR_NAME    = "/mmu_cd_ssd/pengtiantian/projects/OPD/eval_output_0718"
 PROMPT_TEMPLATE = "{problem} Please reason step by step, and put your final answer within \\boxed{{}}."
 K_VALUES = [1,2,3,4,5,6,8,10,12,14,16,20,24,28,32,40,48,56,64,80,96,112,128,160,192,224,256,320,384,448,512]
 
@@ -153,7 +153,7 @@ def worker_process(args_tuple):
             flush=True,
         )
 
-        llm = LLM(model=model_path, trust_remote_code=True, gpu_memory_utilization=0.9, tensor_parallel_size=1)
+        llm = LLM(model=model_path, trust_remote_code=True, gpu_memory_utilization=0.7, tensor_parallel_size=1)
 
         try:
             tokenizer = llm.get_tokenizer()
@@ -175,6 +175,7 @@ def worker_process(args_tuple):
                 temperature=TEMPERATURE,
                 top_p=TOP_P,
                 max_tokens=MAX_TOKENS,
+                seed=rollout_id,
                 stop_token_ids=stop_token_ids if stop_token_ids else None,
             )
 
@@ -496,9 +497,7 @@ def run_grading(model_name: str, step: int, use_model_verifier: bool, delete_rol
         except Exception as e:
             print(f"Could not load existing {output_file}: {e}. Starting fresh.")
 
-    # Clear this step so we overwrite cleanly instead of accumulating duplicates.
-    results_by_step.pop(f"step{step}", None)
-
+    step_key = f"step{step}"
     graded_files: list[Path] = []
     for file_path in sorted(eval_dir.glob("*.jsonl")):
         file_step = _step_from_filename(file_path.name)
@@ -510,7 +509,15 @@ def run_grading(model_name: str, step: int, use_model_verifier: bool, delete_rol
         print(f"Processing file: {file_path}")
         result = grade_file(file_path, length_tokenizer, vllm_model, model_tokenizer, sampling_params, use_model_verifier)
         if result:
-            results_by_step.setdefault(f"step{step}", []).append(result)
+            # Replace only this task's entry; results for other tasks at the same
+            # step survive even when their rollout jsonl has already been deleted.
+            task_name = result["hyperparameters"]["task_name"]
+            entries = [
+                e for e in results_by_step.get(step_key, [])
+                if e.get("hyperparameters", {}).get("task_name") != task_name
+            ]
+            entries.append(result)
+            results_by_step[step_key] = entries
             graded_files.append(file_path)
 
     ordered = {

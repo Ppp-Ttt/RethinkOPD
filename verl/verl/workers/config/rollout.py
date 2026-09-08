@@ -141,10 +141,13 @@ class RolloutConfig(BaseConfig):
     log_prob_max_token_len_per_gpu: int = 16384
     log_prob_top_k: int = 256
     top_k_strategy: str = "only_stu"  # "only_stu", "only_tch", "intersection", or "union"
-    reward_weight_mode: str = "student_p"  # "student_p", "teacher_p", "none", "js_router", "js_add_fkl", or "reweight_student_p"
-    js_threshold: str = "0.1"  # Threshold for js_router/js_add_fkl. Two formats: absolute "0.1" (per-token JS > 0.1 -> teacher_p); percentile "10%" (top 10% tokens by JS -> teacher_p).
-    fkl_coef: float = 1.0  # Additive FKL strength for reward_weight_mode='js_add_fkl': rm = rm_rkl + fkl_coef * router_mask * p_t.
+    reward_weight_mode: str = "student_p"  # "student_p", "teacher_p", "js_router", "sparse_rkl", "sparse_fkl", "delta_p_weight", "js_add_fkl", "tch_en_add_fkl", or "stu_en_add_fkl"
+    opd_threshold: str = "0.1"  # Threshold for routing modes (js_router/sparse_rkl/sparse_fkl/delta_p_weight/js_add_fkl/tch_en_add_fkl/stu_en_add_fkl). Two formats: absolute "0.1" (per-token routing signal > 0.1); percentile "10%" (top 10% tokens by routing signal).
+    delta_th: float = 0.5  # Used only by delta_p_weight: hard threshold on p_t - p_s for the delta term.
     teacher_temperature: float = 1.0  # Temperature for teacher logits (default 1.0, no scaling)
+    distill_reward_clip: float = 1.0  # Bound on |distillation reward| applied to rm_scores before it reaches the advantage. 0 disables clipping.
+    entropy_th: float = 0.5  # Used by sparse_rkl_add_fkl/sparse_rkl_switch_fkl: entropy below this is "low", at or above is "high".
+    selected_region: str = ""  # Used by sparse_rkl_add_fkl/sparse_rkl_switch_fkl: comma-separated entropy quadrants, e.g. "hh,hl". Each name is "<student><teacher>" with l=low, h=high.
 
     disable_log_stats: bool = True
 

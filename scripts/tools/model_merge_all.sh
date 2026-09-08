@@ -1,16 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+main() {
 PROJECT_DIR="${PROJECT_DIR:-/mmu_cd_ssd/pengtiantian/projects/OPD/verl}"
 
 # 支持三种传参方式 (优先级: 命令行参数 > 环境变量 > 默认值)
 #   1) bash model_merge_all.sh <EXP_DIR> [TARGET_PREFIX]
 #   2) EXP_DIR=... TARGET_PREFIX=... bash model_merge_all.sh
 #   3) export EXP_DIR=...; export TARGET_PREFIX=...; bash model_merge_all.sh
-EXP_DIR="${1:-${EXP_DIR:-/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/Qwen3-0.6B-Base_OPD_by_Qwen3-4B-Base-GRPO_FKL_token_reward_direct_DAPO-Math-17k_Qwen3-0.6B-Base_Qwen3-4B-Base-GRPO_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_tch-rw_teacher_p-2026-06-24_11-42-09}}"
+EXP_DIR="${1:-${EXP_DIR:-/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint_rerun0820/1.7B-4B_sparse_rkl_tch_t0.7_token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B-Base-GRPO_7168-T_1.0-Tch_0.7-n_4-mbs_64-topk_16-topk_strategy_union-rw_sparse_rkl-2026-09-02_14-18-00}}"
 
 
-TARGET_PREFIX="${2:-${TARGET_PREFIX:-Qwen3-0.6B-Base_OPD_by_Qwen3-4B-Base-GRPO_FKL}}"
+TARGET_PREFIX="${2:-${TARGET_PREFIX:-1.7B-4B_sparse_rkl_tch_t0.7}}"
 
 SKIP_EXISTING="${SKIP_EXISTING:-1}"
 
@@ -89,3 +90,6 @@ for step_dir in "${sorted_step_dirs[@]}"; do
 
     echo
 done
+}
+
+main "$@"

@@ -462,30 +462,92 @@ class DataParallelPPOActor(BasePPOActor):
         # 1. Extract parameters from meta_info
         top_k = data.meta_info.get("log_prob_top_k", 0)
         strategy = data.meta_info.get("top_k_strategy", "only_stu")
-        kl_estimator = data.meta_info.get("kl_estimator", "k1")
-        reward_weight_mode = data.meta_info.get("reward_weight_mode", "student_p")  # "student_p", "teacher_p", "none", "js_router", "js_add_fkl", "reweight_student_p"
-        js_threshold_raw = data.meta_info.get("js_threshold", 0.1)
-        fkl_coef = float(data.meta_info.get("fkl_coef", 1.0))  # additive FKL strength for js_add_fkl
-        # Parse js_threshold: "X%" -> percentile mode (top X% of valid tokens by JS go to teacher_p);
-        # otherwise -> absolute mode (per-token JS > value -> teacher_p).
-        if isinstance(js_threshold_raw, str) and js_threshold_raw.strip().endswith("%"):
-            js_threshold_mode = "percentile"
-            js_threshold_value = float(js_threshold_raw.strip()[:-1]) / 100.0
-        else:
-            js_threshold_mode = "absolute"
-            js_threshold_value = float(js_threshold_raw)
-        if reward_weight_mode in ("js_router", "js_add_fkl"):
-            if top_k is None or top_k <= 1:
-                raise ValueError(
-                    f"reward_weight_mode='{reward_weight_mode}' requires log_prob_top_k > 1 to compute a meaningful "
-                    f"top-k JS divergence, got log_prob_top_k={top_k}."
-                )
-            if strategy == "union-intersection":
+        reward_weight_mode = data.meta_info.get("reward_weight_mode", "student_p")
+
+        # Modes that add a forward-KL term on the top-signal tokens instead of switching
+        # branch. They differ only in the per-token routing signal used to rank tokens.
+        ADD_FKL_MODES = ("js_add_fkl", "tch_en_add_fkl", "stu_en_add_fkl")
+        # Modes that split routed tokens into four student/teacher entropy quadrants and treat
+        # the ones in SELECTED_REGION differently.
+        REGION_MODES = ("sparse_rkl_add_fkl", "sparse_rkl_switch_fkl")
+        ROUTING_MODES = (
+            ("js_router", "sparse_rkl", "sparse_rkl_ll_top1", "sparse_fkl", "delta_p_weight")
+            + ADD_FKL_MODES
+            + REGION_MODES
+        )
+        ROUTE_SIGNAL_OF_MODE = {
+            "js_router": "js",
+            "sparse_rkl": "js",
+            "sparse_rkl_ll_top1": "js",
+            "sparse_rkl_add_fkl": "js",
+            "sparse_rkl_switch_fkl": "js",
+            "sparse_fkl": "js",
+            "delta_p_weight": "js",
+            "js_add_fkl": "js",
+            "tch_en_add_fkl": "teacher_entropy",
+            "stu_en_add_fkl": "student_entropy",
+        }
+        SUPPORTED_MODES = ("student_p", "teacher_p") + ROUTING_MODES
+
+        if reward_weight_mode not in SUPPORTED_MODES:
+            raise ValueError(
+                f"Unknown reward_weight_mode: {reward_weight_mode}. Supported: {SUPPORTED_MODES}."
+            )
+        if reward_weight_mode != "student_p":
+            # Every non-RKL mode needs both a student-side and a teacher-side probability on a
+            # shared support, which only these three strategies provide.
+            if strategy not in ("only_stu", "only_tch", "union"):
                 raise NotImplementedError(
-                    f"reward_weight_mode='{reward_weight_mode}' is not supported with top_k_strategy='union-intersection': "
-                    "the student-side and teacher-side columns have disjoint supports on this strategy, "
-                    "so a per-token JS divergence is not well-defined."
+                    f"reward_weight_mode='{reward_weight_mode}' is only supported with "
+                    f"top_k_strategy in ('only_stu', 'only_tch', 'union'), got '{strategy}'."
                 )
+            # The routing signal is a summary statistic over the K candidates, so it is
+            # degenerate unless there are at least two of them.
+            min_top_k = 2 if reward_weight_mode in ROUTING_MODES else 1
+            if top_k is None or top_k < min_top_k:
+                raise ValueError(
+                    f"reward_weight_mode='{reward_weight_mode}' requires log_prob_top_k >= "
+                    f"{min_top_k}, got log_prob_top_k={top_k}."
+                )
+        if reward_weight_mode in ("teacher_p", "sparse_fkl", "delta_p_weight") + REGION_MODES and strategy == "only_stu":
+            raise ValueError(
+                f"reward_weight_mode='{reward_weight_mode}' (FKL) requires the K candidates to come "
+                "from the teacher distribution; use top_k_strategy='only_tch' (or union)."
+            )
+
+        # Entropy quadrant configuration for the REGION_MODES. Quadrant names are two letters,
+        # "<student><teacher>", each 'l' (entropy < ENTROPY_TH) or 'h' (>= ENTROPY_TH).
+        VALID_REGIONS = ("hh", "hl", "lh", "ll")
+        ENTROPY_TH = float(data.meta_info.get("entropy_th", 0.5))
+        selected_region_raw = data.meta_info.get("selected_region", "")
+        if isinstance(selected_region_raw, str):
+            selected_region = [r.strip().lower() for r in selected_region_raw.split(",") if r.strip()]
+        else:
+            selected_region = [str(r).strip().lower() for r in selected_region_raw if str(r).strip()]
+        if reward_weight_mode in REGION_MODES:
+            unknown = [r for r in selected_region if r not in VALID_REGIONS]
+            if unknown:
+                raise ValueError(
+                    f"selected_region contains unknown quadrant(s) {unknown}; "
+                    f"valid names are {VALID_REGIONS} ('<student><teacher>', l=low, h=high entropy)."
+                )
+            if not selected_region:
+                raise ValueError(
+                    f"reward_weight_mode='{reward_weight_mode}' requires a non-empty selected_region, "
+                    f"e.g. selected_region='hh,hl'. Valid names: {VALID_REGIONS}."
+                )
+
+        # OPD_THRESHOLD selects which tokens get the forward-KL treatment in the routing modes.
+        # "X%"  -> percentile: the top X% of valid response tokens by routing signal.
+        # "X"   -> absolute: every token whose routing signal exceeds X.
+        threshold_raw = data.meta_info.get("opd_threshold", 0.1)
+        if isinstance(threshold_raw, str) and threshold_raw.strip().endswith("%"):
+            threshold_mode = "percentile"
+            threshold_value = float(threshold_raw.strip()[:-1]) / 100.0
+        else:
+            threshold_mode = "absolute"
+            threshold_value = float(threshold_raw)
+
         micro_batch_size = data.meta_info["micro_batch_size"]
         temperature = data.meta_info["temperature"]
         use_dynamic_bsz = data.meta_info["use_dynamic_bsz"]
@@ -547,304 +609,355 @@ class DataParallelPPOActor(BasePPOActor):
         if response_mask is not None:
             response_mask = response_mask.to(device).bool()
 
-        def compute_reward_weights(S_logp, T_logp, valid_mask, weight_mode, normalize=True,
-                                js_threshold_mode="absolute", js_threshold_value=0.1,
-                                token_valid_mask=None, kl_val=None, fkl_coef=1.0):
-            """Compute weights for reward calculation.
+        def renormalized_probs(s_logp, t_logp, valid_mask):
+            """Student/teacher distributions restricted to the valid candidate support.
+
+            Renormalizing over `valid_mask` makes each token row a proper distribution on the
+            truncated support, so divergences between the two are well-defined. This is a
+            top-k approximation of the full-vocab quantity, not the exact one.
+
+            Returns (log P_s, P_s, log P_t, P_t), each (B, S, K).
+            """
+            neg_inf = torch.full_like(s_logp, -float("inf"))
+            s_masked = torch.where(valid_mask, s_logp, neg_inf)
+            t_masked = torch.where(valid_mask, t_logp, neg_inf)
+            s_norm = s_masked - torch.logsumexp(s_masked, dim=-1, keepdim=True)
+            t_norm = t_masked - torch.logsumexp(t_masked, dim=-1, keepdim=True)
+            return s_norm, torch.exp(s_norm), t_norm, torch.exp(t_norm)
+
+        def route_signal(kind, s_norm, p_s, t_norm, p_t, valid_mask):
+            """Per-token (B, S) score ranking how much a token needs the forward-KL treatment."""
+            zeros = torch.zeros_like(p_s)
+            if kind == "teacher_entropy":
+                signal = torch.where(valid_mask, -p_t * t_norm, zeros).sum(dim=-1)
+            elif kind == "student_entropy":
+                signal = torch.where(valid_mask, -p_s * s_norm, zeros).sum(dim=-1)
+            else:  # "js": Jensen-Shannon divergence against the mixture M = 0.5 * (P_s + P_t).
+                logM = torch.logsumexp(torch.stack([s_norm, t_norm], dim=0), dim=0) - math.log(2.0)
+                kl_s_m = torch.where(valid_mask, p_s * (s_norm - logM), zeros).sum(dim=-1)
+                kl_t_m = torch.where(valid_mask, p_t * (t_norm - logM), zeros).sum(dim=-1)
+                signal = 0.5 * (kl_s_m + kl_t_m)
+            return torch.nan_to_num(signal, nan=0.0, posinf=0.0, neginf=0.0)
+
+        def threshold_mask(signal, pop_mask):
+            """Turn a (B, S) routing signal into the (B, S) bool mask of routed tokens."""
+            if threshold_mode == "absolute":
+                return signal > threshold_value
+
+            # Percentile: take the top `threshold_value` fraction of the valid response tokens.
+            pct = max(0.0, min(1.0, threshold_value))
+            n_valid = int(pop_mask.sum().item())
+            k = int(round(n_valid * pct))
+            if n_valid == 0 or k <= 0:
+                return torch.zeros_like(signal, dtype=torch.bool)
+            if k >= n_valid:
+                return pop_mask
+            # k-th largest value as the cutoff; tokens at or above it are routed.
+            cutoff = torch.topk(signal[pop_mask], k, largest=True, sorted=False).values.min()
+            return (signal >= cutoff) & pop_mask
+
+        # Hard threshold on the teacher/student probability gap for the delta_p_weight mode:
+        # only candidates the teacher favours by more than this margin receive the delta term.
+        DELTA_TH = float(data.meta_info.get("delta_th", 0.5))
+        delta_stats = {}
+        region_stats = {}
+
+        # Bound on |rm_scores| applied after the mode-specific reward is formed; 0 disables it.
+        distill_reward_clip = float(data.meta_info.get("distill_reward_clip", 1.0))
+
+        def compute_rm_scores(s_logp, t_logp, valid_mask, kl_val, normalize=True):
+            """Per-candidate distillation reward for the configured REWARD_WEIGHT_MODE.
 
             Args:
-                S_logp: Student log probabilities (batch, seq, K)
-                T_logp: Teacher log probabilities (batch, seq, K)
-                valid_mask: Boolean mask for valid (B, S, K) entries
-                weight_mode: "student_p", "teacher_p", "none", "js_router",
-                        "js_add_fkl", or "reweight_student_p"
-                normalize: If True, apply softmax normalization across K dim.
-                        If False, use raw probabilities (masked by valid_mask).
-                js_threshold_mode: "absolute" or "percentile". For "js_router"/"js_add_fkl".
-                js_threshold_value: For "absolute": per-token JS threshold above which we
-                        switch to teacher_p (forward KL). For "percentile": ratio in
-                        [0, 1] selecting the top fraction of valid tokens by JS.
-                token_valid_mask: Optional (B, S) bool mask of valid response tokens; used
-                        as the population for percentile thresholding. Falls back to
-                        valid_mask.any(dim=-1) when None.
-                kl_val: Required when weight_mode in {'js_router','js_add_fkl','teacher_p'}.
-                        The (B, S, K) per-token `S_logp - T_logp`. For js_router it is
-                        used to build the RKL branch (rm = -kl_val * p_s) internally so
-                        the FKL branch can be set directly to p_t (no kl_val factor).
-                        Caller MUST consult `is_final` in the returned tuple and skip the
-                        outer `rm_scores = -kl_val * weights` when it is True.
-                fkl_coef: Strength of the additive FKL term for weight_mode='js_add_fkl'.
-                        rm = rm_rkl + fkl_coef * router_mask * p_t. Ignored otherwise.
+                s_logp, t_logp: student/teacher log probs (B, S, K) over a shared candidate set.
+                valid_mask: (B, S, K) bool, which candidates count.
+                kl_val: (B, S, K) per-candidate `log p_s - log p_t`, zeroed outside valid_mask.
+                normalize: renormalize over the K candidates. False only for
+                    union-intersection, whose two halves are disjoint supports.
 
             Returns:
-                weights (batch, seq, K): when is_final=False this is a multiplier and the
-                    caller must compute `rm_scores = -kl_val * weights`; when is_final=True
-                    this IS the final rm_scores tensor.
-                router_mask (batch, seq) bool tensor of tokens routed to forward KL
-                    (teacher_p), or None when weight_mode not in {js_router, js_add_fkl}.
-                is_final (bool): whether `weights` already encodes the final rm_scores.
+                rm_scores (B, S, K): the final reward, ready to be used as the advantage.
+                router_mask (B, S) bool: tokens given the forward-KL treatment, or None for
+                    the non-routing modes.
             """
-            router_mask = None
-            if weight_mode in ("js_router", "js_add_fkl"):
-                if kl_val is None:
-                    raise ValueError(
-                        f"compute_reward_weights(weight_mode='{weight_mode}') requires kl_val "
-                        "so the RKL branch can be built internally."
-                    )
-                # Build per-token student/teacher distributions over the (shared) K-id support.
-                # NOTE: this is a top-k truncated approximation of JS, not the full-vocab JS.
-                neg_inf = torch.full_like(S_logp, -float('inf'))
-                S_logp_m = torch.where(valid_mask, S_logp, neg_inf)
-                T_logp_m = torch.where(valid_mask, T_logp, neg_inf)
-                # Renormalize over K so each row is a proper distribution on the truncated support.
-                S_logp_norm = S_logp_m - torch.logsumexp(S_logp_m, dim=-1, keepdim=True)
-                T_logp_norm = T_logp_m - torch.logsumexp(T_logp_m, dim=-1, keepdim=True)
-                # log M = log(0.5 * (P_s + P_t)) computed in log-space for numerical stability.
-                stacked = torch.stack([S_logp_norm, T_logp_norm], dim=0)            # (2, B, S, K)
-                logM = torch.logsumexp(stacked, dim=0) - math.log(2.0)              # (B, S, K)
-                P_s = torch.exp(S_logp_norm)
-                P_t = torch.exp(T_logp_norm)
-                kl_s_m = (P_s * (S_logp_norm - logM))
-                kl_t_m = (P_t * (T_logp_norm - logM))
-                kl_s_m = torch.where(valid_mask, kl_s_m, torch.zeros_like(kl_s_m))
-                kl_t_m = torch.where(valid_mask, kl_t_m, torch.zeros_like(kl_t_m))
-                js = 0.5 * (kl_s_m.sum(dim=-1) + kl_t_m.sum(dim=-1))                # (B, S)
-                js = torch.nan_to_num(js, nan=0.0, posinf=0.0, neginf=0.0)
-
-                if js_threshold_mode == "percentile":
-                    # Population for the quantile is the set of valid response tokens.
-                    pop_mask = token_valid_mask if token_valid_mask is not None else valid_mask.any(dim=-1)
-                    pop_mask = pop_mask.bool()
-                    pct = float(js_threshold_value)
-                    pct = max(0.0, min(1.0, pct))
-                    n_valid = int(pop_mask.sum().item())
-                    k = int(round(n_valid * pct))
-                    if n_valid == 0 or k <= 0:
-                        router_mask = torch.zeros_like(js, dtype=torch.bool)
-                    elif k >= n_valid:
-                        router_mask = pop_mask
-                    else:
-                        valid_js = js[pop_mask]
-                        # k-th largest value as the cutoff; tokens with JS >= cutoff are routed.
-                        cutoff = torch.topk(valid_js, k, largest=True, sorted=False).values.min()
-                        router_mask = (js >= cutoff) & pop_mask
-                else:
-                    router_mask = js > js_threshold_value                            # (B, S)
-
-                # RKL branch: standard policy-gradient form rm = -kl_val * p_s. We materialize
-                # it internally so the FKL branch can use the CE form (rm = p_t) without
-                # the spurious log(p_s/p_t) factor that the outer `-kl_val *` would inject.
-                w_student, _, _ = compute_reward_weights(
-                    S_logp, T_logp, valid_mask, "student_p", normalize=normalize,
-                )
-                rm_rkl = -kl_val * w_student                                         # (B, S, K)
-
-                # FKL branch: rm = p_t directly (CE-style; ∇L = -Σ p_t · ∇log p_s).
-                # Out-of-support entries are zeroed so they contribute no gradient.
-                p_t_fkl = torch.where(valid_mask, P_t, torch.zeros_like(P_t))
-                rm_fkl = torch.nan_to_num(p_t_fkl, nan=0.0, posinf=0.0, neginf=0.0)
-
-                if weight_mode == "js_add_fkl":
-                    # All tokens keep RKL; high-JS tokens get an *additional* FKL term
-                    # (scaled by fkl_coef) on top, rather than switching branch.
-                    rm_scores = rm_rkl + fkl_coef * torch.where(
-                        router_mask.unsqueeze(-1), rm_fkl, torch.zeros_like(rm_fkl)
-                    )
-                else:  # js_router: high-JS tokens switch entirely to FKL.
-                    rm_scores = torch.where(router_mask.unsqueeze(-1), rm_fkl, rm_rkl)
-                return rm_scores, router_mask, True
-
-            if weight_mode == "reweight_student_p":
-                # student_p baseline; double weight on top-20% JS tokens. JS computed as in js_router.
-                neg_inf = torch.full_like(S_logp, -float('inf'))
-                S_logp_m = torch.where(valid_mask, S_logp, neg_inf)
-                T_logp_m = torch.where(valid_mask, T_logp, neg_inf)
-                S_logp_norm = S_logp_m - torch.logsumexp(S_logp_m, dim=-1, keepdim=True)
-                T_logp_norm = T_logp_m - torch.logsumexp(T_logp_m, dim=-1, keepdim=True)
-                stacked = torch.stack([S_logp_norm, T_logp_norm], dim=0)
-                logM = torch.logsumexp(stacked, dim=0) - math.log(2.0)
-                P_s = torch.exp(S_logp_norm)
-                P_t = torch.exp(T_logp_norm)
-                kl_s_m = torch.where(valid_mask, P_s * (S_logp_norm - logM), torch.zeros_like(P_s))
-                kl_t_m = torch.where(valid_mask, P_t * (T_logp_norm - logM), torch.zeros_like(P_t))
-                js = 0.5 * (kl_s_m.sum(dim=-1) + kl_t_m.sum(dim=-1))   # (B, S)
-                js = torch.nan_to_num(js, nan=0.0, posinf=0.0, neginf=0.0)
-
-                pop_mask = token_valid_mask if token_valid_mask is not None else valid_mask.any(dim=-1)
-                pop_mask = pop_mask.bool()
-                n_valid = int(pop_mask.sum().item())
-                k = int(round(n_valid * 0.20))
-                if n_valid == 0 or k <= 0:
-                    boost_mask = torch.zeros_like(js, dtype=torch.bool)
-                elif k >= n_valid:
-                    boost_mask = pop_mask
-                else:
-                    valid_js = js[pop_mask]
-                    cutoff = torch.topk(valid_js, k, largest=True, sorted=False).values.min()
-                    boost_mask = (js >= cutoff) & pop_mask
-
-                w_student, _, _ = compute_reward_weights(S_logp, T_logp, valid_mask, "student_p", normalize=normalize)
-                weights = torch.where(boost_mask.unsqueeze(-1), w_student * 2.0, w_student)
-                return weights, boost_mask, False
-
-            if weight_mode == "teacher_p":
-                # FKL CE: ∇L = -Σ p_t · ∇log p_s. Return p_t directly as final rm_scores
-                # so the outer `rm_scores = -kl_val * weights` is skipped — that
-                # multiplication would inject a spurious log(p_s/p_t) factor and turn
-                # this into a policy-gradient estimator of FKL instead of plain CE.
-                # valid_mask defines the support on which p_t is renormalized (e.g.
-                # teacher top-K for only_tch, union unique candidates for union, etc.).
-                log_probs = torch.where(valid_mask, T_logp, torch.full_like(T_logp, -float('inf')))
+            def student_probs():
+                """p_s over the valid support -- the reverse-KL weight of standard OPD."""
+                logp = torch.where(valid_mask, s_logp, torch.full_like(s_logp, -float("inf")))
                 if normalize:
-                    log_probs = log_probs - torch.logsumexp(log_probs, dim=-1, keepdim=True)
-                weights = torch.exp(log_probs)
-                weights = torch.nan_to_num(weights, nan=0.0, posinf=0.0, neginf=0.0)
-                return weights, None, True
+                    logp = logp - torch.logsumexp(logp, dim=-1, keepdim=True)
+                return torch.nan_to_num(torch.exp(logp), nan=0.0, posinf=0.0, neginf=0.0)
 
-            if weight_mode == "student_p":
-                log_probs = S_logp
-            elif weight_mode == "none":
-                # 对于"none"模式，使用均匀分布
-                log_probs = torch.zeros_like(S_logp)
-            else:
-                raise ValueError(f"Unknown reward_weight_mode: {weight_mode}")
+            # Standard OPD: reverse KL in policy-gradient form.
+            if reward_weight_mode == "student_p":
+                return -kl_val * student_probs(), None
 
-            log_probs = torch.where(valid_mask, log_probs, torch.full_like(log_probs, -float('inf')))
+            s_norm, p_s, t_norm, p_t = renormalized_probs(s_logp, t_logp, valid_mask)
 
-            if normalize:
-                norm_log_weights = log_probs - torch.logsumexp(log_probs, dim=-1, keepdim=True)
-                weights = torch.exp(norm_log_weights)
-            else:
-                weights = torch.exp(log_probs)
+            # Forward KL, as the gradient of the cross-entropy against the teacher: the reward
+            # sums to 1 over the support, so grad_z = p_s^raw - p_t. Subtracting p_s here would
+            # make it sum to 0 and cancel the p_s^raw term, which under top-k truncation would
+            # stop pushing down the probability mass outside the candidate set.
+            # Out-of-support entries are zeroed so they contribute no gradient.
+            rm_fkl = torch.nan_to_num(
+                torch.where(valid_mask, p_t, torch.zeros_like(p_t)),
+                nan=0.0, posinf=0.0, neginf=0.0,
+            )
 
-            weights = torch.nan_to_num(weights, nan=0.0, posinf=0.0, neginf=0.0)
+            if reward_weight_mode == "teacher_p":
+                return rm_fkl, None
 
-            return weights, router_mask, False
+            # Routing modes: rank tokens by a per-token signal, then treat the top ones differently.
+            signal = route_signal(
+                ROUTE_SIGNAL_OF_MODE[reward_weight_mode], s_norm, p_s, t_norm, p_t, valid_mask
+            )
+            pop_mask = response_mask if response_mask is not None else valid_mask.any(dim=-1)
+            router_mask = threshold_mask(signal, pop_mask.bool())
+
+            if reward_weight_mode == "sparse_fkl":
+                # Same reward as teacher_p, but only on the routed (high-JS) tokens.
+                return (
+                    torch.where(router_mask.unsqueeze(-1), rm_fkl, torch.zeros_like(rm_fkl)),
+                    router_mask,
+                )
+
+            rm_rkl = -kl_val * student_probs()
+
+            if reward_weight_mode == "sparse_rkl":
+                # Reverse KL only on the routed (high-JS) tokens; the rest get no gradient.
+                return (
+                    torch.where(router_mask.unsqueeze(-1), rm_rkl, torch.zeros_like(rm_rkl)),
+                    router_mask,
+                )
+
+            if reward_weight_mode == "sparse_rkl_ll_top1":
+                # sparse_rkl plus a fixed bonus on the teacher's top-1 candidate, at tokens that
+                # are JS-routed AND where both teacher and student are confident (entropy below
+                # ENTROPY_TH). The point: on positions the model already finds unambiguous, push
+                # the student's mass toward the teacher's favourite candidate in the support.
+                TOP1_BONUS = 1.0
+                teacher_entropy = torch.where(valid_mask, -p_t * t_norm, torch.zeros_like(p_t)).sum(dim=-1)
+                student_entropy = torch.where(valid_mask, -p_s * s_norm, torch.zeros_like(p_s)).sum(dim=-1)
+                low_entropy = (teacher_entropy < ENTROPY_TH) & (student_entropy < ENTROPY_TH)
+                teacher_top1_idx = torch.argmax(
+                    torch.where(valid_mask, t_norm, torch.full_like(t_norm, -float("inf"))),
+                    dim=-1,
+                )  # (B, S)
+                teacher_top1 = torch.zeros_like(rm_rkl).scatter_(
+                    -1, teacher_top1_idx.unsqueeze(-1), 1.0
+                )
+                bonus = torch.where(
+                    (low_entropy & router_mask).unsqueeze(-1),
+                    TOP1_BONUS * teacher_top1,
+                    torch.zeros_like(rm_rkl),
+                )
+                base = torch.where(router_mask.unsqueeze(-1), rm_rkl, torch.zeros_like(rm_rkl))
+                return base + bonus, router_mask
+
+            if reward_weight_mode in REGION_MODES:
+                # Split routed tokens by the (student, teacher) entropy quadrant and treat the
+                # ones in `selected_region` differently. Entropies are taken over the same
+                # renormalized candidate support as the routing signal.
+                teacher_entropy = torch.where(valid_mask, -p_t * t_norm, torch.zeros_like(p_t)).sum(dim=-1)
+                student_entropy = torch.where(valid_mask, -p_s * s_norm, torch.zeros_like(p_s)).sum(dim=-1)
+                teacher_entropy = torch.nan_to_num(teacher_entropy, nan=0.0, posinf=0.0, neginf=0.0)
+                student_entropy = torch.nan_to_num(student_entropy, nan=0.0, posinf=0.0, neginf=0.0)
+                stu_high = student_entropy >= ENTROPY_TH
+                tch_high = teacher_entropy >= ENTROPY_TH
+                quadrant = {
+                    "hh": stu_high & tch_high,
+                    "hl": stu_high & ~tch_high,
+                    "lh": ~stu_high & tch_high,
+                    "ll": ~stu_high & ~tch_high,
+                }
+                region_stats.update(quadrant)
+
+                region_mask = torch.zeros_like(stu_high)
+                for name in selected_region:
+                    region_mask = region_mask | quadrant[name]
+
+                if reward_weight_mode == "sparse_rkl_add_fkl":
+                    # Selected quadrants keep reverse KL and get forward KL added on top.
+                    routed = rm_rkl + torch.where(
+                        region_mask.unsqueeze(-1), rm_fkl, torch.zeros_like(rm_fkl)
+                    )
+                else:  # sparse_rkl_switch_fkl
+                    # Selected quadrants swap reverse KL out for forward KL entirely.
+                    routed = torch.where(region_mask.unsqueeze(-1), rm_fkl, rm_rkl)
+
+                return (
+                    torch.where(router_mask.unsqueeze(-1), routed, torch.zeros_like(routed)),
+                    router_mask,
+                )
+
+            if reward_weight_mode == "delta_p_weight":
+                # sparse_rkl plus a one-sided term over the candidates the teacher favours by
+                # more than DELTA_TH. The hard threshold keeps the term focused on the few
+                # candidates where student and teacher genuinely disagree.
+                # The -log p_s factor is a detached focal-style weight that up-weights candidates
+                # the student currently assigns a low probability. It is capped because it grows
+                # without bound as p_s -> 0, which would otherwise let the noisiest candidates at
+                # the edge of the top-k support dominate the term.
+                delta_gap = torch.where(valid_mask, p_t - p_s, torch.zeros_like(p_t))
+                delta_hit = delta_gap > DELTA_TH
+                focal_w = (-s_norm).clamp(max=5.0)
+                delta = torch.nan_to_num(
+                    torch.where(delta_hit, delta_gap * focal_w, torch.zeros_like(p_t)),
+                    nan=0.0, posinf=0.0, neginf=0.0,
+                )
+                delta_stats["hit"] = delta_hit
+                return (
+                    torch.where(
+                        router_mask.unsqueeze(-1), rm_rkl + delta, torch.zeros_like(rm_rkl)
+                    ),
+                    router_mask,
+                )
+
+            # The FKL branch stands on its own: its gradient is already the cross-entropy
+            # gradient, so it must NOT pick up the -kl_val factor that the RKL branch carries.
+            if reward_weight_mode == "js_router":
+                # Routed tokens switch entirely from reverse to forward KL.
+                return torch.where(router_mask.unsqueeze(-1), rm_fkl, rm_rkl), router_mask
+
+            # *_add_fkl: every token keeps reverse KL; routed tokens get forward KL added on top.
+            return (
+                rm_rkl + torch.where(router_mask.unsqueeze(-1), rm_fkl, torch.zeros_like(rm_fkl)),
+                router_mask,
+            )
+
+        def compute_divergence_stats(S_logp, T_logp, valid_mask, token_mask):
+            """Per-sequence sums of RKL/FKL/JSD over the truncated candidate support.
+
+            Both distributions are renormalized over `valid_mask` so each token row is a proper
+            distribution on the (approximate full-vocab) support before any divergence is taken.
+            Returns (B,) sums plus a (B,) token count so the driver can form an exact
+            token-weighted mean across the whole batch rather than averaging per-rank means.
+            """
+            neg_inf = torch.full_like(S_logp, -float("inf"))
+            S_norm = torch.where(valid_mask, S_logp, neg_inf)
+            T_norm = torch.where(valid_mask, T_logp, neg_inf)
+            S_norm = S_norm - torch.logsumexp(S_norm, dim=-1, keepdim=True)
+            T_norm = T_norm - torch.logsumexp(T_norm, dim=-1, keepdim=True)
+            P_s = torch.exp(S_norm)
+            P_t = torch.exp(T_norm)
+
+            zeros = torch.zeros_like(P_s)
+            # RKL = KL(P_s || P_t), FKL = KL(P_t || P_s)
+            rkl = torch.where(valid_mask, P_s * (S_norm - T_norm), zeros).sum(dim=-1)
+            fkl = torch.where(valid_mask, P_t * (T_norm - S_norm), zeros).sum(dim=-1)
+            # JSD against the mixture M = 0.5 * (P_s + P_t), computed in log-space.
+            logM = torch.logsumexp(torch.stack([S_norm, T_norm], dim=0), dim=0) - math.log(2.0)
+            kl_s_m = torch.where(valid_mask, P_s * (S_norm - logM), zeros).sum(dim=-1)
+            kl_t_m = torch.where(valid_mask, P_t * (T_norm - logM), zeros).sum(dim=-1)
+            jsd = 0.5 * (kl_s_m + kl_t_m)
+
+            tok = token_mask.float() if token_mask is not None else torch.ones_like(rkl)
+            out = {}
+            for name, val in (("rkl", rkl), ("fkl", fkl), ("jsd", jsd)):
+                val = torch.nan_to_num(val, nan=0.0, posinf=0.0, neginf=0.0)
+                out[f"divergence_{name}_sum"] = (val * tok).sum(dim=-1).detach()
+            out["divergence_token_count"] = tok.sum(dim=-1).detach()
+            return out
 
         res_tensors = {}
-        router_mask = None
-        router_valid_mask = None  # token-level mask of positions where router decision is meaningful
+        normalize = True
 
+        # Each strategy defines the candidate support: which K ids the reward is computed over,
+        # and which of them are valid. `compute_rm_scores` then applies the configured mode.
         if strategy == "only_stu":
-            if reward_weight_mode == "teacher_p":
-                raise ValueError(
-                    "reward_weight_mode='teacher_p' (FKL) requires the K candidates to come from "
-                    "the teacher distribution; use top_k_strategy='only_tch' (or union)."
-                )
-            kl_val = S_logp - T_on_S
+            S_support, T_support = S_logp, T_on_S
             valid_mask = torch.ones_like(S_logp, dtype=torch.bool)
-            norm_weights, router_mask, is_final = compute_reward_weights(
-                S_logp, T_on_S, valid_mask, reward_weight_mode,
-                js_threshold_mode=js_threshold_mode, js_threshold_value=js_threshold_value,
-                token_valid_mask=response_mask, kl_val=kl_val, fkl_coef=fkl_coef,
-            )
-            rm_scores = norm_weights if is_final else (-kl_val * norm_weights)
-            if router_mask is not None:
-                router_valid_mask = valid_mask.any(dim=-1)
 
         elif strategy == "only_tch":
+            S_support, T_support = S_on_T, T_logp
             valid_mask = torch.ones_like(S_on_T, dtype=torch.bool)
-            if reward_weight_mode == "teacher_p":
-                # FKL CE: ∇L = -Σ p_t · ∇log p_s, so set advantage = p_t directly,
-                # do NOT multiply by kl_val.
-                norm_log_w = T_logp - torch.logsumexp(T_logp, dim=-1, keepdim=True)
-                p_t = torch.exp(norm_log_w)
-                rm_scores = torch.nan_to_num(p_t, nan=0.0, posinf=0.0, neginf=0.0)
-                router_mask = None
-            else:
-                kl_val = S_on_T - T_logp
-                norm_weights, router_mask, is_final = compute_reward_weights(
-                    S_on_T, T_logp, valid_mask, reward_weight_mode,
-                    js_threshold_mode=js_threshold_mode, js_threshold_value=js_threshold_value,
-                    token_valid_mask=response_mask, kl_val=kl_val, fkl_coef=fkl_coef,
-                )
-                rm_scores = norm_weights if is_final else (-kl_val * norm_weights)
             res_tensors["union_top_k_ids"] = T_ids
-            if router_mask is not None:
-                router_valid_mask = valid_mask.any(dim=-1)
 
         elif strategy == "intersection":
+            S_support, T_support = S_logp, T_on_S
             valid_mask = overlap_mask.bool()
-            kl_val = S_logp - T_on_S
-            kl_val = torch.where(valid_mask, kl_val, torch.zeros_like(kl_val))
-            norm_weights, router_mask, is_final = compute_reward_weights(
-                S_logp, T_on_S, valid_mask, reward_weight_mode,
-                js_threshold_mode=js_threshold_mode, js_threshold_value=js_threshold_value,
-                token_valid_mask=response_mask, kl_val=kl_val, fkl_coef=fkl_coef,
-            )
-            rm_scores = norm_weights if is_final else (-kl_val * norm_weights)
-            if router_mask is not None:
-                router_valid_mask = valid_mask.any(dim=-1)
 
-        elif strategy == "union":
-            union_ids = torch.cat([S_ids, T_ids], dim=-1)
-            S_logp_union = torch.cat([S_logp, S_on_T], dim=-1)
-            T_logp_union = torch.cat([T_on_S, T_logp], dim=-1)
-
+        elif strategy in ("union", "union-intersection"):
+            S_support = torch.cat([S_logp, S_on_T], dim=-1)
+            T_support = torch.cat([T_on_S, T_logp], dim=-1)
             T_in_S = data.batch["teacher_in_student_mask"].bool().to(device)
-            valid_mask = torch.cat([
-                torch.ones_like(S_ids, dtype=torch.bool),
-                ~T_in_S
-            ], dim=-1)
+            if strategy == "union":
+                # Keep every student candidate; keep teacher candidates that aren't duplicates.
+                S_valid = torch.ones_like(S_ids, dtype=torch.bool)
+            else:
+                # union-intersection: keep only the candidates unique to each side.
+                S_valid = ~overlap_mask.bool().to(device)
+                normalize = False
+            valid_mask = torch.cat([S_valid, ~T_in_S], dim=-1)
 
-            kl_val = S_logp_union - T_logp_union
-            kl_val = torch.where(valid_mask, kl_val, torch.zeros_like(kl_val))
-
-            norm_weights, router_mask, is_final = compute_reward_weights(
-                S_logp_union, T_logp_union, valid_mask, reward_weight_mode,
-                js_threshold_mode=js_threshold_mode, js_threshold_value=js_threshold_value,
-                token_valid_mask=response_mask, kl_val=kl_val, fkl_coef=fkl_coef,
-            )
-            rm_scores = norm_weights if is_final else (-kl_val * norm_weights)
-
-            # Use different keys to avoid conflict with batch's student_top_k_ids
-            res_tensors["union_top_k_ids"] = union_ids
-            res_tensors["union_top_k_log_probs"] = S_logp_union
+            res_tensors["union_top_k_ids"] = torch.cat([S_ids, T_ids], dim=-1)
+            res_tensors["union_top_k_log_probs"] = S_support
             res_tensors["student_log_probs_on_teacher_ids"] = S_on_T
-            if router_mask is not None:
-                router_valid_mask = valid_mask.any(dim=-1)
 
-        elif strategy == "union-intersection":
-            union_ids = torch.cat([S_ids, T_ids], dim=-1)
-            S_logp_union = torch.cat([S_logp, S_on_T], dim=-1)
-            T_logp_union = torch.cat([T_on_S, T_logp], dim=-1)
+        else:
+            raise ValueError(f"Unknown top_k_strategy: {strategy}")
 
-            S_in_T = overlap_mask.bool().to(device)
-            T_in_S = data.batch["teacher_in_student_mask"].bool().to(device)
-            valid_mask = torch.cat([
-                ~S_in_T,    # S_ids is valid if not in T
-                ~T_in_S     # T_ids is valid if not in S
-            ], dim=-1)
+        kl_val = S_support - T_support
+        kl_val = torch.where(valid_mask, kl_val, torch.zeros_like(kl_val))
+        rm_scores, router_mask = compute_rm_scores(
+            S_support, T_support, valid_mask, kl_val, normalize=normalize
+        )
 
-            kl_val = S_logp_union - T_logp_union
-            kl_val = torch.where(valid_mask, kl_val, torch.zeros_like(kl_val))
-            # js_router is rejected upstream for this strategy; pass-through call ignores js_threshold.
-            norm_weights, _, is_final = compute_reward_weights(
-                S_logp_union, T_logp_union, valid_mask, reward_weight_mode, normalize=False,
-                js_threshold_mode=js_threshold_mode, js_threshold_value=js_threshold_value,
-                token_valid_mask=response_mask, kl_val=kl_val,
-            )
-            rm_scores = norm_weights if is_final else (-kl_val * norm_weights)
+        B = rm_scores.shape[0]
+        if response_mask is not None:
+            stat_token_mask = response_mask.bool()
+        else:
+            stat_token_mask = valid_mask.any(dim=-1)
 
-            # Use different keys to avoid conflict with batch's student_top_k_ids
-            res_tensors["union_top_k_ids"] = union_ids
-            res_tensors["union_top_k_log_probs"] = S_logp_union
-            res_tensors["student_log_probs_on_teacher_ids"] = S_on_T
+        # Reward clipping. The RKL branch carries a -kl_val = log p_t - log p_s factor, which
+        # blows up when the teacher assigns a candidate a near-zero probability. Bounding
+        # |reward| keeps a single such candidate from dominating the update.
+        if distill_reward_clip > 0:
+            # Count over the candidates that actually carry gradient, so the ratio isn't
+            # diluted by padding and out-of-support entries.
+            clip_cand_mask = valid_mask & stat_token_mask.unsqueeze(-1)
+            clipped_hit = (rm_scores.abs() > distill_reward_clip) & clip_cand_mask
+            clip_ratio = clipped_hit.float().sum() / clip_cand_mask.float().sum().clamp(min=1.0)
+            rm_scores = rm_scores.clamp(min=-distill_reward_clip, max=distill_reward_clip)
+            res_tensors["distill_reward_clip_ratio"] = clip_ratio.detach().expand(B).contiguous()
 
         res_tensors["rm_scores"] = rm_scores
+
+        if strategy != "union-intersection":
+            # Skipped for union-intersection: its two halves have disjoint supports, so a
+            # shared-support teacher/student divergence is not well-defined.
+            res_tensors.update(
+                compute_divergence_stats(S_support, T_support, valid_mask, response_mask)
+            )
+
         if router_mask is not None:
-            if response_mask is not None:
-                router_stat_mask = response_mask.bool()
-            else:
-                router_stat_mask = valid_mask.any(dim=-1)
+            router_stat_mask = stat_token_mask
 
             fkl_count = (router_mask & router_stat_mask).float().sum()
             total_count = router_stat_mask.float().sum().clamp(min=1.0)
 
             forward_kl_ratio = fkl_count / total_count
             # Broadcast scalar to a (B,) tensor so DataProto can hold it alongside batched tensors.
-            B = rm_scores.shape[0]
-            res_tensors["js_router_forward_kl_ratio"] = forward_kl_ratio.detach().expand(B).contiguous()
+            res_tensors["opd_router_forward_kl_ratio"] = forward_kl_ratio.detach().expand(B).contiguous()
+
+            if "hit" in delta_stats:
+                # Fraction of valid candidates that clear the hard p_t - p_s threshold, over the
+                # same token population as forward_kl_ratio so the two curves are comparable.
+                cand_mask = valid_mask & router_stat_mask.unsqueeze(-1)
+                delta_ratio = (
+                    (delta_stats["hit"] & cand_mask).float().sum()
+                    / cand_mask.float().sum().clamp(min=1.0)
+                )
+                res_tensors["opd_router_delta_th_ratio"] = delta_ratio.detach().expand(B).contiguous()
+
+            if region_stats:
+                # Share of the routed tokens falling in each entropy quadrant. The denominator
+                # is the routed population, since that is the only place the quadrant changes
+                # the reward -- the four ratios therefore sum to 1.
+                routed = router_mask & router_stat_mask
+                routed_count = routed.float().sum().clamp(min=1.0)
+                for name, mask in region_stats.items():
+                    ratio = (mask & routed).float().sum() / routed_count
+                    res_tensors[f"opd_region_{name}_ratio"] = ratio.detach().expand(B).contiguous()
         return DataProto.from_dict(tensors=res_tensors)
 
     def _optimizer_step(self):

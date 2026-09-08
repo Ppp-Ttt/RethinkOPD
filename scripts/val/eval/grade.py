@@ -45,7 +45,7 @@ K_VALUES = [1,2,3,4,5,6,8,10,12,14,16,20,24,28,32,40,48,56,64,80,96,112,128,160,
 vllm_model = None
 model_tokenizer = None
 sampling_params = None
-length_tokenizer = AutoTokenizer.from_pretrained("/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-1.7B", local_files_only=True)
+length_tokenizer = AutoTokenizer.from_pretrained("/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-1.7B-Base", local_files_only=True)
 
 def get_len(seq):
     if length_tokenizer:

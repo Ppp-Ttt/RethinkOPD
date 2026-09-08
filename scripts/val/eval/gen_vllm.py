@@ -30,12 +30,12 @@ MODEL_FOLDER=[
     # "/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-4B-Base",
     # "/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-4B-Base-GRPO"
     # "/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-4B"
-    "/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-1.7B-Base-OPD"
+    "/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-1.7B-Base"
     # "/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-1.7B-Base"
     # "/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_stu-rw_student_p-2026-06-03_11-28-44/global_step_279/hf_model"
     ]
 GPUS=[0,1,2,3,4,5,6,7]
-OUT_DIR_NAME = "/mmu_cd_ssd/pengtiantian/projects/OPD/eval_output"
+OUT_DIR_NAME = "/mmu_cd_ssd/pengtiantian/projects/OPD/results/analysis"
 # actually save path："/mmu_cd_ssd/pengtiantian/projects/OPD/eval_output/{model_name}"
 
 def extract_max_number(path):
@@ -60,12 +60,12 @@ MODEL_NAMES= MODEL_FOLDER
 TASKS = [
     # {"name": "AIME24", "path": f"{DATA_DIR}/AIME24/test.parquet", "N": 16},
     # {"name": "AIME25", "path": f"{DATA_DIR}/AIME25/test.parquet", "N": 16},
-    {"name": "AMC23", "path": f"{DATA_DIR}/AMC23/test.parquet", "N": 128},
+    {"name": "AMC23", "path": f"{DATA_DIR}/AMC23/test.parquet", "N": 8},
     # {"name": "MATH-500", "path": f"{DATA_DIR}/MATH-500/test.parquet", "N": 128},
 ]
 
 PROMPT_TEMPLATE = """{problem} Please reason step by step, and put your final answer within \\boxed{{}}."""
-MAX_TOKENS  = 15360 # 16384-1024=15360 8192-1024=7168
+MAX_TOKENS  = 7168 # 16384-1024=15360 8192-1024=7168
 TEMPERATURE = 0.7
 TOP_P       = 0.95
 REPLACE     = False
@@ -159,18 +159,26 @@ def worker_process(args_tuple):
         from tqdm import tqdm as tqdm_
 
         for rollout_id in tqdm_(rollout_id_list, desc=f"GPU {gpu_id}", position=int(gpu_id), leave=True):
-            sampling = SamplingParams(
-                temperature=TEMPERATURE,
-                top_p=TOP_P,
-                max_tokens=MAX_TOKENS,
-                stop_token_ids=stop_token_ids if stop_token_ids else None,
-            )
-
             if tokenizer is None:
                 raise RuntimeError("Tokenizer is required for apply_chat_template, but it could not be loaded.")
 
-            # Do not set request-level seeds here. Per-request generators can
-            # force vLLM to fall back from the FlashInfer sampler path.
+            # One seed per (rollout_id, example_id). A single shared
+            # SamplingParams collapses the batch: vLLM seeds a separate
+            # generator per request from the same number, so every prompt draws
+            # identical noise. Leaving the seed unset collapses across workers
+            # instead, since each worker process starts its engine RNG from the
+            # same state and here every worker generates the same 40 prompts.
+            sampling = [
+                SamplingParams(
+                    temperature=TEMPERATURE,
+                    top_p=TOP_P,
+                    max_tokens=MAX_TOKENS,
+                    seed=rollout_id * 1_000_003 + s["example_id"],
+                    stop_token_ids=stop_token_ids if stop_token_ids else None,
+                )
+                for s in samples
+            ]
+
             formatted_prompts = [
                 tokenizer.apply_chat_template(
                     [{"role": "user", "content": s["prompt"]}],

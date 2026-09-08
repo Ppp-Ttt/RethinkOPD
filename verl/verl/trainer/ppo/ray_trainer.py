@@ -1119,8 +1119,11 @@ class RayPPOTrainer:
                             strategy = self.config.actor_rollout_ref.rollout.get("top_k_strategy", "only_stu")
                             kl_estimator = self.config.actor_rollout_ref.rollout.get("kl_estimator", "k1")
                             reward_weight_mode = self.config.actor_rollout_ref.rollout.get("reward_weight_mode", "student_p")
-                            js_threshold = self.config.actor_rollout_ref.rollout.get("js_threshold", 0.1)
-                            fkl_coef = self.config.actor_rollout_ref.rollout.get("fkl_coef", 1.0)
+                            opd_threshold = self.config.actor_rollout_ref.rollout.get("opd_threshold", 0.1)
+                            delta_th = self.config.actor_rollout_ref.rollout.get("delta_th", 0.5)
+                            distill_reward_clip = self.config.actor_rollout_ref.rollout.get("distill_reward_clip", 1.0)
+                            entropy_th = self.config.actor_rollout_ref.rollout.get("entropy_th", 0.5)
+                            selected_region = self.config.actor_rollout_ref.rollout.get("selected_region", "")
 
                             # pass global_steps and is_plot config to rm_wg
                             batch.meta_info["global_steps"] = self.global_steps
@@ -1131,8 +1134,11 @@ class RayPPOTrainer:
                             batch.meta_info["top_k_strategy"] = strategy
                             batch.meta_info["kl_estimator"] = kl_estimator
                             batch.meta_info["reward_weight_mode"] = reward_weight_mode
-                            batch.meta_info["js_threshold"] = js_threshold
-                            batch.meta_info["fkl_coef"] = fkl_coef
+                            batch.meta_info["opd_threshold"] = opd_threshold
+                            batch.meta_info["delta_th"] = delta_th
+                            batch.meta_info["distill_reward_clip"] = distill_reward_clip
+                            batch.meta_info["entropy_th"] = entropy_th
+                            batch.meta_info["selected_region"] = selected_region
                             batch.meta_info["teacher_temperature"] = teacher_temperature
                             
                             with marked_timer("compute_rm_score", timing_raw, color="magenta"):
@@ -1146,10 +1152,46 @@ class RayPPOTrainer:
                                 with marked_timer("compute_distillation_reward", timing_raw, color="orange"):
                                     distillation_output = self.actor_rollout_wg.compute_distillation_reward(batch)
                                     batch = batch.union(distillation_output)
-                                    if "js_router_forward_kl_ratio" in batch.batch.keys():
-                                        # Per-batch fraction of valid tokens routed to forward KL (teacher_p) by js_router.
+                                    if "opd_router_forward_kl_ratio" in batch.batch.keys():
+                                        # Per-batch fraction of valid tokens given the forward-KL treatment.
                                         # The tensor is broadcast to (B,); take the first element.
-                                        metrics["js_router/forward_kl_ratio"] = batch.batch["js_router_forward_kl_ratio"][0].item()
+                                        metrics["opd_router/forward_kl_ratio"] = batch.batch["opd_router_forward_kl_ratio"][0].item()
+
+                                    if "opd_router_delta_th_ratio" in batch.batch.keys():
+                                        # Fraction of valid candidates clearing the hard p_t - p_s
+                                        # threshold; the threshold itself goes in the metric name.
+                                        delta_ratio = batch.batch.pop("opd_router_delta_th_ratio")[0].item()
+                                        metrics[f"opd_router/delta_th={delta_th:g}_ratio"] = delta_ratio
+
+                                    if "distill_reward_clip_ratio" in batch.batch.keys():
+                                        # Fraction of gradient-carrying candidates whose reward was
+                                        # clipped; the bound itself goes in the metric name.
+                                        clip_ratio = batch.batch.pop("distill_reward_clip_ratio")[0].item()
+                                        metrics[f"opd_router/reward_clip={distill_reward_clip:g}_ratio"] = clip_ratio
+
+                                    for region in ("hh", "hl", "lh", "ll"):
+                                        # Share of routed tokens in each student/teacher entropy
+                                        # quadrant; the four ratios sum to 1.
+                                        key = f"opd_region_{region}_ratio"
+                                        if key in batch.batch.keys():
+                                            metrics[f"opd_region/{region}_ratio"] = batch.batch.pop(key)[0].item()
+
+                                    if "divergence_token_count" in batch.batch.keys():
+                                        # Token-weighted mean teacher/student divergence over the top-k
+                                        # candidate support, across every rollout in the step.
+                                        n_tok = batch.batch["divergence_token_count"].sum()
+                                        if n_tok > 0:
+                                            for name in ("rkl", "fkl", "jsd"):
+                                                metrics[f"actor/{name}"] = (
+                                                    batch.batch[f"divergence_{name}_sum"].sum() / n_tok
+                                                ).item()
+                                        for key in (
+                                            "divergence_rkl_sum",
+                                            "divergence_fkl_sum",
+                                            "divergence_jsd_sum",
+                                            "divergence_token_count",
+                                        ):
+                                            batch.batch.pop(key)
                         
                         # Plot overlapping tokens for Reverse KL
                         if (self.global_steps == 1 or self.global_steps % 10 == 0) and "student_valid_counts" in batch.batch.keys():

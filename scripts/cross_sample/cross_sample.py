@@ -42,11 +42,13 @@ sys.path.insert(0, str(_SCRIPT_DIR.parent / "val" / "eval"))
 from utils import grade_answer_verl  # noqa: E402
 
 # --- Models ---
-STUDENT_MODEL = "/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-1.7B-Base"
+STUDENT_MODEL = "/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint_rerun0820/1.7B-4B_SPARSE-RKL20%_token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B-Base-GRPO_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_union-rw_sparse_rkl-2026-08-20_20-08-24/global_step_279/1.7B-4B_SPARSE-RKL20%_step279"
 TEACHER_MODEL = "/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-4B-Base-GRPO"
 
 # --- Routing (cross-sampling) ---
-JS_THRESHOLD = 0.5          # JS > threshold → use teacher; else → student
+# Overridable via env var JS_THRESHOLD (e.g. `JS_THRESHOLD=0.05 python cross_sample.py`).
+# Falls back to the default below when unset, so the script still runs directly.
+JS_THRESHOLD = float(os.environ.get("JS_THRESHOLD", "0.03"))  # JS > threshold → teacher; else student
 ROUTER_TOP_K = 16            # support = union of each model's top-k (T=1)
 JS_TEMPERATURE = 1.0         # JS computed on T=JS_TEMPERATURE distributions
 
@@ -56,12 +58,12 @@ MAX_TOKENS = 7168
 # no top-p, no top-k truncation on sampling — pure temperature sampling
 
 # --- Batching / parallelism ---
-BATCH_SIZE = 64             # number of sequences cross-sampled in parallel per GPU
+BATCH_SIZE = 16             # number of sequences cross-sampled in parallel per GPU
 
 # --- Data ---
 DATA_DIR = "/mmu_cd_ssd/pengtiantian/projects/OPD/scripts/val/data"
 TASKS = [
-    {"name": "AMC23", "path": f"{DATA_DIR}/AMC23/test.parquet", "N": 16},
+    {"name": "AMC23", "path": f"{DATA_DIR}/AMC23/test.parquet", "N": 8},
 ]
 ENABLE_THINKING = False
 
@@ -70,7 +72,7 @@ GPUS = [0, 1, 2, 3, 4, 5, 6, 7]
 TORCH_DTYPE = "bfloat16"
 
 # --- Output ---
-OUT_ROOT = "/mmu_cd_ssd/pengtiantian/projects/OPD/results/cross_sample"
+OUT_ROOT = "/mmu_cd_ssd/pengtiantian/projects/OPD/results/cross_sample_0820"
 PROMPT_TEMPLATE = "{problem} Please reason step by step, and put your final answer within \\boxed{{}}."
 
 REPLACE = False   # overwrite existing rollout file
@@ -526,7 +528,7 @@ def worker_process(args_tuple):
                     )
 
                 fout.flush()
-                torch.cuda.empty_cache()
+                # torch.cuda.empty_cache()
 
         pbar.close()
         print(f"[GPU {gpu_id}] done {len(work_units)} units, "

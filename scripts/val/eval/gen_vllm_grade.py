@@ -31,14 +31,10 @@ except ImportError:
 
 # --- Generation ---
 MODEL_FOLDER = [
-    # "/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-4B-Base",
-    # "/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-4B-Base-GRPO",
-    # "/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-4B",
-    # "/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-1.7B-Base-OPD_by_Qwen3-4B-Base-GRPO",
-    # "/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-1.7B",
-    # "/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-1.7B-Base",
-    # "/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/token_reward_direct_DAPO-Math-17k_Qwen3-1.7B_Qwen3-4B_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_union-rw_js_router-2026-06-09_21-38-54/global_step_279/Qwen3-1.7B-OPD_by_Qwen3-4B_JS-ROUTER0.02",
-    "/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-8B",
+    "/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-1.7B-Base",
+    "/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-4B-Base",
+    "/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-4B-Base-GRPO",
+    "/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/Qwen3-8B-Base-GRPO_DAPO-Math-17k-Processed_Qwen3-8B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_8-mbs_64-topk_0-topk_strategy_union-rw_student_p-2026-06-16_15-22-00/global_step_279/Qwen3-8B-Base-GRPO_step279",
     "/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-8B-Base"
 ]
 
@@ -46,10 +42,10 @@ GPUS = [0, 1, 2, 3, 4, 5, 6, 7]
 
 DATA_DIR = "../data"
 TASKS = [
-    {"name": "AIME24",   "path": f"{DATA_DIR}/AIME24/test.parquet",   "N": 256},
-    # {"name": "AIME25",   "path": f"{DATA_DIR}/AIME25/test.parquet",   "N": 16},
-    {"name": "AMC23",    "path": f"{DATA_DIR}/AMC23/test.parquet",    "N": 128},
-    # {"name": "MATH-500", "path": f"{DATA_DIR}/MATH-500/test.parquet", "N": 128},
+    {"name": "AIME24",   "path": f"{DATA_DIR}/AIME24/test.parquet",   "N": 8},
+    {"name": "AIME25",   "path": f"{DATA_DIR}/AIME25/test.parquet",   "N": 8},
+    {"name": "AMC23",    "path": f"{DATA_DIR}/AMC23/test.parquet",    "N": 8},
+    {"name": "MATH-500", "path": f"{DATA_DIR}/MATH-500/test.parquet", "N": 8},
 ]
 
 MAX_TOKENS  = 7168   # 16384-1024=15360  |  8192-1024=7168
@@ -66,11 +62,11 @@ APPEND      = True   # set True to load existing rollouts and only generate miss
 STEP = 0
 
 # --- Grading ---
-LENGTH_TOKENIZER_PATH = "/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-1.7B"
+LENGTH_TOKENIZER_PATH = "/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-1.7B-Base"
 VERIFIER_MODEL_PATH   = "../../model/CompassVerifier-3B"
 
 # --- Derived (do not edit) ---
-OUT_DIR_NAME    = "/mmu_cd_ssd/pengtiantian/projects/OPD/eval_output"
+OUT_DIR_NAME    = "/mmu_cd_ssd/pengtiantian/projects/OPD/eval_output_0718"
 PROMPT_TEMPLATE = "{problem} Please reason step by step, and put your final answer within \\boxed{{}}."
 K_VALUES = [1,2,3,4,5,6,8,10,12,14,16,20,24,28,32,40,48,56,64,80,96,112,128,160,192,224,256,320,384,448,512]
 
@@ -169,6 +165,7 @@ def worker_process(args_tuple):
                 temperature=TEMPERATURE,
                 top_p=TOP_P,
                 max_tokens=MAX_TOKENS,
+                seed=rollout_id,
                 stop_token_ids=stop_token_ids if stop_token_ids else None,
             )
 

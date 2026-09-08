@@ -41,6 +41,10 @@ class HFRollout(BaseRollout):
         super().__init__()
         self.config = config
         self.module = module
+        # rollout module 实际权重精度（FSDP 下取第一个 flat param 的 dtype）
+        _p = next(module.parameters())
+        print(f"[HFRollout] param dtype={_p.dtype}, module type={type(module).__name__}")
+
 
     def generate_sequences(self, prompts: DataProto) -> DataProto:
         batch_size = prompts.batch.batch_size[0]

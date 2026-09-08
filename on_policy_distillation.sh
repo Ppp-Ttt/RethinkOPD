@@ -14,6 +14,7 @@
 
 set -x
 
+main() {
 export MODEL_MERGE=${MODEL_MERGE:-True} # TODO: True / False (default True): whether to merge checkpoints after training
 
 # Configure logging when running outside SBATCH.
@@ -32,10 +33,10 @@ fi
 
 ray stop --force
 export RAY_memory_usage_threshold=0.99
-export CUDA_LAUNCH_BLOCKING=1
+# export CUDA_LAUNCH_BLOCKING=1
 # export CUDA_VISIBLE_DEVICES=1,2,3,4
 export PYTHONUNBUFFERED=1
-export PROJECT_NAME='OnPolicyDistillation' # TODO
+export PROJECT_NAME='DROP' # TODO
 export TORCH_NCCL_BLOCKING_WAIT=1
 export NCCL_TIMEOUT=7200
 export TORCH_DISTRIBUTED_DEBUG=INFO
@@ -62,14 +63,17 @@ export REPETITION_PENALTY=${REPETITION_PENALTY:-1.0} # TODO: 1.0 / 1.1 / 1.2 (de
 export N_RESPONSES=4 # TODO: 4 / 8 / 16 / 32 (default: 8)
 export LOG_PROB_TOP_K=${LOG_PROB_TOP_K:-16} # 0 represents no top-k sampling
 export TOP_K_STRATEGY=${TOP_K_STRATEGY:-"union"} # "only_stu" or "only_tch" or "intersection" or "union" or "union-intersection"
-export REWARD_WEIGHT_MODE=${REWARD_WEIGHT_MODE:-"student_p"} # TODO: "student_p" or "teacher_p" or "none" or "js_router" or "js_add_fkl" or "reweight_student_p" (forces top_k_strategy=union)
-export JS_THRESHOLD=${JS_THRESHOLD:-"0.01"} # TODO: Used only when REWARD_WEIGHT_MODE=js_router/js_add_fkl. Two formats: absolute "0.02" (per-token JS > 0.02 -> teacher_p, else student_p); percentile "10%" (top 10% tokens by JS -> teacher_p).
-export FKL_COEF=${FKL_COEF:-"1.0"} # TODO: Used only when REWARD_WEIGHT_MODE=js_add_fkl. Strength of the additive FKL term on high-JS tokens: rm = rm_rkl + FKL_COEF * mask * p_t.
+export REWARD_WEIGHT_MODE=${REWARD_WEIGHT_MODE:-"sparse_rkl"} # TODO: "student_p" (reverse KL, standard OPD) or "teacher_p" (forward KL) or "js_router" or "sparse_rkl" (rkl only on high-JS tokens) or "sparse_rkl_ll_top1" (sparse_rkl + fixed top1 bonus on tokens where both teacher/student entropy < 0.5) or "sparse_rkl_add_fkl" (sparse_rkl + fkl on the SELECTED_REGION entropy quadrants) or "sparse_rkl_switch_fkl" (sparse_rkl, but the SELECTED_REGION quadrants use fkl instead of rkl) or "sparse_fkl" (fkl only on high-JS tokens) or "delta_p_weight" (sparse_rkl + relu(p_t-p_s) on high-JS tokens) or "js_add_fkl" or "tch_en_add_fkl" or "stu_en_add_fkl". All modes except student_p require LOG_PROB_TOP_K>0 and TOP_K_STRATEGY in only_stu/only_tch/union.
+export OPD_THRESHOLD=${OPD_THRESHOLD:-"10%"} # TODO: Used only when REWARD_WEIGHT_MODE=js_router/sparse_rkl/sparse_fkl/delta_p_weight/js_add_fkl/tch_en_add_fkl/stu_en_add_fkl. Two formats: absolute "0.02" (per-token routing signal > 0.02); percentile "10%" (top 10% tokens by routing signal: JS / teacher entropy / student entropy).
+export DELTA_TH=${DELTA_TH:-0.5} # TODO: Used only when REWARD_WEIGHT_MODE=delta_p_weight. Hard threshold on p_t - p_s: only candidates the teacher favours by more than this margin get the delta term.
+export DISTILL_REWARD_CLIP=${DISTILL_REWARD_CLIP:-0.0} # TODO: Bound on |distillation reward| applied to rm_scores before it reaches the advantage. 0 disables clipping. Guards against the reverse-KL blow-up when the teacher gives a candidate a near-zero probability.
+export ENTROPY_TH=${ENTROPY_TH:-0.5} # TODO: Used only when REWARD_WEIGHT_MODE=sparse_rkl_add_fkl/sparse_rkl_switch_fkl. Entropy below this is "low", at or above is "high".
+export SELECTED_REGION=${SELECTED_REGION:-"hh,hl"} # TODO: Used only when REWARD_WEIGHT_MODE=sparse_rkl_add_fkl/sparse_rkl_switch_fkl. Comma-separated entropy quadrants to treat specially, each named "<student><teacher>" with l=low / h=high entropy: hh, hl, lh, ll.
 # export LR_SCHEDULER=${LR_SCHEDULER:-constant}
 export USE_KL=${USE_KL:-False} # TODO: True / False (default False)
 export ENABLE_FORMAT_REWARD=${ENABLE_FORMAT_REWARD:-False} # TODO: True / False (default False)
 export MODEL_DTYPE=${MODEL_DTYPE:-fp32} # actor/ref/critic fsdp_config.model_dtype: fp32 or bfloat16
-export IS_PLOT=${IS_PLOT:-True} # TODO: True / False (default False)
+export IS_PLOT=${IS_PLOT:-False} # TODO: True / False (default False)
 export LOSS_AGG_MODE=${LOSS_AGG_MODE:-"token-mean"} # TODO: "token-mean" / "seq-mean-token-sum" / "seq-mean-token-mean" / "seq-mean-token-sum-norm" (default "token-mean")
 
 # TODO: qwen3_1p7b_base / qwen3_1p7b / llama31_8b_base / llama31_8b_inst / qwen3_8b_base / qwen3_8b / qwen25_1p5b_base / qwen25_1p5b_inst / qwen25_7b_base / qwen25_7b_inst / qwen25_math_7b_base / qwen25_math_7b_inst / qwen25_math_1p5b_base / qwen25_math_1p5b_inst / distill_r1_1p5b / olmo2_1124_7b_base / olmo2_1124_7b_sft / olmo2_1124_7b_inst / llama32_3b_inst
@@ -79,7 +83,7 @@ export LOSS_AGG_MODE=${LOSS_AGG_MODE:-"token-mean"} # TODO: "token-mean" / "seq-
 # export TRAIN_DATASET=datasets/OpenThoughts3-1.2M/OpenThoughts3_opd.parquet
 # export TRAIN_DATASET=datasets/OpenThoughts3-1.2M/sampled_complement_30k.parquet
 # export TRAIN_DATASET=datasets/DeepMath-103K/verl_format/train_filtered_sampled.parquet
-export TRAIN_DATASET=datasets/dapo-math-17k.parquet
+export TRAIN_DATASET=datasets/dapo-math-17k-processed.parquet
 # export TRAIN_DATASET=datasets/Skywork-OR1-RL-Data/data/math-00000-of-00001.parquet
 # export TRAIN_DATASET=datasets/Skywork-OR1-RL-Data/filtered/math-1p5b-filtered-diff-max8.parquet
 # export TRAIN_DATASET=datasets/DAPO-Math-17k-Processed/DAPO-Math.parquet
@@ -137,9 +141,9 @@ export REWARD_MODEL_PATH=${REWARD_MODEL_PATH:-models/Qwen3-4B-Base-GRPO}
 export REWARD_MODEL_NAME=$(basename "$REWARD_MODEL_PATH")
 
 # TODO:
-export EXP_SHORT_NAME=${EXP_SHORT_NAME:-Qwen3-1.7B-Base_OPD_by_Qwen3-4B-Base-GRPO_FKL}
+export EXP_SHORT_NAME=${EXP_SHORT_NAME:-1.7B-4B_REWEIGHT}
 
-export PROJECT_PATH=checkpoint_newFKL
+export PROJECT_PATH=checkpoint_rerun0820
 export PARALLEL_SIZE=1
 export CKPT_PATH=${PROJECT_PATH}/${EXP_SHORT_NAME}_${ADV_ESTIMATOR}_${TRAIN_DATASET_NAME}_${ACTOR_MODEL_NAME}_${REWARD_MODEL_NAME}_${MAX_RESP_LENGTH}-T_${TEMPERATURE}-Tch_${TEACHER_TEMPERATURE}-n_${N_RESPONSES}-mbs_${MINI_BATCH_SIZE}-topk_${LOG_PROB_TOP_K}-topk_strategy_${TOP_K_STRATEGY}-rw_${REWARD_WEIGHT_MODE}-$(date +%Y-%m-%d_%H-%M-%S)
 export OUTLINES_CACHE_DIR=~/.cache/outlines/$(uuidgen)
@@ -197,6 +201,8 @@ python3 -m verl.trainer.main_ppo \
     data.filter_overlong_prompts=True \
     data.truncation='error' \
     data.return_raw_chat=True \
+    data.image_patch_size=16 \
+    +data.apply_chat_template_kwargs.enable_thinking=False \
     actor_rollout_ref.model.path=$ACTOR_MODEL_PATH \
     actor_rollout_ref.model.use_remove_padding=True \
     actor_rollout_ref.model.enable_activation_offload=True \
@@ -224,8 +230,11 @@ python3 -m verl.trainer.main_ppo \
     +actor_rollout_ref.rollout.log_prob_top_k=$LOG_PROB_TOP_K \
     +actor_rollout_ref.rollout.top_k_strategy=$TOP_K_STRATEGY \
     +actor_rollout_ref.rollout.reward_weight_mode=$REWARD_WEIGHT_MODE \
-    +actor_rollout_ref.rollout.js_threshold=$JS_THRESHOLD \
-    +actor_rollout_ref.rollout.fkl_coef=$FKL_COEF \
+    +actor_rollout_ref.rollout.opd_threshold=$OPD_THRESHOLD \
+    +actor_rollout_ref.rollout.delta_th=$DELTA_TH \
+    +actor_rollout_ref.rollout.distill_reward_clip=$DISTILL_REWARD_CLIP \
+    +actor_rollout_ref.rollout.entropy_th=$ENTROPY_TH \
+    +actor_rollout_ref.rollout.selected_region="'$SELECTED_REGION'" \
     +actor_rollout_ref.rollout.teacher_temperature=$TEACHER_TEMPERATURE \
     actor_rollout_ref.rollout.tensor_model_parallel_size=$PARALLEL_SIZE \
     actor_rollout_ref.rollout.gpu_memory_utilization=0.75 \
@@ -276,3 +285,6 @@ if [ -z "$SLURM_JOB_ID" ]; then
     echo "End time: $(date)"
     echo "=========================================="
 fi
+}
+
+main "$@"

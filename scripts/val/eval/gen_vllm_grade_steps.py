@@ -1,3 +1,4 @@
+import argparse
 import os
 import sys
 import json
@@ -33,18 +34,19 @@ except ImportError:
 # The actual weight folder under each step is `{model_name}_step{step}/`.
 # All steps found under each PATH will be evaluated.
 PATH = [
-    "/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/Qwen3-8B-Base-DrGRPO_grpo_DAPO-Math-17k-Processed_Qwen3-8B-Base_Qwen3-4B_7168-T_1.0-Tch_1.0-n_8-mbs_64-topk_0-topk_strategy_union-rw_student_p-2026-06-22_19-42-02",
-    # "/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint/Qwen3-1.7B-Base_OPD_by_Qwen3-4B-Base-GRPO_token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B-Base-GRPO_7168-T_1.0-Tch_1.0-n_4-mbs_64-topk_16-topk_strategy_only_stu-rw_student_p-2026-06-16_13-58-26",
+    "/mmu_cd_ssd/pengtiantian/projects/OPD/checkpoint_rerun0820/1.7B-4B_sparse_rkl_tch_t0.3_token_reward_direct_DAPO-Math-17k_Qwen3-1.7B-Base_Qwen3-4B-Base-GRPO_7168-T_1.0-Tch_0.3-n_4-mbs_64-topk_16-topk_strategy_union-rw_sparse_rkl-2026-09-02_14-08-17",
 ]
 
 GPUS = [0, 1, 2, 3, 4, 5, 6, 7]
 
 DATA_DIR = "../data"
 TASKS = [
-    {"name": "AIME24",   "path": f"{DATA_DIR}/AIME24/test.parquet",   "N": 16},
-    # {"name": "AIME25",   "path": f"{DATA_DIR}/AIME25/test.parquet",   "N": 16},
-    {"name": "AMC23",    "path": f"{DATA_DIR}/AMC23/test.parquet",    "N": 16},
-    # {"name": "MATH-500", "path": f"{DATA_DIR}/MATH-500/test.parquet", "N": 128},
+    {"name": "AIME24",   "path": f"{DATA_DIR}/AIME24/test.parquet",   "N": 8},
+    {"name": "AIME25",   "path": f"{DATA_DIR}/AIME25/test.parquet",   "N": 8},
+    {"name": "AMC23",    "path": f"{DATA_DIR}/AMC23/test.parquet",    "N": 8},
+    {"name": "MATH-500", "path": f"{DATA_DIR}/MATH-500/test.parquet", "N": 8},
+    {"name": "Minerva",  "path": f"{DATA_DIR}/Minerva/test.parquet",    "N": 8},
+    {"name": "Olympiad", "path": f"{DATA_DIR}/Olympiad-Bench/test.parquet", "N": 8},
 ]
 
 MAX_TOKENS  = 7168   # 16384-1024=15360  |  8192-1024=7168
@@ -53,19 +55,23 @@ TOP_P       = 0.95
 REPLACE     = False   # set True to overwrite existing result files
 APPEND      = True    # set True to load existing rollouts and only generate missing ones
 
+# --- Evaluation step selection ---
+EVAL_STEP_INTERVAL   = 40   # only evaluate checkpoints at steps that are a multiple of this
+EVAL_INCLUDE_LAST    = True # also always evaluate the last (highest-step) checkpoint
+
 # --- Pipeline switches (no CLI args; edit here) ---
 SKIP_GEN              = False  # set True to skip the generation step
 SKIP_GRADE            = False  # set True to skip the grading step
 ENABLE_THINKING       = False  # apply_chat_template enable_thinking flag
 ENABLE_MODEL_VERIFIER = False  # use CompassVerifier as a fallback grader
-DELETE_ROLLOUTS       = True  # set True to delete graded rollout jsonl files after grading
+DELETE_ROLLOUTS       = False  # set True to delete graded rollout jsonl files after grading
 
 # --- Grading ---
-LENGTH_TOKENIZER_PATH = "/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-1.7B"
+LENGTH_TOKENIZER_PATH = "/mmu_cd_ssd/pengtiantian/projects/OPD/models/Qwen3-1.7B-Base"
 VERIFIER_MODEL_PATH   = "../../model/CompassVerifier-3B"
 
 # --- Derived (do not edit) ---
-OUT_DIR_NAME    = "/mmu_cd_ssd/pengtiantian/projects/OPD/eval_output"
+OUT_DIR_NAME    = "/mmu_cd_ssd/pengtiantian/projects/OPD/eval_output_0820"
 PROMPT_TEMPLATE = "{problem} Please reason step by step, and put your final answer within \\boxed{{}}."
 K_VALUES = [1,2,3,4,5,6,8,10,12,14,16,20,24,28,32,40,48,56,64,80,96,112,128,160,192,224,256,320,384,448,512]
 
@@ -215,6 +221,7 @@ def worker_process(args_tuple):
                 temperature=TEMPERATURE,
                 top_p=TOP_P,
                 max_tokens=MAX_TOKENS,
+                seed=rollout_id,
                 stop_token_ids=stop_token_ids if stop_token_ids else None,
             )
 
@@ -352,7 +359,14 @@ def run_generation(checkpoints, enable_thinking: bool):
             print(f"Total new generations collected for {task_name} step={step}: {len(all_results)}")
 
             combined = existing_results + all_results
-            if combined:
+            expected = N * len(samples)
+            if len(combined) != expected:
+                print(
+                    f"[ERROR] {task_name} step={step}: expected {expected} results "
+                    f"({N} rollouts x {len(samples)} samples) but got {len(combined)}. "
+                    f"A worker likely failed; NOT writing '{out_path}'."
+                )
+            elif combined:
                 with out_path.open("w", encoding="utf-8") as f:
                     for item in combined:
                         f.write(json.dumps(item, ensure_ascii=False) + "\n")
@@ -593,6 +607,14 @@ def run_grading(checkpoints, use_model_verifier: bool, delete_rollouts: bool):
 # =========================================================================== #
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--path", type=str, default=None,
+                        help="Path to a weight dir; overrides PATH list above when provided")
+    args = parser.parse_args()
+    global PATH
+    if args.path is not None:
+        PATH = [args.path]
+
     # Discover all (model_name, step, weight_dir) triples from every PATH.
     checkpoints = []
     for p in PATH:
@@ -600,6 +622,20 @@ def main():
         if not found:
             print(f"[discover] No checkpoints found under {p}")
         checkpoints.extend(found)
+
+    # Keep only the checkpoints we actually want to evaluate: steps that are a
+    # multiple of EVAL_STEP_INTERVAL, plus the last (highest-step) checkpoint
+    # of each model. This avoids regenerating/grading every saved ckpt.
+    if EVAL_STEP_INTERVAL > 1:
+        last_step_by_model: dict[str, int] = {}
+        for model_name, step, _ in checkpoints:
+            last_step_by_model[model_name] = max(last_step_by_model.get(model_name, -1), step)
+        checkpoints = [
+            (model_name, step, weight_dir)
+            for (model_name, step, weight_dir) in checkpoints
+            if step % EVAL_STEP_INTERVAL == 0
+            or (EVAL_INCLUDE_LAST and step == last_step_by_model[model_name])
+        ]
 
     if not checkpoints:
         print("No checkpoints discovered. Nothing to do.")

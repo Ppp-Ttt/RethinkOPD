@@ -1,0 +1,1434 @@
+{
+    "step20": [
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "20",
+                "task_name": "aime24"
+            },
+            "mean_score": 0.07916666666666666,
+            "distinct_4gram": 0.3577773913429755,
+            "best_score": 0.23333333333333334,
+            "solve_none": 23,
+            "solve_all": 0,
+            "avg_output_length": 3429.9125,
+            "format_error_rollouts": 81,
+            "pass_at_k": {
+                "pass@1": 0.07916666666666666,
+                "pass@2": 0.12380952380952381,
+                "pass@3": 0.15238095238095237,
+                "pass@4": 0.1738095238095238,
+                "pass@5": 0.19166666666666668,
+                "pass@6": 0.20714285714285716,
+                "pass@8": 0.23333333333333334
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "20",
+                "task_name": "aime25"
+            },
+            "mean_score": 0.05,
+            "distinct_4gram": 0.36918063297938186,
+            "best_score": 0.16666666666666666,
+            "solve_none": 25,
+            "solve_all": 0,
+            "avg_output_length": 3010.258333333333,
+            "format_error_rollouts": 65,
+            "pass_at_k": {
+                "pass@1": 0.05,
+                "pass@2": 0.07380952380952381,
+                "pass@3": 0.09226190476190475,
+                "pass@4": 0.10952380952380952,
+                "pass@5": 0.1255952380952381,
+                "pass@6": 0.14047619047619048,
+                "pass@8": 0.16666666666666666
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "20",
+                "task_name": "amc23"
+            },
+            "mean_score": 0.340625,
+            "distinct_4gram": 0.5043415942232394,
+            "best_score": 0.675,
+            "solve_none": 13,
+            "solve_all": 5,
+            "avg_output_length": 1972.4125,
+            "format_error_rollouts": 45,
+            "pass_at_k": {
+                "pass@1": 0.340625,
+                "pass@2": 0.45,
+                "pass@3": 0.5196428571428571,
+                "pass@4": 0.5703571428571429,
+                "pass@5": 0.6084821428571429,
+                "pass@6": 0.6375,
+                "pass@8": 0.675
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "20",
+                "task_name": "math-500"
+            },
+            "mean_score": 0.6155,
+            "distinct_4gram": 0.5317146661040838,
+            "best_score": 0.852,
+            "solve_none": 74,
+            "solve_all": 170,
+            "avg_output_length": 1111.79525,
+            "format_error_rollouts": 260,
+            "pass_at_k": {
+                "pass@1": 0.6155,
+                "pass@2": 0.7159285714285715,
+                "pass@3": 0.7621071428571429,
+                "pass@4": 0.7909142857142857,
+                "pass@5": 0.8115357142857144,
+                "pass@6": 0.8275714285714285,
+                "pass@8": 0.852
+            }
+        }
+    ],
+    "step40": [
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "40",
+                "task_name": "aime24"
+            },
+            "mean_score": 0.12083333333333333,
+            "distinct_4gram": 0.4354631791086456,
+            "best_score": 0.23333333333333334,
+            "solve_none": 23,
+            "solve_all": 1,
+            "avg_output_length": 4658.483333333334,
+            "format_error_rollouts": 63,
+            "pass_at_k": {
+                "pass@1": 0.12083333333333333,
+                "pass@2": 0.16666666666666666,
+                "pass@3": 0.19166666666666668,
+                "pass@4": 0.20666666666666667,
+                "pass@5": 0.21666666666666667,
+                "pass@6": 0.22380952380952382,
+                "pass@8": 0.23333333333333334
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "40",
+                "task_name": "aime25"
+            },
+            "mean_score": 0.075,
+            "distinct_4gram": 0.45325170520079255,
+            "best_score": 0.2,
+            "solve_none": 24,
+            "solve_all": 0,
+            "avg_output_length": 4476.95,
+            "format_error_rollouts": 60,
+            "pass_at_k": {
+                "pass@1": 0.075,
+                "pass@2": 0.1130952380952381,
+                "pass@3": 0.1380952380952381,
+                "pass@4": 0.15666666666666668,
+                "pass@5": 0.17083333333333334,
+                "pass@6": 0.18214285714285713,
+                "pass@8": 0.2
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "40",
+                "task_name": "amc23"
+            },
+            "mean_score": 0.471875,
+            "distinct_4gram": 0.4691679394357884,
+            "best_score": 0.775,
+            "solve_none": 9,
+            "solve_all": 7,
+            "avg_output_length": 3387.26875,
+            "format_error_rollouts": 53,
+            "pass_at_k": {
+                "pass@1": 0.471875,
+                "pass@2": 0.5883928571428572,
+                "pass@3": 0.6419642857142858,
+                "pass@4": 0.6778571428571428,
+                "pass@5": 0.7080357142857143,
+                "pass@6": 0.7339285714285715,
+                "pass@8": 0.775
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "40",
+                "task_name": "math-500"
+            },
+            "mean_score": 0.69325,
+            "distinct_4gram": 0.4881965190633033,
+            "best_score": 0.872,
+            "solve_none": 64,
+            "solve_all": 213,
+            "avg_output_length": 2160.64325,
+            "format_error_rollouts": 255,
+            "pass_at_k": {
+                "pass@1": 0.69325,
+                "pass@2": 0.7822857142857144,
+                "pass@3": 0.8181785714285714,
+                "pass@4": 0.8382285714285714,
+                "pass@5": 0.8511785714285715,
+                "pass@6": 0.8602857142857143,
+                "pass@8": 0.872
+            }
+        }
+    ],
+    "step60": [
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "60",
+                "task_name": "aime24"
+            },
+            "mean_score": 0.09583333333333334,
+            "distinct_4gram": 0.4137696443904177,
+            "best_score": 0.23333333333333334,
+            "solve_none": 23,
+            "solve_all": 0,
+            "avg_output_length": 4940.795833333334,
+            "format_error_rollouts": 74,
+            "pass_at_k": {
+                "pass@1": 0.09583333333333334,
+                "pass@2": 0.14523809523809525,
+                "pass@3": 0.17619047619047618,
+                "pass@4": 0.19761904761904764,
+                "pass@5": 0.2125,
+                "pass@6": 0.22261904761904763,
+                "pass@8": 0.23333333333333334
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "60",
+                "task_name": "aime25"
+            },
+            "mean_score": 0.06666666666666667,
+            "distinct_4gram": 0.41574661749911457,
+            "best_score": 0.23333333333333334,
+            "solve_none": 23,
+            "solve_all": 1,
+            "avg_output_length": 4605.708333333333,
+            "format_error_rollouts": 64,
+            "pass_at_k": {
+                "pass@1": 0.06666666666666667,
+                "pass@2": 0.09761904761904763,
+                "pass@3": 0.1261904761904762,
+                "pass@4": 0.15238095238095237,
+                "pass@5": 0.17619047619047618,
+                "pass@6": 0.19761904761904764,
+                "pass@8": 0.23333333333333334
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "60",
+                "task_name": "amc23"
+            },
+            "mean_score": 0.440625,
+            "distinct_4gram": 0.468749907222619,
+            "best_score": 0.675,
+            "solve_none": 13,
+            "solve_all": 10,
+            "avg_output_length": 3431.090625,
+            "format_error_rollouts": 49,
+            "pass_at_k": {
+                "pass@1": 0.440625,
+                "pass@2": 0.5178571428571429,
+                "pass@3": 0.5575892857142857,
+                "pass@4": 0.5853571428571429,
+                "pass@5": 0.6089285714285715,
+                "pass@6": 0.63125,
+                "pass@8": 0.675
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "60",
+                "task_name": "math-500"
+            },
+            "mean_score": 0.692,
+            "distinct_4gram": 0.488271143127497,
+            "best_score": 0.868,
+            "solve_none": 66,
+            "solve_all": 212,
+            "avg_output_length": 2097.03075,
+            "format_error_rollouts": 265,
+            "pass_at_k": {
+                "pass@1": 0.692,
+                "pass@2": 0.7821428571428571,
+                "pass@3": 0.8174642857142856,
+                "pass@4": 0.8364285714285714,
+                "pass@5": 0.8484642857142857,
+                "pass@6": 0.8567857142857144,
+                "pass@8": 0.868
+            }
+        }
+    ],
+    "step80": [
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "80",
+                "task_name": "aime24"
+            },
+            "mean_score": 0.09166666666666666,
+            "distinct_4gram": 0.42245785342964737,
+            "best_score": 0.2,
+            "solve_none": 24,
+            "solve_all": 1,
+            "avg_output_length": 4849.895833333333,
+            "format_error_rollouts": 77,
+            "pass_at_k": {
+                "pass@1": 0.09166666666666666,
+                "pass@2": 0.12976190476190477,
+                "pass@3": 0.15476190476190474,
+                "pass@4": 0.17142857142857143,
+                "pass@5": 0.18273809523809523,
+                "pass@6": 0.1904761904761905,
+                "pass@8": 0.2
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "80",
+                "task_name": "aime25"
+            },
+            "mean_score": 0.08333333333333333,
+            "distinct_4gram": 0.443824666915848,
+            "best_score": 0.26666666666666666,
+            "solve_none": 22,
+            "solve_all": 0,
+            "avg_output_length": 4456.945833333333,
+            "format_error_rollouts": 59,
+            "pass_at_k": {
+                "pass@1": 0.08333333333333333,
+                "pass@2": 0.12976190476190477,
+                "pass@3": 0.1630952380952381,
+                "pass@4": 0.19,
+                "pass@5": 0.2125,
+                "pass@6": 0.23214285714285715,
+                "pass@8": 0.26666666666666666
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "80",
+                "task_name": "amc23"
+            },
+            "mean_score": 0.503125,
+            "distinct_4gram": 0.45314255322692754,
+            "best_score": 0.775,
+            "solve_none": 9,
+            "solve_all": 10,
+            "avg_output_length": 3507.79375,
+            "format_error_rollouts": 65,
+            "pass_at_k": {
+                "pass@1": 0.503125,
+                "pass@2": 0.6107142857142858,
+                "pass@3": 0.6691964285714286,
+                "pass@4": 0.7085714285714286,
+                "pass@5": 0.7366071428571429,
+                "pass@6": 0.75625,
+                "pass@8": 0.775
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "80",
+                "task_name": "math-500"
+            },
+            "mean_score": 0.6965,
+            "distinct_4gram": 0.4900863989203991,
+            "best_score": 0.876,
+            "solve_none": 62,
+            "solve_all": 214,
+            "avg_output_length": 2090.81125,
+            "format_error_rollouts": 258,
+            "pass_at_k": {
+                "pass@1": 0.6965,
+                "pass@2": 0.7865,
+                "pass@3": 0.8221785714285714,
+                "pass@4": 0.8416,
+                "pass@5": 0.8541071428571428,
+                "pass@6": 0.8631428571428571,
+                "pass@8": 0.876
+            }
+        }
+    ],
+    "step100": [
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "100",
+                "task_name": "aime24"
+            },
+            "mean_score": 0.11666666666666667,
+            "distinct_4gram": 0.3962876862437107,
+            "best_score": 0.23333333333333334,
+            "solve_none": 23,
+            "solve_all": 1,
+            "avg_output_length": 4876.533333333334,
+            "format_error_rollouts": 85,
+            "pass_at_k": {
+                "pass@1": 0.11666666666666667,
+                "pass@2": 0.1630952380952381,
+                "pass@3": 0.18988095238095237,
+                "pass@4": 0.2061904761904762,
+                "pass@5": 0.21666666666666667,
+                "pass@6": 0.22380952380952382,
+                "pass@8": 0.23333333333333334
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "100",
+                "task_name": "aime25"
+            },
+            "mean_score": 0.07083333333333333,
+            "distinct_4gram": 0.40294431178475854,
+            "best_score": 0.26666666666666666,
+            "solve_none": 22,
+            "solve_all": 0,
+            "avg_output_length": 4890.1375,
+            "format_error_rollouts": 80,
+            "pass_at_k": {
+                "pass@1": 0.07083333333333333,
+                "pass@2": 0.11190476190476191,
+                "pass@3": 0.14107142857142857,
+                "pass@4": 0.16666666666666666,
+                "pass@5": 0.19166666666666668,
+                "pass@6": 0.21666666666666667,
+                "pass@8": 0.26666666666666666
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "100",
+                "task_name": "amc23"
+            },
+            "mean_score": 0.45625,
+            "distinct_4gram": 0.43765739773291984,
+            "best_score": 0.75,
+            "solve_none": 10,
+            "solve_all": 8,
+            "avg_output_length": 3561.25625,
+            "format_error_rollouts": 62,
+            "pass_at_k": {
+                "pass@1": 0.45625,
+                "pass@2": 0.5607142857142857,
+                "pass@3": 0.6169642857142856,
+                "pass@4": 0.6557142857142857,
+                "pass@5": 0.6852678571428571,
+                "pass@6": 0.7098214285714286,
+                "pass@8": 0.75
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "100",
+                "task_name": "math-500"
+            },
+            "mean_score": 0.6915,
+            "distinct_4gram": 0.47549721761956615,
+            "best_score": 0.876,
+            "solve_none": 62,
+            "solve_all": 213,
+            "avg_output_length": 2195.55175,
+            "format_error_rollouts": 291,
+            "pass_at_k": {
+                "pass@1": 0.6915,
+                "pass@2": 0.7808571428571429,
+                "pass@3": 0.8170357142857143,
+                "pass@4": 0.8374285714285714,
+                "pass@5": 0.8511428571428571,
+                "pass@6": 0.8614285714285714,
+                "pass@8": 0.876
+            }
+        }
+    ],
+    "step120": [
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "120",
+                "task_name": "aime24"
+            },
+            "mean_score": 0.1375,
+            "distinct_4gram": 0.4154968781563651,
+            "best_score": 0.26666666666666666,
+            "solve_none": 22,
+            "solve_all": 0,
+            "avg_output_length": 4559.595833333334,
+            "format_error_rollouts": 66,
+            "pass_at_k": {
+                "pass@1": 0.1375,
+                "pass@2": 0.19166666666666668,
+                "pass@3": 0.21607142857142855,
+                "pass@4": 0.23047619047619047,
+                "pass@5": 0.24107142857142855,
+                "pass@6": 0.25,
+                "pass@8": 0.26666666666666666
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "120",
+                "task_name": "aime25"
+            },
+            "mean_score": 0.07916666666666666,
+            "distinct_4gram": 0.43386487174645744,
+            "best_score": 0.2,
+            "solve_none": 24,
+            "solve_all": 1,
+            "avg_output_length": 4582.816666666667,
+            "format_error_rollouts": 64,
+            "pass_at_k": {
+                "pass@1": 0.07916666666666666,
+                "pass@2": 0.1130952380952381,
+                "pass@3": 0.1380952380952381,
+                "pass@4": 0.15666666666666668,
+                "pass@5": 0.17083333333333334,
+                "pass@6": 0.18214285714285713,
+                "pass@8": 0.2
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "120",
+                "task_name": "amc23"
+            },
+            "mean_score": 0.45,
+            "distinct_4gram": 0.4555785463720336,
+            "best_score": 0.775,
+            "solve_none": 9,
+            "solve_all": 8,
+            "avg_output_length": 3569.24375,
+            "format_error_rollouts": 58,
+            "pass_at_k": {
+                "pass@1": 0.45,
+                "pass@2": 0.5535714285714286,
+                "pass@3": 0.6116071428571429,
+                "pass@4": 0.655,
+                "pass@5": 0.6910714285714286,
+                "pass@6": 0.7223214285714286,
+                "pass@8": 0.775
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "120",
+                "task_name": "math-500"
+            },
+            "mean_score": 0.69725,
+            "distinct_4gram": 0.4871460535965107,
+            "best_score": 0.892,
+            "solve_none": 54,
+            "solve_all": 219,
+            "avg_output_length": 2121.88525,
+            "format_error_rollouts": 274,
+            "pass_at_k": {
+                "pass@1": 0.69725,
+                "pass@2": 0.7889285714285714,
+                "pass@3": 0.8283571428571429,
+                "pass@4": 0.8511142857142857,
+                "pass@5": 0.8661785714285715,
+                "pass@6": 0.877,
+                "pass@8": 0.892
+            }
+        }
+    ],
+    "step140": [
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "140",
+                "task_name": "aime24"
+            },
+            "mean_score": 0.09166666666666666,
+            "distinct_4gram": 0.38584227529373566,
+            "best_score": 0.23333333333333334,
+            "solve_none": 23,
+            "solve_all": 0,
+            "avg_output_length": 5045.704166666666,
+            "format_error_rollouts": 84,
+            "pass_at_k": {
+                "pass@1": 0.09166666666666666,
+                "pass@2": 0.1357142857142857,
+                "pass@3": 0.16190476190476188,
+                "pass@4": 0.18047619047619048,
+                "pass@5": 0.19523809523809524,
+                "pass@6": 0.20833333333333334,
+                "pass@8": 0.23333333333333334
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "140",
+                "task_name": "aime25"
+            },
+            "mean_score": 0.07916666666666666,
+            "distinct_4gram": 0.4211577177762888,
+            "best_score": 0.26666666666666666,
+            "solve_none": 22,
+            "solve_all": 0,
+            "avg_output_length": 4749.616666666667,
+            "format_error_rollouts": 68,
+            "pass_at_k": {
+                "pass@1": 0.07916666666666666,
+                "pass@2": 0.1261904761904762,
+                "pass@3": 0.1625,
+                "pass@4": 0.1928571428571429,
+                "pass@5": 0.21785714285714286,
+                "pass@6": 0.2380952380952381,
+                "pass@8": 0.26666666666666666
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "140",
+                "task_name": "amc23"
+            },
+            "mean_score": 0.421875,
+            "distinct_4gram": 0.4471058819036605,
+            "best_score": 0.65,
+            "solve_none": 14,
+            "solve_all": 6,
+            "avg_output_length": 3596.028125,
+            "format_error_rollouts": 62,
+            "pass_at_k": {
+                "pass@1": 0.421875,
+                "pass@2": 0.5196428571428571,
+                "pass@3": 0.5620535714285715,
+                "pass@4": 0.5892857142857143,
+                "pass@5": 0.6107142857142857,
+                "pass@6": 0.6276785714285714,
+                "pass@8": 0.65
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "140",
+                "task_name": "math-500"
+            },
+            "mean_score": 0.69675,
+            "distinct_4gram": 0.483478522690749,
+            "best_score": 0.874,
+            "solve_none": 63,
+            "solve_all": 227,
+            "avg_output_length": 2123.6165,
+            "format_error_rollouts": 275,
+            "pass_at_k": {
+                "pass@1": 0.69675,
+                "pass@2": 0.781,
+                "pass@3": 0.8168928571428571,
+                "pass@4": 0.8375428571428573,
+                "pass@5": 0.8511071428571428,
+                "pass@6": 0.8608571428571429,
+                "pass@8": 0.874
+            }
+        }
+    ],
+    "step160": [
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "160",
+                "task_name": "aime24"
+            },
+            "mean_score": 0.09583333333333334,
+            "distinct_4gram": 0.39717711237919956,
+            "best_score": 0.26666666666666666,
+            "solve_none": 22,
+            "solve_all": 0,
+            "avg_output_length": 5071.454166666666,
+            "format_error_rollouts": 84,
+            "pass_at_k": {
+                "pass@1": 0.09583333333333334,
+                "pass@2": 0.1488095238095238,
+                "pass@3": 0.18333333333333332,
+                "pass@4": 0.20952380952380956,
+                "pass@5": 0.23035714285714284,
+                "pass@6": 0.24642857142857144,
+                "pass@8": 0.26666666666666666
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "160",
+                "task_name": "amc23"
+            },
+            "mean_score": 0.475,
+            "distinct_4gram": 0.462736609484236,
+            "best_score": 0.725,
+            "solve_none": 11,
+            "solve_all": 8,
+            "avg_output_length": 3502.596875,
+            "format_error_rollouts": 61,
+            "pass_at_k": {
+                "pass@1": 0.475,
+                "pass@2": 0.5741071428571429,
+                "pass@3": 0.6223214285714286,
+                "pass@4": 0.6546428571428572,
+                "pass@5": 0.6785714285714286,
+                "pass@6": 0.6973214285714285,
+                "pass@8": 0.725
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "160",
+                "task_name": "math-500"
+            },
+            "mean_score": 0.69675,
+            "distinct_4gram": 0.486311699838952,
+            "best_score": 0.876,
+            "solve_none": 62,
+            "solve_all": 222,
+            "avg_output_length": 2114.30375,
+            "format_error_rollouts": 282,
+            "pass_at_k": {
+                "pass@1": 0.69675,
+                "pass@2": 0.7838571428571429,
+                "pass@3": 0.8201785714285714,
+                "pass@4": 0.8408857142857142,
+                "pass@5": 0.8543571428571429,
+                "pass@6": 0.8636428571428572,
+                "pass@8": 0.876
+            }
+        }
+    ],
+    "step180": [
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "180",
+                "task_name": "aime24"
+            },
+            "mean_score": 0.12083333333333333,
+            "distinct_4gram": 0.4367933924834898,
+            "best_score": 0.23333333333333334,
+            "solve_none": 23,
+            "solve_all": 1,
+            "avg_output_length": 4517.591666666666,
+            "format_error_rollouts": 53,
+            "pass_at_k": {
+                "pass@1": 0.12083333333333333,
+                "pass@2": 0.16785714285714284,
+                "pass@3": 0.19464285714285715,
+                "pass@4": 0.21142857142857144,
+                "pass@5": 0.22261904761904763,
+                "pass@6": 0.22976190476190478,
+                "pass@8": 0.23333333333333334
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "180",
+                "task_name": "aime25"
+            },
+            "mean_score": 0.05416666666666667,
+            "distinct_4gram": 0.44562134389999264,
+            "best_score": 0.23333333333333334,
+            "solve_none": 23,
+            "solve_all": 0,
+            "avg_output_length": 4324.520833333333,
+            "format_error_rollouts": 54,
+            "pass_at_k": {
+                "pass@1": 0.05416666666666667,
+                "pass@2": 0.09642857142857143,
+                "pass@3": 0.12976190476190477,
+                "pass@4": 0.15666666666666668,
+                "pass@5": 0.17916666666666667,
+                "pass@6": 0.19880952380952382,
+                "pass@8": 0.23333333333333334
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "180",
+                "task_name": "amc23"
+            },
+            "mean_score": 0.428125,
+            "distinct_4gram": 0.5006788308630448,
+            "best_score": 0.7,
+            "solve_none": 12,
+            "solve_all": 7,
+            "avg_output_length": 3335.096875,
+            "format_error_rollouts": 45,
+            "pass_at_k": {
+                "pass@1": 0.428125,
+                "pass@2": 0.5375,
+                "pass@3": 0.59375,
+                "pass@4": 0.6289285714285715,
+                "pass@5": 0.6535714285714286,
+                "pass@6": 0.6723214285714285,
+                "pass@8": 0.7
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "180",
+                "task_name": "math-500"
+            },
+            "mean_score": 0.70225,
+            "distinct_4gram": 0.5031511224879529,
+            "best_score": 0.89,
+            "solve_none": 55,
+            "solve_all": 212,
+            "avg_output_length": 1981.48325,
+            "format_error_rollouts": 214,
+            "pass_at_k": {
+                "pass@1": 0.70225,
+                "pass@2": 0.7946428571428571,
+                "pass@3": 0.8329285714285715,
+                "pass@4": 0.8549142857142857,
+                "pass@5": 0.8690714285714286,
+                "pass@6": 0.8787857142857143,
+                "pass@8": 0.89
+            }
+        }
+    ],
+    "step200": [
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "200",
+                "task_name": "aime24"
+            },
+            "mean_score": 0.12916666666666668,
+            "distinct_4gram": 0.42704975446274707,
+            "best_score": 0.3,
+            "solve_none": 21,
+            "solve_all": 0,
+            "avg_output_length": 4691.579166666666,
+            "format_error_rollouts": 69,
+            "pass_at_k": {
+                "pass@1": 0.12916666666666668,
+                "pass@2": 0.19166666666666668,
+                "pass@3": 0.2285714285714286,
+                "pass@4": 0.2542857142857143,
+                "pass@5": 0.2732142857142857,
+                "pass@6": 0.28690476190476194,
+                "pass@8": 0.3
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "200",
+                "task_name": "aime25"
+            },
+            "mean_score": 0.08333333333333333,
+            "distinct_4gram": 0.4508574901103826,
+            "best_score": 0.23333333333333334,
+            "solve_none": 23,
+            "solve_all": 1,
+            "avg_output_length": 4347.858333333334,
+            "format_error_rollouts": 55,
+            "pass_at_k": {
+                "pass@1": 0.08333333333333333,
+                "pass@2": 0.12380952380952381,
+                "pass@3": 0.15595238095238095,
+                "pass@4": 0.18095238095238095,
+                "pass@5": 0.2,
+                "pass@6": 0.2142857142857143,
+                "pass@8": 0.23333333333333334
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "200",
+                "task_name": "math-500"
+            },
+            "mean_score": 0.69725,
+            "distinct_4gram": 0.502024106769291,
+            "best_score": 0.882,
+            "solve_none": 59,
+            "solve_all": 217,
+            "avg_output_length": 2027.17625,
+            "format_error_rollouts": 233,
+            "pass_at_k": {
+                "pass@1": 0.69725,
+                "pass@2": 0.7849285714285714,
+                "pass@3": 0.8207142857142856,
+                "pass@4": 0.8414571428571429,
+                "pass@5": 0.8556071428571429,
+                "pass@6": 0.8662142857142857,
+                "pass@8": 0.882
+            }
+        }
+    ],
+    "step220": [
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "220",
+                "task_name": "aime24"
+            },
+            "mean_score": 0.1,
+            "distinct_4gram": 0.4016419570213918,
+            "best_score": 0.2,
+            "solve_none": 24,
+            "solve_all": 1,
+            "avg_output_length": 4928.970833333334,
+            "format_error_rollouts": 77,
+            "pass_at_k": {
+                "pass@1": 0.1,
+                "pass@2": 0.14285714285714285,
+                "pass@3": 0.16904761904761903,
+                "pass@4": 0.18428571428571427,
+                "pass@5": 0.19285714285714287,
+                "pass@6": 0.19761904761904764,
+                "pass@8": 0.2
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "220",
+                "task_name": "aime25"
+            },
+            "mean_score": 0.075,
+            "distinct_4gram": 0.43193452566602286,
+            "best_score": 0.23333333333333334,
+            "solve_none": 23,
+            "solve_all": 0,
+            "avg_output_length": 4687.920833333334,
+            "format_error_rollouts": 70,
+            "pass_at_k": {
+                "pass@1": 0.075,
+                "pass@2": 0.11785714285714285,
+                "pass@3": 0.15,
+                "pass@4": 0.1761904761904762,
+                "pass@5": 0.19702380952380952,
+                "pass@6": 0.21309523809523812,
+                "pass@8": 0.23333333333333334
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "220",
+                "task_name": "amc23"
+            },
+            "mean_score": 0.4625,
+            "distinct_4gram": 0.46428101480924455,
+            "best_score": 0.7,
+            "solve_none": 12,
+            "solve_all": 8,
+            "avg_output_length": 3478.409375,
+            "format_error_rollouts": 59,
+            "pass_at_k": {
+                "pass@1": 0.4625,
+                "pass@2": 0.5580357142857143,
+                "pass@3": 0.60625,
+                "pass@4": 0.6389285714285714,
+                "pass@5": 0.6620535714285715,
+                "pass@6": 0.6785714285714286,
+                "pass@8": 0.7
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "220",
+                "task_name": "math-500"
+            },
+            "mean_score": 0.70325,
+            "distinct_4gram": 0.49151262651808425,
+            "best_score": 0.882,
+            "solve_none": 59,
+            "solve_all": 226,
+            "avg_output_length": 2091.90975,
+            "format_error_rollouts": 262,
+            "pass_at_k": {
+                "pass@1": 0.70325,
+                "pass@2": 0.7912857142857144,
+                "pass@3": 0.8280357142857143,
+                "pass@4": 0.8485714285714285,
+                "pass@5": 0.8618214285714285,
+                "pass@6": 0.871,
+                "pass@8": 0.882
+            }
+        }
+    ],
+    "step240": [
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "240",
+                "task_name": "aime24"
+            },
+            "mean_score": 0.125,
+            "distinct_4gram": 0.38167453942524,
+            "best_score": 0.26666666666666666,
+            "solve_none": 22,
+            "solve_all": 0,
+            "avg_output_length": 5028.945833333333,
+            "format_error_rollouts": 78,
+            "pass_at_k": {
+                "pass@1": 0.125,
+                "pass@2": 0.18095238095238095,
+                "pass@3": 0.21011904761904762,
+                "pass@4": 0.2280952380952381,
+                "pass@5": 0.24047619047619048,
+                "pass@6": 0.25,
+                "pass@8": 0.26666666666666666
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "240",
+                "task_name": "aime25"
+            },
+            "mean_score": 0.08333333333333333,
+            "distinct_4gram": 0.4028242343192293,
+            "best_score": 0.26666666666666666,
+            "solve_none": 22,
+            "solve_all": 0,
+            "avg_output_length": 4830.3875,
+            "format_error_rollouts": 75,
+            "pass_at_k": {
+                "pass@1": 0.08333333333333333,
+                "pass@2": 0.13214285714285715,
+                "pass@3": 0.16845238095238096,
+                "pass@4": 0.19761904761904764,
+                "pass@5": 0.22083333333333333,
+                "pass@6": 0.2392857142857143,
+                "pass@8": 0.26666666666666666
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "240",
+                "task_name": "amc23"
+            },
+            "mean_score": 0.459375,
+            "distinct_4gram": 0.4407332805965666,
+            "best_score": 0.75,
+            "solve_none": 10,
+            "solve_all": 7,
+            "avg_output_length": 3561.6375,
+            "format_error_rollouts": 70,
+            "pass_at_k": {
+                "pass@1": 0.459375,
+                "pass@2": 0.58125,
+                "pass@3": 0.6450892857142857,
+                "pass@4": 0.685,
+                "pass@5": 0.7111607142857144,
+                "pass@6": 0.7285714285714285,
+                "pass@8": 0.75
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "240",
+                "task_name": "math-500"
+            },
+            "mean_score": 0.70125,
+            "distinct_4gram": 0.47567318068927417,
+            "best_score": 0.882,
+            "solve_none": 59,
+            "solve_all": 222,
+            "avg_output_length": 2159.392,
+            "format_error_rollouts": 314,
+            "pass_at_k": {
+                "pass@1": 0.70125,
+                "pass@2": 0.7902142857142856,
+                "pass@3": 0.8266428571428571,
+                "pass@4": 0.8468,
+                "pass@5": 0.8599285714285715,
+                "pass@6": 0.8693571428571429,
+                "pass@8": 0.882
+            }
+        }
+    ],
+    "step260": [
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "260",
+                "task_name": "aime24"
+            },
+            "mean_score": 0.12083333333333333,
+            "distinct_4gram": 0.4028042055585808,
+            "best_score": 0.23333333333333334,
+            "solve_none": 23,
+            "solve_all": 0,
+            "avg_output_length": 4945.004166666667,
+            "format_error_rollouts": 74,
+            "pass_at_k": {
+                "pass@1": 0.12083333333333333,
+                "pass@2": 0.16785714285714284,
+                "pass@3": 0.19166666666666668,
+                "pass@4": 0.20666666666666667,
+                "pass@5": 0.21666666666666667,
+                "pass@6": 0.22380952380952382,
+                "pass@8": 0.23333333333333334
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "260",
+                "task_name": "aime25"
+            },
+            "mean_score": 0.07083333333333333,
+            "distinct_4gram": 0.435196340216754,
+            "best_score": 0.26666666666666666,
+            "solve_none": 22,
+            "solve_all": 1,
+            "avg_output_length": 4737.570833333333,
+            "format_error_rollouts": 76,
+            "pass_at_k": {
+                "pass@1": 0.07083333333333333,
+                "pass@2": 0.10476190476190476,
+                "pass@3": 0.1357142857142857,
+                "pass@4": 0.16428571428571428,
+                "pass@5": 0.19107142857142856,
+                "pass@6": 0.21666666666666667,
+                "pass@8": 0.26666666666666666
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "260",
+                "task_name": "amc23"
+            },
+            "mean_score": 0.440625,
+            "distinct_4gram": 0.4515162040618332,
+            "best_score": 0.675,
+            "solve_none": 13,
+            "solve_all": 9,
+            "avg_output_length": 3600.953125,
+            "format_error_rollouts": 66,
+            "pass_at_k": {
+                "pass@1": 0.440625,
+                "pass@2": 0.5303571428571429,
+                "pass@3": 0.5790178571428571,
+                "pass@4": 0.6117857142857143,
+                "pass@5": 0.6352678571428572,
+                "pass@6": 0.6526785714285714,
+                "pass@8": 0.675
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "260",
+                "task_name": "math-500"
+            },
+            "mean_score": 0.707,
+            "distinct_4gram": 0.48915756882620487,
+            "best_score": 0.882,
+            "solve_none": 59,
+            "solve_all": 236,
+            "avg_output_length": 2094.598,
+            "format_error_rollouts": 283,
+            "pass_at_k": {
+                "pass@1": 0.707,
+                "pass@2": 0.7892857142857144,
+                "pass@3": 0.8240714285714286,
+                "pass@4": 0.844,
+                "pass@5": 0.8573571428571429,
+                "pass@6": 0.8672857142857143,
+                "pass@8": 0.882
+            }
+        }
+    ],
+    "step279": [
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "279",
+                "task_name": "aime24"
+            },
+            "mean_score": 0.11666666666666667,
+            "distinct_4gram": 0.3981403239594708,
+            "best_score": 0.2,
+            "solve_none": 24,
+            "solve_all": 1,
+            "avg_output_length": 4913.920833333334,
+            "format_error_rollouts": 80,
+            "pass_at_k": {
+                "pass@1": 0.11666666666666667,
+                "pass@2": 0.15833333333333333,
+                "pass@3": 0.17916666666666667,
+                "pass@4": 0.19,
+                "pass@5": 0.19583333333333333,
+                "pass@6": 0.19880952380952382,
+                "pass@8": 0.2
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "279",
+                "task_name": "aime25"
+            },
+            "mean_score": 0.10416666666666667,
+            "distinct_4gram": 0.42352402247192145,
+            "best_score": 0.23333333333333334,
+            "solve_none": 23,
+            "solve_all": 0,
+            "avg_output_length": 4706.579166666666,
+            "format_error_rollouts": 73,
+            "pass_at_k": {
+                "pass@1": 0.10416666666666667,
+                "pass@2": 0.15595238095238095,
+                "pass@3": 0.1857142857142857,
+                "pass@4": 0.2042857142857143,
+                "pass@5": 0.21607142857142855,
+                "pass@6": 0.22380952380952382,
+                "pass@8": 0.23333333333333334
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "279",
+                "task_name": "amc23"
+            },
+            "mean_score": 0.45,
+            "distinct_4gram": 0.4460080244494334,
+            "best_score": 0.775,
+            "solve_none": 9,
+            "solve_all": 8,
+            "avg_output_length": 3675.509375,
+            "format_error_rollouts": 65,
+            "pass_at_k": {
+                "pass@1": 0.45,
+                "pass@2": 0.5580357142857143,
+                "pass@3": 0.6174107142857144,
+                "pass@4": 0.6596428571428572,
+                "pass@5": 0.69375,
+                "pass@6": 0.7232142857142857,
+                "pass@8": 0.775
+            }
+        },
+        {
+            "hyperparameters": {
+                "temperature": "0.7",
+                "top_p": "0.95",
+                "n": "8",
+                "max_tokens": "7168",
+                "step": "279",
+                "task_name": "math-500"
+            },
+            "mean_score": 0.70225,
+            "distinct_4gram": 0.4852198945893543,
+            "best_score": 0.886,
+            "solve_none": 57,
+            "solve_all": 217,
+            "avg_output_length": 2088.16475,
+            "format_error_rollouts": 272,
+            "pass_at_k": {
+                "pass@1": 0.70225,
+                "pass@2": 0.7921428571428571,
+                "pass@3": 0.8285,
+                "pass@4": 0.8491142857142857,
+                "pass@5": 0.8628571428571429,
+                "pass@6": 0.8727857142857144,
+                "pass@8": 0.886
+            }
+        }
+    ]
+}

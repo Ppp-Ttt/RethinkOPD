@@ -6,12 +6,15 @@ __pycache__/
 
 # Model/data/artifacts
 /models
-/eval_output
+/eval_output_0718
+/eval_output_0820
+/eval_output_passk
 /checkpoint
 /outputs
 /results
 /verl0.8.0
-/checkpoint_newFKL
+/checkpoint_rerun0711
+/checkpoint_rerun0820
 /datasets
 /logs
 /log
@@ -31,3 +34,4 @@ __pycache__/
 
 # others
 *.whl
+*.pdf
